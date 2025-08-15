@@ -16,7 +16,7 @@
   "keywords": ["mern", "job-tracker", "react", "nodejs", "mongodb"],
   "author": "Your Name",
   "license": "MIT",
-  "devDependencies": {
+  "dependencies": {
     "concurrently": "^8.2.2"
   }
 }
