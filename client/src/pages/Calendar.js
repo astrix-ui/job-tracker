@@ -323,14 +323,14 @@ const Calendar = () => {
 
  const CustomToolbar = ({ label, onNavigate, onView }) => {
  return (
- <div className="flex flex-col space-y-3 mb-4">
+ <div className="flex flex-col space-y-4 mb-6 p-4 bg-card rounded-lg border border-border">
  {/* Mobile-first layout */}
- <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
+ <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
  {/* Navigation Controls */}
- <div className="flex items-center justify-center sm:justify-start space-x-2">
+ <div className="flex items-center justify-center sm:justify-start space-x-3">
  <button
  onClick={() => onNavigate('PREV')}
- className="flex items-center justify-center w-10 h-10 sm:w-auto sm:h-auto sm:px-3 sm:py-2 bg-muted text-muted-foreground rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors"
+ className="flex items-center justify-center w-12 h-12 sm:w-auto sm:h-auto sm:px-4 sm:py-3 bg-muted text-muted-foreground rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors"
  aria-label="Previous"
  >
  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -339,13 +339,13 @@ const Calendar = () => {
  </button>
  <button
  onClick={() => onNavigate('TODAY')}
- className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium text-sm"
+ className="px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium text-sm"
  >
  Today
  </button>
  <button
  onClick={() => onNavigate('NEXT')}
- className="flex items-center justify-center w-10 h-10 sm:w-auto sm:h-auto sm:px-3 sm:py-2 bg-muted text-muted-foreground rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors"
+ className="flex items-center justify-center w-12 h-12 sm:w-auto sm:h-auto sm:px-4 sm:py-3 bg-muted text-muted-foreground rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors"
  aria-label="Next"
  >
  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -355,14 +355,14 @@ const Calendar = () => {
  </div>
  
  {/* Month/Year Label */}
- <h2 className="text-lg sm:text-xl font-semibold text-foreground text-center sm:text-left">
+ <h2 className="text-xl sm:text-2xl font-semibold text-foreground text-center sm:text-left">
  {label}
  </h2>
  </div>
  
  {/* View Toggle Buttons */}
  <div className="flex justify-center sm:justify-end">
- <div className="inline-flex rounded-lg border border-border bg-muted p-1">
+ <div className="inline-flex rounded-lg border border-border bg-muted p-1.5">
  {['month', 'week', 'day'].map(viewName => (
  <button
  key={viewName}
@@ -370,7 +370,7 @@ const Calendar = () => {
  setView(viewName);
  onView(viewName);
  }}
- className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors capitalize ${
+ className={`px-4 py-2.5 rounded-md text-sm font-medium transition-colors capitalize ${
  view === viewName
  ? 'bg-background text-foreground shadow-sm'
  : 'text-muted-foreground hover:text-foreground'
