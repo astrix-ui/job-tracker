@@ -35,9 +35,23 @@ app.use(session({
 }));
 
 // Database connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/job-tracker')
-  .then(() => console.log('Connected to MongoDB'))
-  .catch(err => console.error('MongoDB connection error:', err));
+const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/job-tracker';
+console.log('Attempting to connect to MongoDB...');
+console.log('MongoDB URI:', mongoUri.replace(/\/\/([^:]+):([^@]+)@/, '//***:***@')); // Hide credentials in logs
+
+mongoose.connect(mongoUri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+  .then(() => {
+    console.log('✅ Successfully connected to MongoDB');
+    console.log('Database:', mongoose.connection.name);
+  })
+  .catch(err => {
+    console.error('❌ MongoDB connection error:', err.message);
+    console.error('Full error:', err);
+    process.exit(1);
+  });
 
 // Routes
 app.use('/api/auth', authRoutes);
