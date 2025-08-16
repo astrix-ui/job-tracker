@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useCompany } from '../context/CompanyContext';
 import StatusBadge from './StatusBadge';
 import { formatDate } from '../utils/helpers';
 
 const NotificationPanel = ({ isOpen, onClose }) => {
   const { companies } = useCompany();
+  const panelRef = useRef(null);
 
   // Calculate upcoming next action dates within 3 days
   const upcomingActions = useMemo(() => {
@@ -44,6 +45,25 @@ const NotificationPanel = ({ isOpen, onClose }) => {
       });
   }, [companies]);
 
+  // Handle click outside to close panel
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (panelRef.current && !panelRef.current.contains(event.target)) {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('touchstart', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, [isOpen, onClose]);
+
   const getUrgencyColor = (urgency) => {
     // Monochrome background for all notifications
     return 'text-foreground bg-muted/50 border-border hover:bg-muted/70';
@@ -70,7 +90,10 @@ const NotificationPanel = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="absolute top-full right-0 mt-2 w-80 bg-card border border-border rounded-lg shadow-lg z-50 max-h-96 overflow-hidden">
+    <div 
+      ref={panelRef}
+      className="absolute top-full right-0 mt-2 w-80 sm:w-96 md:w-80 bg-card border border-border rounded-lg shadow-lg z-50 max-h-96 overflow-hidden"
+    >
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-border">
         <h3 className="text-lg font-semibold text-foreground">

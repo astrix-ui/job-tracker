@@ -17,7 +17,7 @@ export const POSITION_TYPES = [
 ];
 
 export const STATUS_COLORS = {
- 'Applied': 'bg-blue-100 text-blue-800',
+ 'Applied': 'bg-blue-500 text-white',
  'Interview Scheduled': 'bg-yellow-100 text-yellow-800',
  'Technical Round': 'bg-purple-100 text-purple-800',
  'HR Round': 'bg-indigo-100 text-indigo-800',
