@@ -557,8 +557,7 @@ const Calendar = () => {
  {/* Empty State */}
  {events.length === 0 && !loading && (
  <div className="text-center py-12">
- <div className="text-muted-foreground text-6xl mb-4">📅</div>
- <h3 className="text-lg font-medium bg-card text-card-foreground mb-2">
+ <h3 className="text-lg font-medium text-foreground mb-2">
  No upcoming events
  </h3>
  <p className="text-muted-foreground">

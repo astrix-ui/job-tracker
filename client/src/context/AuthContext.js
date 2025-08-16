@@ -87,6 +87,19 @@ export const AuthProvider = ({ children }) => {
  }
  };
 
+ const deleteAccount = async () => {
+   try {
+     await authAPI.deleteAccount();
+     setUser(null);
+     return { success: true };
+   } catch (error) {
+     return { 
+       success: false, 
+       error: error.response?.data?.error || 'Delete account failed' 
+     };
+   }
+ };
+
  const value = {
  user,
  loading,
@@ -94,6 +107,7 @@ export const AuthProvider = ({ children }) => {
  register,
  logout,
  updateUser,
+ deleteAccount,
  isAuthenticated: !!user
  };
 

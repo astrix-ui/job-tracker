@@ -16,6 +16,7 @@ export const authAPI = {
  logout: () => api.post('/auth/logout'),
  getCurrentUser: () => api.get('/auth/user'),
  updateProfile: (profileData) => api.put('/auth/profile', profileData),
+ deleteAccount: () => api.delete('/auth/account'),
 };
 
 // Company API endpoints

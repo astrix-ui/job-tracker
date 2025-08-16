@@ -229,7 +229,7 @@ const Navbar = () => {
  </div>
 
  {/* Notifications Section */}
- {isAuthenticated && notificationCount > 0 && (
+ {isAuthenticated && (
  <div className="px-4 py-4 border-t border-border mt-4">
  <div className="flex items-center justify-between px-4 py-3 rounded-lg hover:bg-muted transition-colors">
  <span className="text-sm font-medium text-foreground">Notifications</span>
@@ -238,7 +238,10 @@ const Navbar = () => {
  </span>
  </div>
  <div className="mt-2 text-xs text-muted-foreground px-4">
- {notificationCount} upcoming action{notificationCount !== 1 ? 's' : ''} in the next 3 days
+ {notificationCount > 0 
+   ? `${notificationCount} upcoming action${notificationCount !== 1 ? 's' : ''} in the next 3 days`
+   : 'No upcoming actions in the next 3 days'
+ }
  </div>
  </div>
  )}

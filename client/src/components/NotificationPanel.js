@@ -90,7 +90,6 @@ const NotificationPanel = ({ isOpen, onClose }) => {
       <div className="max-h-80 overflow-y-auto">
         {upcomingActions.length === 0 ? (
           <div className="p-6 text-center">
-            <div className="text-muted-foreground text-4xl mb-3">✅</div>
             <h4 className="text-sm font-medium text-foreground mb-1">
               No upcoming actions
             </h4>
