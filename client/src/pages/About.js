@@ -196,7 +196,20 @@ const About = () => {
  <h2 className="text-2xl font-bold text-foreground mb-6">Contact & Social</h2>
  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-center space-y-4 sm:space-y-0 sm:space-x-8">
  <a
- href="https://github.com/yourusername"
+ href="https://yourportfolio.com"
+ target="_blank"
+ rel="noopener noreferrer"
+ className="flex items-center space-x-3 text-muted-foreground hover:text-foreground transition-colors group"
+ >
+ <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center group-hover:bg-primary/90 transition-colors">
+ <svg className="w-5 h-5 text-primary-foreground" fill="currentColor" viewBox="0 0 24 24">
+ <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+ </svg>
+ </div>
+ <span className="font-medium">Portfolio</span>
+ </a>
+ <a
+ href="https://github.com/astrix-ui"
  target="_blank"
  rel="noopener noreferrer"
  className="flex items-center space-x-3 text-muted-foreground hover:text-foreground transition-colors group"
@@ -209,7 +222,7 @@ const About = () => {
  <span className="font-medium">GitHub</span>
  </a>
  <a
- href="https://linkedin.com/in/yourprofile"
+ href="https://www.linkedin.com/in/ayush-sharma-a0351b270/"
  target="_blank"
  rel="noopener noreferrer"
  className="flex items-center space-x-3 text-muted-foreground hover:text-foreground transition-colors group"
@@ -222,7 +235,7 @@ const About = () => {
  <span className="font-medium">LinkedIn</span>
  </a>
  <a
- href="https://instagram.com/yourusername"
+ href="https://instagram.com/clumsymind7878"
  target="_blank"
  rel="noopener noreferrer"
  className="flex items-center space-x-3 text-muted-foreground hover:text-foreground transition-colors group"
