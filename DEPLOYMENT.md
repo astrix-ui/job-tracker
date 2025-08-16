@@ -39,7 +39,41 @@ REACT_APP_API_URL=https://your-api-domain.com/api
 
 ## Production Deployment
 
-### Option 1: Heroku Deployment
+### Option 1: Render Deployment (Recommended)
+
+1. **Prepare your repository:**
+   - Ensure all changes are committed to your Git repository
+   - Push to GitHub, GitLab, or Bitbucket
+
+2. **Create a new Web Service on Render:**
+   - Go to [Render Dashboard](https://dashboard.render.com)
+   - Click "New +" and select "Web Service"
+   - Connect your repository
+
+3. **Configure the service:**
+   ```
+   Name: mern-job-tracker
+   Environment: Node
+   Region: Choose your preferred region
+   Branch: main (or your default branch)
+   Root Directory: mern-job-tracker-starter
+   Build Command: npm run build
+   Start Command: npm start
+   ```
+
+4. **Set Environment Variables:**
+   ```
+   NODE_ENV=production
+   MONGODB_URI=your_mongodb_atlas_connection_string
+   SESSION_SECRET=your_secure_random_string
+   PORT=10000
+   ```
+
+5. **Deploy:**
+   - Click "Create Web Service"
+   - Render will automatically build and deploy your app
+
+### Option 2: Heroku Deployment
 
 1. **Prepare for Heroku:**
    ```bash

@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "setup": "node setup.js",
-    "build": "npm run install-all",
-    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "build": "npm run install-all && cd client && npm run build",
+    "start": "cd server && npm start",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
     "server": "cd server && npm run dev",
     "client": "cd client && npm start",
     "install-server": "cd server && npm install",

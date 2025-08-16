@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const cors = require('cors');
+const path = require('path');
 require('dotenv').config();
 
 const authRoutes = require('./routes/auth');
@@ -11,10 +12,13 @@ const calendarRoutes = require('./routes/calendar');
 const app = express();
 
 // Middleware
-app.use(cors({
-  origin: 'http://localhost:3000',
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production' 
+    ? process.env.CLIENT_URL || true 
+    : 'http://localhost:3000',
   credentials: true
-}));
+};
+app.use(cors(corsOptions));
 
 app.use(express.json());
 
@@ -40,10 +44,20 @@ app.use('/api/auth', authRoutes);
 app.use('/api/companies', companyRoutes);
 app.use('/api/calendar', calendarRoutes);
 
-// Basic route
-app.get('/', (req, res) => {
-  res.json({ message: 'Job Tracker API is running!' });
-});
+// Serve static files from the React app build directory
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../client/build')));
+  
+  // Catch all handler: send back React's index.html file for any non-API routes
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+  });
+} else {
+  // Basic route for development
+  app.get('/', (req, res) => {
+    res.json({ message: 'Job Tracker API is running!' });
+  });
+}
 
 // Error handling middleware
 app.use((err, req, res, next) => {
