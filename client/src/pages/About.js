@@ -1,6 +1,15 @@
 import React from 'react';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const About = () => {
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
+  const handleGetStarted = () => {
+    navigate('/register');
+  };
+
   const features = [
     {
       title: "Application Tracking",
@@ -44,12 +53,6 @@ const About = () => {
     }
   ];
 
-  const stats = [
-    { label: "Active Users", value: "2,500+" },
-    { label: "Applications Tracked", value: "15,000+" },
-    { label: "Success Rate", value: "78%" },
-    { label: "Average Response Time", value: "2.3 days" }
-  ];
 
   const categories = ["Core", "Social", "Analytics", "Productivity", "Dashboard", "Experience", "Security"];
 
@@ -64,34 +67,19 @@ const About = () => {
           <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto">
             Streamline your job search with intelligent tracking, networking, and analytics
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="px-8 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors">
-              Get Started
-            </button>
-            <button className="px-8 py-3 border border-border text-foreground rounded-lg hover:bg-muted transition-colors">
-              Learn More
-            </button>
-          </div>
+          {!isAuthenticated && (
+            <div className="flex justify-center">
+              <button 
+                onClick={handleGetStarted}
+                className="px-8 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+              >
+                Get Started
+              </button>
+            </div>
+          )}
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-16 px-4 border-t border-border">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {stats.map((stat, index) => (
-              <div key={index} className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-foreground mb-2">
-                  {stat.value}
-                </div>
-                <div className="text-sm text-muted-foreground">
-                  {stat.label}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Features Grid */}
       <section className="py-20 px-4">
@@ -122,7 +110,7 @@ const About = () => {
             {features.map((feature, index) => (
               <div
                 key={index}
-                className="group p-6 bg-card border border-border rounded-lg hover:shadow-lg transition-all duration-300 hover:border-primary/20"
+                className="group p-6 bg-card border border-border rounded-lg hover:shadow-md hover:-translate-y-1 transition-all duration-300 hover:border-primary/20"
               >
                 <div className="mb-4">
                   <span className="inline-block px-2 py-1 text-xs bg-primary/10 text-primary rounded-full mb-3">
@@ -143,16 +131,18 @@ const About = () => {
 
       {/* Technology Stack */}
       <section className="py-16 px-4 bg-muted/30">
-        <div className="max-w-4xl mx-auto text-center">
+        <div className="max-w-6xl mx-auto text-center">
           <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-8">
             Built with modern technology
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {['React', 'Node.js', 'MongoDB', 'Express'].map((tech) => (
-              <div key={tech} className="p-4 bg-card border border-border rounded-lg">
-                <div className="text-lg font-medium text-foreground">{tech}</div>
-              </div>
-            ))}
+          <div className="overflow-x-auto">
+            <div className="flex gap-4 pb-4 min-w-max">
+              {['React', 'Node.js', 'MongoDB', 'Express', 'Tailwind CSS', 'JWT', 'Mongoose', 'React Router', 'Context API', 'Axios', 'bcryptjs', 'CORS'].map((tech) => (
+                <div key={tech} className="p-4 bg-card border border-border rounded-lg hover:shadow-md hover:-translate-y-1 transition-all duration-300 whitespace-nowrap">
+                  <div className="text-lg font-medium text-foreground">{tech}</div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -169,19 +159,19 @@ const About = () => {
             build meaningful connections, and make data-driven decisions throughout their career journey.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-            <div className="p-6 bg-card border border-border rounded-lg">
+            <div className="p-6 bg-card border border-border rounded-lg hover:shadow-md hover:-translate-y-1 transition-all duration-300">
               <h3 className="text-xl font-semibold text-foreground mb-3">Organize</h3>
               <p className="text-muted-foreground">
                 Keep track of every application, interview, and opportunity in one centralized platform.
               </p>
             </div>
-            <div className="p-6 bg-card border border-border rounded-lg">
+            <div className="p-6 bg-card border border-border rounded-lg hover:shadow-md hover:-translate-y-1 transition-all duration-300">
               <h3 className="text-xl font-semibold text-foreground mb-3">Connect</h3>
               <p className="text-muted-foreground">
                 Build relationships with fellow job seekers and expand your professional network.
               </p>
             </div>
-            <div className="p-6 bg-card border border-border rounded-lg">
+            <div className="p-6 bg-card border border-border rounded-lg hover:shadow-md hover:-translate-y-1 transition-all duration-300">
               <h3 className="text-xl font-semibold text-foreground mb-3">Succeed</h3>
               <p className="text-muted-foreground">
                 Make informed decisions with analytics and insights that guide your job search strategy.
@@ -191,18 +181,52 @@ const About = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* Creator Section */}
       <section className="py-16 px-4 border-t border-border">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
-            Ready to transform your job search?
+            Created by
           </h2>
+          <h3 className="text-xl font-semibold text-foreground mb-6">
+            Ayush Sharma
+          </h3>
           <p className="text-lg text-muted-foreground mb-8">
-            Join thousands of job seekers who have streamlined their search with Job Tracker.
+            Full Stack Developer passionate about creating tools that make job searching more efficient and organized.
           </p>
-          <button className="px-8 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors">
-            Start Tracking Today
-          </button>
+          <div className="flex justify-center gap-6">
+            <a 
+              href="https://instagram.com/ayushsharma" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="p-3 bg-card border border-border rounded-lg hover:shadow-md hover:-translate-y-1 transition-all duration-300 hover:border-primary/20"
+            >
+              <span className="text-foreground font-medium">Instagram</span>
+            </a>
+            <a 
+              href="https://linkedin.com/in/ayushsharma" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="p-3 bg-card border border-border rounded-lg hover:shadow-md hover:-translate-y-1 transition-all duration-300 hover:border-primary/20"
+            >
+              <span className="text-foreground font-medium">LinkedIn</span>
+            </a>
+            <a 
+              href="https://github.com/ayushsharma" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="p-3 bg-card border border-border rounded-lg hover:shadow-md hover:-translate-y-1 transition-all duration-300 hover:border-primary/20"
+            >
+              <span className="text-foreground font-medium">GitHub</span>
+            </a>
+            <a 
+              href="https://ayushsharma.dev" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="p-3 bg-card border border-border rounded-lg hover:shadow-md hover:-translate-y-1 transition-all duration-300 hover:border-primary/20"
+            >
+              <span className="text-foreground font-medium">Portfolio</span>
+            </a>
+          </div>
         </div>
       </section>
     </div>
