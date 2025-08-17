@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { connectionAPI } from '../utils/api';
 import { useToast } from '../context/ToastContext';
 import LoadingSpinner from '../components/LoadingSpinner';
+import Modal from '../components/Modal';
 import { User, Mail, Calendar, UserPlus, UserCheck, Clock, ArrowLeft } from 'lucide-react';
 
 const UserProfile = () => {
@@ -14,6 +15,8 @@ const UserProfile = () => {
   const [isRequester, setIsRequester] = useState(false);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
+  const [connections, setConnections] = useState([]);
+  const [showConnectionsModal, setShowConnectionsModal] = useState(false);
 
   // Fetch user profile and connection status
   const fetchUserProfile = async () => {
@@ -26,6 +29,12 @@ const UserProfile = () => {
         setUser(foundUser);
         setConnectionStatus(foundUser.connectionStatus);
         setIsRequester(foundUser.isRequester);
+        
+        // Mock connections data for now
+        setConnections([
+          { username: 'connection1', email: 'conn1@example.com' },
+          { username: 'connection2', email: 'conn2@example.com' }
+        ]);
       } else {
         showToast('User not found', 'error');
         navigate('/explore');
@@ -155,10 +164,24 @@ const UserProfile = () => {
               <span>{user.email}</span>
             </div>
 
-            <div className="flex items-center justify-center md:justify-start space-x-2 text-muted-foreground mb-6">
+            <div className="flex items-center justify-center md:justify-start space-x-2 text-muted-foreground mb-4">
               <Calendar className="w-4 h-4" />
               <span>Member since {new Date(user.createdAt).toLocaleDateString()}</span>
             </div>
+
+            {/* Connection Count */}
+            <button
+              onClick={handleConnectionsClick}
+              className="inline-flex items-center space-x-2 text-primary hover:text-primary/80 transition-colors mb-6"
+            >
+              <span className="text-lg font-semibold">{connections.length}</span>
+              <span className="text-sm">
+                {connections.length === 1 ? 'Connection' : 'Connections'}
+              </span>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
 
             {/* Connection Button */}
             <button
@@ -219,6 +242,39 @@ const UserProfile = () => {
           </div>
         )}
       </div>
+
+      {/* Connections Modal */}
+      <Modal
+        isOpen={showConnectionsModal}
+        onClose={() => setShowConnectionsModal(false)}
+        title={`${user.username}'s Connections`}
+        size="medium"
+      >
+        <div className="space-y-4">
+          {connections.length > 0 ? (
+            connections.map((connection, index) => (
+              <div key={index} className="flex items-center space-x-4 p-4 border border-border rounded-lg">
+                <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                  <span className="text-sm font-semibold text-primary">
+                    {connection.username?.charAt(0).toUpperCase() || 'U'}
+                  </span>
+                </div>
+                <div className="flex-1">
+                  <div className="font-medium text-foreground">{connection.username || 'Unknown User'}</div>
+                  <div className="text-sm text-muted-foreground">{connection.email || 'No email'}</div>
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  Connected
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="text-center py-8">
+              <p className="text-muted-foreground">No connections yet</p>
+            </div>
+          )}
+        </div>
+      </Modal>
     </div>
   );
 };

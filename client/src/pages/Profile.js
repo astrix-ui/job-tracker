@@ -7,7 +7,7 @@ import ErrorMessage from '../components/ErrorMessage';
 import Modal from '../components/Modal';
 
 const Profile = () => {
-  const { user, logout, updateUser, deleteAccount } = useAuth();
+  const { user, logout, updateUser, deleteAccount, isAuthenticated } = useAuth();
   const { showSuccess, showError, showConfirmToast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
