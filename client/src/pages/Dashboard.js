@@ -296,215 +296,228 @@ const Dashboard = () => {
       {/* Applications Section */}
       <section className="py-8 px-4">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold text-foreground mb-8">Applications</h2>
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-3xl font-bold text-foreground">Applications</h2>
+            <div className="text-sm text-muted-foreground">
+              {filteredAndSortedCompanies.length} of {companies.length} applications
+            </div>
+          </div>
           
-          {/* Filters */}
-          <div className="bg-muted/20 rounded-[16px] p-6 mb-8">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
-                  Search
-                </label>
-                <input
-                  type="text"
-                  placeholder="Search companies, positions..."
-                  value={filters.search}
-                  onChange={(e) => handleFilterChange('search', e.target.value)}
-                  className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-foreground/20 transition-all"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
-                  Status
-                </label>
-                <select
-                  value={filters.status}
-                  onChange={(e) => handleFilterChange('status', e.target.value)}
-                  className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-foreground/20 transition-all"
-                >
-                  <option value="">All Statuses</option>
-                  {APPLICATION_STATUSES.map(status => (
-                    <option key={status} value={status}>{status}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
-                  Position Type
-                </label>
-                <select
-                  value={filters.positionType}
-                  onChange={(e) => handleFilterChange('positionType', e.target.value)}
-                  className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-foreground/20 transition-all"
-                >
-                  <option value="">All Types</option>
-                  {POSITION_TYPES.map(type => (
-                    <option key={type} value={type}>{type}</option>
-                  ))}
-                </select>
-              </div>
+          {/* Modular Filters Grid */}
+          <div className="grid grid-cols-12 gap-4 mb-8">
+            {/* Search - Large */}
+            <div className="col-span-12 md:col-span-6 bg-muted/30 rounded-[20px] p-6">
+              <label className="block text-lg font-semibold text-foreground mb-3">
+                🔍 Search Applications
+              </label>
+              <input
+                type="text"
+                placeholder="Search companies, positions, contacts..."
+                value={filters.search}
+                onChange={(e) => handleFilterChange('search', e.target.value)}
+                className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-foreground/20 transition-all text-lg"
+              />
+            </div>
+            
+            {/* Status Filter */}
+            <div className="col-span-6 md:col-span-3 bg-muted/20 rounded-[16px] p-4">
+              <label className="block text-sm font-medium text-foreground mb-3">
+                📊 Status
+              </label>
+              <select
+                value={filters.status}
+                onChange={(e) => handleFilterChange('status', e.target.value)}
+                className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-foreground/20 transition-all"
+              >
+                <option value="">All Statuses</option>
+                {APPLICATION_STATUSES.map(status => (
+                  <option key={status} value={status}>{status}</option>
+                ))}
+              </select>
+            </div>
+            
+            {/* Position Type Filter */}
+            <div className="col-span-6 md:col-span-3 bg-muted/20 rounded-[16px] p-4">
+              <label className="block text-sm font-medium text-foreground mb-3">
+                💼 Type
+              </label>
+              <select
+                value={filters.positionType}
+                onChange={(e) => handleFilterChange('positionType', e.target.value)}
+                className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-foreground/20 transition-all"
+              >
+                <option value="">All Types</option>
+                {POSITION_TYPES.map(type => (
+                  <option key={type} value={type}>{type}</option>
+                ))}
+              </select>
             </div>
           </div>
 
-          {/* Applications Table */}
-          <div className="bg-card rounded-[16px] overflow-hidden border border-border">
-            {filteredAndSortedCompanies.length === 0 ? (
-              <div className="text-center py-16">
-                <div className="text-6xl mb-4">
-                  {companies.length === 0 ? '📝' : '🔍'}
-                </div>
-                <h3 className="text-xl font-semibold text-foreground mb-3">
-                  {companies.length === 0 ? 'No applications yet' : 'No applications found'}
-                </h3>
-                <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                  {companies.length === 0 
-                    ? 'Start tracking your job applications by adding your first company.'
-                    : 'Try adjusting your search or filter criteria.'
-                  }
-                </p>
-                {companies.length === 0 && (
-                  <button
-                    onClick={handleAddCompany}
-                    className="px-6 py-3 bg-foreground text-background rounded-lg hover:bg-foreground/90 transition-colors font-medium"
-                  >
-                    Add Your First Application
-                  </button>
-                )}
+          {/* Applications Grid */}
+          {filteredAndSortedCompanies.length === 0 ? (
+            <div className="bg-muted/30 rounded-[20px] p-16 text-center">
+              <div className="text-6xl mb-4">
+                {companies.length === 0 ? '📝' : '🔍'}
               </div>
-            ) : (
-          <>
-              <div className="overflow-x-auto">
-                <table className="min-w-full">
-                  <thead>
-                    <tr className="border-b border-border">
-                      <th 
-                        className="px-6 py-4 text-left text-sm font-medium text-foreground cursor-pointer hover:bg-muted/50 transition-colors"
-                        onClick={() => handleSort('companyName')}
-                      >
-                        Company {getSortIcon('companyName')}
-                      </th>
-                      <th 
-                        className="px-6 py-4 text-left text-sm font-medium text-foreground cursor-pointer hover:bg-muted/50 transition-colors"
-                        onClick={() => handleSort('positionTitle')}
-                      >
-                        Position {getSortIcon('positionTitle')}
-                      </th>
-                      <th 
-                        className="px-6 py-4 text-left text-sm font-medium text-foreground cursor-pointer hover:bg-muted/50 transition-colors"
-                        onClick={() => handleSort('status')}
-                      >
-                        Status {getSortIcon('status')}
-                      </th>
-                      <th 
-                        className="px-6 py-4 text-left text-sm font-medium text-foreground cursor-pointer hover:bg-muted/50 transition-colors"
-                        onClick={() => handleSort('applicationDate')}
-                      >
-                        Applied {getSortIcon('applicationDate')}
-                      </th>
-                      <th 
-                        className="px-6 py-4 text-left text-sm font-medium text-foreground cursor-pointer hover:bg-muted/50 transition-colors"
-                        onClick={() => handleSort('nextActionDate')}
-                      >
-                        Next Action {getSortIcon('nextActionDate')}
-                      </th>
-                      <th className="px-6 py-4 text-right text-sm font-medium text-foreground">
-                        Actions
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-card">
-                    {paginatedCompanies.map((company) => (
-                      <tr key={company._id} className="border-b border-border hover:bg-muted/30 transition-colors">
-                        <td className="px-6 py-5">
-                          <div>
-                            <div className="font-medium text-foreground">
-                              {company.companyName}
-                            </div>
-                            <div className="text-sm text-muted-foreground">
-                              {company.positionType}
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-5">
-                          <div className="text-foreground">
-                            {company.positionTitle || 'N/A'}
-                          </div>
-                          {company.salaryExpectation && (
-                            <div className="text-sm text-muted-foreground">
-                              ₹{company.salaryExpectation.toLocaleString('en-IN')}
-                            </div>
-                          )}
-                        </td>
-                        <td className="px-6 py-5">
-                          <StatusBadge status={company.status} />
-                        </td>
-                        <td className="px-6 py-5 text-foreground">
-                          {formatDate(company.applicationDate)}
-                        </td>
-                        <td className="px-6 py-5 text-foreground">
-                          {company.nextActionDate ? formatDate(company.nextActionDate) : 'N/A'}
-                        </td>
-                        <td className="px-6 py-5 text-right">
-                          <div className="flex justify-end gap-2">
-                            <button
-                              onClick={() => handleEditCompany(company)}
-                              className="px-3 py-1 text-sm text-foreground hover:bg-muted rounded-lg transition-colors"
-                            >
-                              Edit
-                            </button>
-                            <button
-                              onClick={() => handleDeleteCompany(company._id, company.companyName)}
-                              className="px-3 py-1 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
-                            >
-                              Delete
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-              </table>
+              <h3 className="text-xl font-semibold text-foreground mb-3">
+                {companies.length === 0 ? 'No applications yet' : 'No applications found'}
+              </h3>
+              <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                {companies.length === 0 
+                  ? 'Start tracking your job applications by adding your first company.'
+                  : 'Try adjusting your search or filter criteria.'
+                }
+              </p>
+              {companies.length === 0 && (
+                <button
+                  onClick={handleAddCompany}
+                  className="px-6 py-3 bg-foreground text-background rounded-lg hover:bg-foreground/90 transition-colors font-medium"
+                >
+                  Add Your First Application
+                </button>
+              )}
             </div>
+          ) : (
+            <>
+              {/* Sort Controls */}
+              <div className="flex flex-wrap gap-2 mb-6">
+                <span className="text-sm text-muted-foreground mr-2">Sort by:</span>
+                {[
+                  { key: 'companyName', label: 'Company' },
+                  { key: 'positionTitle', label: 'Position' },
+                  { key: 'status', label: 'Status' },
+                  { key: 'applicationDate', label: 'Applied' },
+                  { key: 'nextActionDate', label: 'Next Action' }
+                ].map(({ key, label }) => (
+                  <button
+                    key={key}
+                    onClick={() => handleSort(key)}
+                    className={`px-3 py-1 text-sm rounded-lg transition-colors ${
+                      sortBy === key 
+                        ? 'bg-foreground text-background' 
+                        : 'bg-muted/20 text-foreground hover:bg-muted/40'
+                    }`}
+                  >
+                    {label} {getSortIcon(key)}
+                  </button>
+                ))}
+              </div>
 
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="px-6 py-6 border-t border-border">
-                <div className="flex items-center justify-between">
-                  <div className="text-sm text-muted-foreground">
-                    Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, filteredAndSortedCompanies.length)} of {filteredAndSortedCompanies.length} results
-                  </div>
-                  <div className="flex space-x-2">
-                    <button
-                      onClick={() => handlePageChange(currentPage - 1)}
-                      disabled={currentPage === 1}
-                      className="px-4 py-2 border border-border rounded-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-muted transition-colors"
-                    >
-                      Previous
-                    </button>
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              {/* Applications Cards Grid */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+                {paginatedCompanies.map((company) => (
+                  <div key={company._id} className="bg-muted/20 rounded-[16px] p-6 hover:bg-muted/30 transition-all duration-200">
+                    <div className="flex justify-between items-start mb-4">
+                      <div className="flex-1">
+                        <h3 className="text-lg font-semibold text-foreground mb-1">
+                          {company.companyName}
+                        </h3>
+                        <p className="text-foreground mb-2">
+                          {company.positionTitle || 'N/A'}
+                        </p>
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <span>{company.positionType}</span>
+                          {company.salaryExpectation && (
+                            <>
+                              <span>•</span>
+                              <span>₹{company.salaryExpectation.toLocaleString('en-IN')}</span>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                      <StatusBadge status={company.status} />
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
+                      <div>
+                        <span className="text-muted-foreground">Applied:</span>
+                        <div className="font-medium text-foreground">
+                          {formatDate(company.applicationDate)}
+                        </div>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">Next Action:</span>
+                        <div className="font-medium text-foreground">
+                          {company.nextActionDate ? formatDate(company.nextActionDate) : 'N/A'}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex justify-end gap-2 pt-2 border-t border-border">
                       <button
-                        key={page}
-                        onClick={() => handlePageChange(page)}
-                        className={`px-4 py-2 border border-border rounded-lg text-sm transition-colors ${
-                          currentPage === page 
-                            ? 'bg-foreground text-background' 
-                            : 'hover:bg-muted'
-                        }`}
+                        onClick={() => handleEditCompany(company)}
+                        className="px-4 py-2 text-sm text-foreground bg-foreground/10 hover:bg-foreground/20 rounded-lg transition-colors"
                       >
-                        {page}
+                        Edit
                       </button>
-                    ))}
-                    <button
-                      onClick={() => handlePageChange(currentPage + 1)}
-                      disabled={currentPage === totalPages}
-                      className="px-4 py-2 border border-border rounded-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-muted transition-colors"
-                    >
-                      Next
-                    </button>
+                      <button
+                        onClick={() => handleDeleteCompany(company._id, company.companyName)}
+                        className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/40 rounded-lg transition-colors"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="bg-muted/20 rounded-[16px] p-6">
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div className="text-sm text-muted-foreground">
+                      Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, filteredAndSortedCompanies.length)} of {filteredAndSortedCompanies.length} results
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <button
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        className="px-4 py-2 bg-muted/40 rounded-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-muted/60 transition-colors"
+                      >
+                        ← Previous
+                      </button>
+                      
+                      <div className="flex space-x-1">
+                        {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
+                          let page;
+                          if (totalPages <= 5) {
+                            page = i + 1;
+                          } else if (currentPage <= 3) {
+                            page = i + 1;
+                          } else if (currentPage >= totalPages - 2) {
+                            page = totalPages - 4 + i;
+                          } else {
+                            page = currentPage - 2 + i;
+                          }
+                          
+                          return (
+                            <button
+                              key={page}
+                              onClick={() => handlePageChange(page)}
+                              className={`w-10 h-10 rounded-lg text-sm transition-colors ${
+                                currentPage === page 
+                                  ? 'bg-foreground text-background' 
+                                  : 'bg-muted/40 hover:bg-muted/60'
+                              }`}
+                            >
+                              {page}
+                            </button>
+                          );
+                        })}
+                      </div>
+                      
+                      <button
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                        className="px-4 py-2 bg-muted/40 rounded-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-muted/60 transition-colors"
+                      >
+                        Next →
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
           </>
         )}
       </div>
@@ -512,10 +525,10 @@ const Dashboard = () => {
         </div>
       </section>
 
-      {/* Modular Widgets Section */}
+      {/* Widgets Section */}
       <section className="py-8 px-4">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold text-foreground mb-8">Quick Access</h2>
+          <h2 className="text-3xl font-bold text-foreground mb-8">Widgets</h2>
           
           <div className="grid grid-cols-12 gap-4">
             {/* My Connections - Tall Card */}
@@ -527,9 +540,14 @@ const Dashboard = () => {
                     const connectedUser = connection.user;
                     const username = connectedUser?.username || 'Unknown User';
                     const userInitial = username.charAt(0).toUpperCase();
+                    const userId = connectedUser?._id;
                     
                     return (
-                      <div key={connection._id || index} className="flex items-center space-x-3 p-2 rounded-lg hover:bg-foreground/5 transition-colors">
+                      <button
+                        key={connection._id || index}
+                        onClick={() => userId && navigate(`/user/${userId}`)}
+                        className="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-foreground/10 transition-colors text-left cursor-pointer"
+                      >
                         <div className="w-10 h-10 bg-foreground/10 rounded-full flex items-center justify-center">
                           <span className="text-sm font-medium text-foreground">
                             {userInitial}
@@ -537,52 +555,104 @@ const Dashboard = () => {
                         </div>
                         <div className="flex-1">
                           <div className="font-medium text-foreground">{username}</div>
-                          <div className="text-sm text-muted-foreground">Connected</div>
+                          <div className="text-sm text-muted-foreground">Connected • Click to view</div>
                         </div>
-                      </div>
+                        <div className="text-muted-foreground">
+                          →
+                        </div>
+                      </button>
                     );
                   })}
                   {connectionsCount.length > 4 && (
-                    <div className="text-sm text-muted-foreground text-center pt-2 border-t border-border">
+                    <button
+                      onClick={() => navigate('/connections')}
+                      className="w-full text-sm text-muted-foreground text-center pt-2 border-t border-border hover:text-foreground transition-colors"
+                    >
                       +{connectionsCount.length - 4} more connections
-                    </div>
+                    </button>
                   )}
                 </div>
               ) : (
                 <div className="text-center py-8">
                   <div className="text-4xl mb-2">👥</div>
                   <p className="text-muted-foreground">No connections yet</p>
+                  <button
+                    onClick={() => navigate('/explore')}
+                    className="mt-3 px-4 py-2 text-sm bg-foreground/10 text-foreground rounded-lg hover:bg-foreground/20 transition-colors"
+                  >
+                    Find People
+                  </button>
                 </div>
               )}
             </div>
 
-            {/* Upcoming Events - Medium Card */}
-            <div className="col-span-12 md:col-span-4 bg-muted/30 rounded-[20px] p-6">
-              <h3 className="text-lg font-semibold text-foreground mb-4">Upcoming Events</h3>
-              {upcomingEvents.length > 0 ? (
-                <div className="space-y-4">
-                  {upcomingEvents.slice(0, 3).map((event) => (
-                    <div key={event._id} className="border-l-3 border-foreground pl-4 py-2">
-                      <div className="font-medium text-foreground">{event.companyName}</div>
-                      <div className="text-sm text-muted-foreground">{formatDate(event.nextActionDate)}</div>
-                      <div className="text-xs text-foreground/70 mt-1">{event.status}</div>
+            {/* Upcoming Events - Enhanced Card */}
+            <div className="col-span-12 md:col-span-4 bg-gradient-to-br from-muted/30 to-muted/20 rounded-[20px] p-6 relative overflow-hidden">
+              {/* Background Pattern */}
+              <div className="absolute top-0 right-0 w-20 h-20 bg-foreground/5 rounded-full -translate-y-10 translate-x-10"></div>
+              <div className="absolute bottom-0 left-0 w-16 h-16 bg-foreground/5 rounded-full translate-y-8 -translate-x-8"></div>
+              
+              <div className="relative z-10">
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="w-8 h-8 bg-foreground/10 rounded-lg flex items-center justify-center">
+                    <span className="text-lg">📅</span>
+                  </div>
+                  <h3 className="text-lg font-semibold text-foreground">Upcoming Events</h3>
+                </div>
+                
+                {upcomingEvents.length > 0 ? (
+                  <div className="space-y-3">
+                    {upcomingEvents.slice(0, 3).map((event, index) => {
+                      const daysUntil = Math.ceil((new Date(event.nextActionDate) - new Date()) / (1000 * 60 * 60 * 24));
+                      const isUrgent = daysUntil <= 2;
+                      
+                      return (
+                        <div key={event._id} className="bg-background/50 rounded-lg p-4 border border-border/50 hover:bg-background/70 transition-colors">
+                          <div className="flex items-start justify-between mb-2">
+                            <div className="flex-1">
+                              <div className="font-medium text-foreground text-sm">{event.companyName}</div>
+                              <div className="text-xs text-muted-foreground mt-1">{event.status}</div>
+                            </div>
+                            <div className={`px-2 py-1 rounded-full text-xs font-medium ${
+                              isUrgent 
+                                ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300' 
+                                : 'bg-foreground/10 text-foreground'
+                            }`}>
+                              {daysUntil === 0 ? 'Today' : daysUntil === 1 ? 'Tomorrow' : `${daysUntil} days`}
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <span>🕒</span>
+                            <span>{formatDate(event.nextActionDate)}</span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                    
+                    {upcomingEvents.length > 3 && (
+                      <button
+                        onClick={() => navigate('/calendar')}
+                        className="w-full mt-4 px-4 py-3 text-sm bg-foreground text-background rounded-lg hover:bg-foreground/90 transition-colors font-medium"
+                      >
+                        View All Events ({upcomingEvents.length})
+                      </button>
+                    )}
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <div className="w-16 h-16 bg-foreground/5 rounded-full flex items-center justify-center mx-auto mb-3">
+                      <span className="text-2xl">📅</span>
                     </div>
-                  ))}
-                  {upcomingEvents.length > 3 && (
+                    <p className="text-muted-foreground mb-3">No upcoming events</p>
                     <button
                       onClick={() => navigate('/calendar')}
-                      className="w-full mt-4 px-4 py-2 text-sm bg-foreground/10 text-foreground rounded-lg hover:bg-foreground/20 transition-colors"
+                      className="px-4 py-2 text-sm bg-foreground/10 text-foreground rounded-lg hover:bg-foreground/20 transition-colors"
                     >
-                      View All Events
+                      View Calendar
                     </button>
-                  )}
-                </div>
-              ) : (
-                <div className="text-center py-8">
-                  <div className="text-4xl mb-2">📅</div>
-                  <p className="text-muted-foreground">No upcoming events</p>
-                </div>
-              )}
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Discover Users - Compact Card */}
