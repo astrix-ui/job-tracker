@@ -573,10 +573,7 @@ const Dashboard = () => {
               <div className="absolute bottom-0 left-0 w-16 h-16 bg-foreground/5 rounded-full translate-y-8 -translate-x-8"></div>
               
               <div className="relative z-10">
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="w-8 h-8 bg-foreground/10 rounded-lg flex items-center justify-center">
-                    <span className="text-lg">📅</span>
-                  </div>
+                <div className="mb-4">
                   <h3 className="text-lg font-semibold text-foreground">Upcoming Events</h3>
                 </div>
                 
@@ -601,9 +598,8 @@ const Dashboard = () => {
                               {daysUntil === 0 ? 'Today' : daysUntil === 1 ? 'Tomorrow' : `${daysUntil} days`}
                             </div>
                           </div>
-                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                            <span>🕒</span>
-                            <span>{formatDate(event.nextActionDate)}</span>
+                          <div className="text-xs text-muted-foreground">
+                            {formatDate(event.nextActionDate)}
                           </div>
                         </div>
                       );

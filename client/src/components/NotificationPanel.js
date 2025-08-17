@@ -206,7 +206,7 @@ const NotificationPanel = ({ isOpen, onClose, isMobile = false }) => {
                           {request.requester?.username || 'Unknown User'}
                         </p>
                         <p className="text-xs text-muted-foreground">
-                          wants to connect • Click to view profile
+                          wants to connect
                         </p>
                       </div>
                     </button>
