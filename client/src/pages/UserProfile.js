@@ -31,56 +31,10 @@ const UserProfile = () => {
         setConnectionStatus(foundUser.connectionStatus);
         setIsRequester(foundUser.isRequester);
         
-        // For viewing other users' profiles, get their connection information
-        try {
-          const myConnectionsResponse = await connectionAPI.getMutualConnections();
-          const myConnections = myConnectionsResponse.data.connections || [];
-          
-          // Check if this user is connected to us
-          const isConnected = myConnections.some(conn => 
-            conn.user && conn.user._id === foundUser._id
-          );
-          
-          setIsConnectedToUser(isConnected);
-          
-          if (isConnected) {
-            // If connected, we can see some of their connections
-            // First try to get mutual connections
-            try {
-              const mutualConnectionsResponse = await connectionAPI.getMutualConnections(`?targetUserId=${foundUser._id}`);
-              const mutualConnections = mutualConnectionsResponse.data.connections || [];
-              
-              // If there are mutual connections, show them
-              if (mutualConnections.length > 0) {
-                setConnections(mutualConnections);
-              } else {
-                // If no mutual connections, show a subset of your connections as a fallback
-                // This simulates showing some of their connections since we can't access private data
-                const fallbackConnections = myConnections
-                  .filter(conn => conn.user && conn.user._id !== foundUser._id)
-                  .slice(0, 3)
-                  .map(conn => ({
-                    ...conn,
-                    // Mark these as simulated connections
-                    isSimulated: true
-                  }));
-                setConnections(fallbackConnections);
-              }
-            } catch (mutualError) {
-              console.error('Error fetching mutual connections:', mutualError);
-              // Fallback to showing some connections
-              const fallbackConnections = myConnections
-                .filter(conn => conn.user && conn.user._id !== foundUser._id)
-                .slice(0, 2);
-              setConnections(fallbackConnections);
-            }
-          } else {
-            setConnections([]);
-          }
-        } catch (connError) {
-          console.error('Error checking connection status:', connError);
-          setConnections([]);
-        }
+        // For viewing other users' profiles, connections are private
+        // Only show connection count, not the actual connections
+        setConnections([]);
+        setIsConnectedToUser(false);
       } else {
         showToast('User not found', 'error');
         navigate('/explore');
@@ -153,9 +107,6 @@ const UserProfile = () => {
     }
   };
 
-  const handleConnectionsClick = () => {
-    setShowConnectionsModal(true);
-  };
 
   if (loading) {
     return (
@@ -216,18 +167,12 @@ const UserProfile = () => {
             </div>
 
             {/* Connection Count */}
-            <button
-              onClick={handleConnectionsClick}
-              className="inline-flex items-center space-x-2 text-primary hover:text-primary/80 transition-colors mb-6"
-            >
-              <span className="text-lg font-semibold">{connections.length}</span>
+            <div className="inline-flex items-center space-x-2 text-muted-foreground mb-6">
+              <span className="text-lg font-semibold">{user.connectionsCount || 0}</span>
               <span className="text-sm">
-                {connections.length === 1 ? 'Connection' : 'Connections'}
+                {(user.connectionsCount || 0) === 1 ? 'Connection' : 'Connections'}
               </span>
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
+            </div>
 
             {/* Connection Button */}
             <button
@@ -289,51 +234,6 @@ const UserProfile = () => {
         )}
       </div>
 
-      {/* Connections Modal */}
-      <Modal
-        isOpen={showConnectionsModal}
-        onClose={() => setShowConnectionsModal(false)}
-        title={`${user.username}'s Connections`}
-        size="medium"
-      >
-        <div className="space-y-4">
-          {connections.length > 0 ? (
-            connections.map((connection, index) => (
-              <button
-                key={index}
-                onClick={() => navigate(`/user/${connection.user?._id}`)}
-                className="w-full flex items-center space-x-4 p-4 border border-border rounded-lg hover:bg-muted transition-colors text-left"
-              >
-                <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                  <span className="text-sm font-semibold text-primary">
-                    {(connection.user?.username || 'U').charAt(0).toUpperCase()}
-                  </span>
-                </div>
-                <div className="flex-1">
-                  <div className="font-medium text-foreground">
-                    {connection.user?.username || 'Unknown User'}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    {connection.user?.email || 'No email'}
-                  </div>
-                </div>
-                <div className="text-xs text-muted-foreground">
-                  Connected
-                </div>
-              </button>
-            ))
-          ) : (
-            <div className="text-center py-8">
-              <p className="text-muted-foreground">
-                {isConnectedToUser 
-                  ? 'No mutual connections found' 
-                  : 'Connect to view their connections'
-                }
-              </p>
-            </div>
-          )}
-        </div>
-      </Modal>
     </div>
   );
 };
