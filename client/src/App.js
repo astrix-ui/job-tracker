@@ -14,6 +14,7 @@ import Register from './pages/Register';
 import ExploreUsers from './pages/ExploreUsers';
 import ConnectionsProgress from './pages/ConnectionsProgress';
 import UserProfile from './pages/UserProfile';
+import Notifications from './pages/Notifications';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -76,6 +77,14 @@ function App() {
  <UserProfile />
  </ProtectedRoute>
  }
+ />
+ <Route
+   path="/notifications"
+   element={
+     <ProtectedRoute>
+       <Notifications />
+     </ProtectedRoute>
+   }
  />
  <Route path="/about" element={<About />} />
  <Route path="/" element={<Navigate to="/dashboard" replace />} />

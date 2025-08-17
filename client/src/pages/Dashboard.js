@@ -44,9 +44,10 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        // Fetch connections count
+        // Fetch connections and their status
         const connectionsResponse = await connectionAPI.getConnections();
-        setConnectionsCount(connectionsResponse.data.connections.length);
+        const connections = connectionsResponse.data.connections;
+        setConnectionsCount(connections);
 
         // Fetch popular users (mock data for now)
         setPopularUsers([
@@ -168,49 +169,6 @@ const Dashboard = () => {
       {/* Error Message */}
       <ErrorMessage message={error} onClose={clearError} />
 
-      {/* Dashboard Widgets */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-        {/* Connections Widget */}
-        <div className="bg-card p-4 rounded-lg shadow border border-border">
-          <h3 className="text-lg font-semibold text-foreground mb-3">My Connections</h3>
-          <div className="text-3xl font-bold text-foreground mb-2">{connectionsCount}</div>
-          <p className="text-sm text-muted-foreground">Total connections</p>
-        </div>
-
-        {/* Calendar Widget */}
-        <div className="bg-card p-4 rounded-lg shadow border border-border">
-          <h3 className="text-lg font-semibold text-foreground mb-3">Upcoming Events</h3>
-          {upcomingEvents.length > 0 ? (
-            <div className="space-y-2">
-              {upcomingEvents.map((event) => (
-                <div key={event._id} className="text-sm">
-                  <div className="font-medium text-foreground">{event.companyName}</div>
-                  <div className="text-muted-foreground">{formatDate(event.nextActionDate)}</div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-sm text-muted-foreground">No upcoming events</p>
-          )}
-        </div>
-
-        {/* Popular Users Widget */}
-        <div className="bg-card p-4 rounded-lg shadow border border-border">
-          <h3 className="text-lg font-semibold text-foreground mb-3">Popular Users</h3>
-          {popularUsers.length > 0 ? (
-            <div className="space-y-2">
-              {popularUsers.map((user) => (
-                <div key={user.id} className="flex justify-between items-center text-sm">
-                  <span className="font-medium text-foreground">{user.username}</span>
-                  <span className="text-muted-foreground">{user.connectionsCount} connections</span>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-sm text-muted-foreground">No data available</p>
-          )}
-        </div>
-      </div>
 
       {/* Statistics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
@@ -369,7 +327,7 @@ const Dashboard = () => {
                         </div>
                         {company.salaryExpectation && (
                           <div className="text-sm text-muted-foreground">
-                            {formatCurrency(company.salaryExpectation)}
+                            ₹{company.salaryExpectation.toLocaleString('en-IN')}
                           </div>
                         )}
                       </td>
@@ -443,6 +401,81 @@ const Dashboard = () => {
             )}
           </>
         )}
+      </div>
+
+      {/* Dashboard Widgets - Below Applications */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {/* My Connections Widget */}
+        <div className="bg-card p-6 rounded-lg shadow border border-border">
+          <h3 className="text-lg font-semibold text-foreground mb-4">My Connections</h3>
+          {Array.isArray(connectionsCount) && connectionsCount.length > 0 ? (
+            <div className="space-y-3">
+              {connectionsCount.slice(0, 3).map((connection, index) => (
+                <div key={index} className="flex items-center justify-between">
+                  <div>
+                    <div className="font-medium text-foreground text-sm">{connection.username || 'Unknown User'}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {connection.nextEvent ? `Next: ${connection.nextEvent}` : 'No upcoming events'}
+                    </div>
+                  </div>
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                </div>
+              ))}
+              {connectionsCount.length > 3 && (
+                <div className="text-xs text-muted-foreground text-center pt-2">
+                  +{connectionsCount.length - 3} more connections
+                </div>
+              )}
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">No connections yet</p>
+          )}
+        </div>
+
+        {/* Next Events Widget */}
+        <div className="bg-card p-6 rounded-lg shadow border border-border">
+          <h3 className="text-lg font-semibold text-foreground mb-4">Next Events</h3>
+          {upcomingEvents.length > 0 ? (
+            <div className="space-y-3">
+              {upcomingEvents.map((event) => (
+                <div key={event._id} className="border-l-2 border-primary pl-3">
+                  <div className="font-medium text-foreground text-sm">{event.companyName}</div>
+                  <div className="text-xs text-muted-foreground">{formatDate(event.nextActionDate)}</div>
+                  <div className="text-xs text-primary">{event.status}</div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">No upcoming events</p>
+          )}
+        </div>
+
+        {/* Popular Users Widget */}
+        <div className="bg-card p-6 rounded-lg shadow border border-border">
+          <h3 className="text-lg font-semibold text-foreground mb-4">Popular Users</h3>
+          {popularUsers.length > 0 ? (
+            <div className="space-y-3">
+              {popularUsers.map((user, index) => (
+                <div key={user.id} className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                      <span className="text-xs font-semibold text-primary">
+                        {user.username.charAt(0).toUpperCase()}
+                      </span>
+                    </div>
+                    <div>
+                      <div className="font-medium text-foreground text-sm">{user.username}</div>
+                      <div className="text-xs text-muted-foreground">{user.connectionsCount} connections</div>
+                    </div>
+                  </div>
+                  <div className="text-xs text-muted-foreground">#{index + 1}</div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">No data available</p>
+          )}
+        </div>
       </div>
 
       {/* Company Form Modal */}

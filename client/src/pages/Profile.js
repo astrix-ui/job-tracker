@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
+import { connectionAPI } from '../utils/api';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage';
+import Modal from '../components/Modal';
 
 const Profile = () => {
   const { user, logout, updateUser, deleteAccount } = useAuth();
@@ -11,6 +13,8 @@ const Profile = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [connections, setConnections] = useState([]);
+  const [showConnectionsModal, setShowConnectionsModal] = useState(false);
   const [formData, setFormData] = useState({
     username: user?.username || '',
     email: user?.email || '',
@@ -127,6 +131,26 @@ const Profile = () => {
     );
   };
 
+  // Fetch connections
+  useEffect(() => {
+    const fetchConnections = async () => {
+      try {
+        const response = await connectionAPI.getConnections();
+        setConnections(response.data.connections || []);
+      } catch (error) {
+        console.error('Error fetching connections:', error);
+      }
+    };
+
+    if (isAuthenticated) {
+      fetchConnections();
+    }
+  }, [isAuthenticated]);
+
+  const handleConnectionsClick = () => {
+    setShowConnectionsModal(true);
+  };
+
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       {/* Header */}
@@ -135,6 +159,40 @@ const Profile = () => {
         <p className="mt-2 text-muted-foreground">
           Manage your account settings and preferences
         </p>
+      </div>
+
+      {/* User Details Section */}
+      <div className="bg-card shadow rounded-lg border border-border mb-6">
+        <div className="px-6 py-8">
+          <div className="flex items-center space-x-6">
+            {/* Avatar */}
+            <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center">
+              <span className="text-3xl font-bold text-primary">
+                {user?.username?.charAt(0).toUpperCase()}
+              </span>
+            </div>
+            
+            {/* User Info */}
+            <div className="flex-1">
+              <h2 className="text-2xl font-bold text-foreground mb-2">{user?.username}</h2>
+              <p className="text-muted-foreground mb-4">{user?.email}</p>
+              
+              {/* Connection Count */}
+              <button
+                onClick={handleConnectionsClick}
+                className="inline-flex items-center space-x-2 text-primary hover:text-primary/80 transition-colors"
+              >
+                <span className="text-lg font-semibold">{connections.length}</span>
+                <span className="text-sm">
+                  {connections.length === 1 ? 'Connection' : 'Connections'}
+                </span>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Profile Card */}
@@ -337,6 +395,42 @@ const Profile = () => {
           )}
         </div>
       </div>
+
+      {/* Connections Modal */}
+      <Modal
+        isOpen={showConnectionsModal}
+        onClose={() => setShowConnectionsModal(false)}
+        title="My Connections"
+        size="medium"
+      >
+        <div className="space-y-4">
+          {connections.length > 0 ? (
+            connections.map((connection, index) => (
+              <div key={index} className="flex items-center space-x-4 p-4 border border-border rounded-lg">
+                <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                  <span className="text-sm font-semibold text-primary">
+                    {connection.username?.charAt(0).toUpperCase() || 'U'}
+                  </span>
+                </div>
+                <div className="flex-1">
+                  <div className="font-medium text-foreground">{connection.username || 'Unknown User'}</div>
+                  <div className="text-sm text-muted-foreground">{connection.email || 'No email'}</div>
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  Connected
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="text-center py-8">
+              <p className="text-muted-foreground">No connections yet</p>
+              <p className="text-sm text-muted-foreground mt-2">
+                Start connecting with other users to build your network
+              </p>
+            </div>
+          )}
+        </div>
+      </Modal>
 
     </div>
   );
