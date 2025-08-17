@@ -203,14 +203,14 @@ const NotificationPanel = ({ isOpen, onClose, isMobile = false }) => {
                     <div className="flex space-x-2">
                       <button
                         onClick={(e) => handleRequestResponse(request._id, 'accept', e)}
-                        className="p-1 bg-green-100 text-green-700 rounded-full hover:bg-green-200 transition-colors"
+                        className="p-2 bg-foreground/10 text-foreground rounded-lg hover:bg-foreground/20 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
                         title="Accept"
                       >
                         <Check className="w-4 h-4" />
                       </button>
                       <button
                         onClick={(e) => handleRequestResponse(request._id, 'reject', e)}
-                        className="p-1 bg-red-100 text-red-700 rounded-full hover:bg-red-200 transition-colors"
+                        className="p-2 bg-muted/40 text-muted-foreground rounded-lg hover:bg-muted/60 hover:text-foreground hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
                         title="Reject"
                       >
                         <X className="w-4 h-4" />

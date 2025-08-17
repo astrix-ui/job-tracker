@@ -577,8 +577,6 @@ const Dashboard = () => {
               )}
           </>
         )}
-      </div>
-
         </div>
       </section>
 
@@ -631,7 +629,9 @@ const Dashboard = () => {
                 </div>
               ) : (
                 <div className="text-center py-8">
-                  <div className="text-4xl mb-2">👥</div>
+                  <div className="w-16 h-16 bg-foreground/5 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <div className="w-8 h-8 bg-foreground/10 rounded-full"></div>
+                  </div>
                   <p className="text-muted-foreground">No connections yet</p>
                   <button
                     onClick={() => navigate('/explore')}
@@ -698,7 +698,7 @@ const Dashboard = () => {
                 ) : (
                   <div className="text-center py-8">
                     <div className="w-16 h-16 bg-foreground/5 rounded-full flex items-center justify-center mx-auto mb-3">
-                      <span className="text-2xl">📅</span>
+                      <div className="w-8 h-8 bg-foreground/10 rounded-lg"></div>
                     </div>
                     <p className="text-muted-foreground mb-3">No upcoming events</p>
                     <button
@@ -743,7 +743,9 @@ const Dashboard = () => {
                 </div>
               ) : (
                 <div className="text-center py-6">
-                  <div className="text-3xl mb-2">🔍</div>
+                  <div className="w-12 h-12 bg-foreground/5 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <div className="w-6 h-6 bg-foreground/10 rounded-full"></div>
+                  </div>
                   <p className="text-muted-foreground text-sm">No users available</p>
                 </div>
               )}
