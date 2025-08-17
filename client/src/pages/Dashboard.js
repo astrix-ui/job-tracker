@@ -431,10 +431,25 @@ const Dashboard = () => {
                 );
                 const nextEvent = connectionEvents.length > 0 ? connectionEvents[0].companyName : null;
                 
-                // Get the actual connected user info
-                const connectedUser = connection.follower || connection.following || connection;
-                const username = connectedUser?.username || 'Unknown User';
-                const userInitial = username.charAt(0).toUpperCase();
+                // Get the actual connected user info - handle both follower and following relationships
+                let connectedUser, username, userInitial;
+                
+                if (connection.follower && connection.follower._id) {
+                  // This user is being followed by someone
+                  connectedUser = connection.follower;
+                  username = connectedUser.username;
+                } else if (connection.following && connection.following._id) {
+                  // This user is following someone
+                  connectedUser = connection.following;
+                  username = connectedUser.username;
+                } else if (connection.username) {
+                  // Direct connection object
+                  username = connection.username;
+                } else {
+                  username = 'Unknown User';
+                }
+                
+                userInitial = username.charAt(0).toUpperCase();
                 
                 return (
                   <div key={connection._id || index} className="flex items-center justify-between">
@@ -494,13 +509,17 @@ const Dashboard = () => {
           )}
         </div>
 
-        {/* Users Widget */}
+        {/* Popular Users Widget */}
         <div className="bg-card p-4 sm:p-6 rounded-lg shadow border border-border">
-          <h3 className="text-base sm:text-lg font-semibold text-foreground mb-3 sm:mb-4">Users</h3>
+          <h3 className="text-base sm:text-lg font-semibold text-foreground mb-3 sm:mb-4">Popular Users</h3>
           {popularUsers.length > 0 ? (
             <div className="space-y-3">
               {popularUsers.map((user) => (
-                <div key={user.id} className="flex items-center space-x-3">
+                <button
+                  key={user.id}
+                  onClick={() => navigate(`/user/${user.id}`)}
+                  className="w-full flex items-center space-x-3 p-2 rounded-lg hover:bg-muted transition-colors text-left"
+                >
                   <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
                     <span className="text-xs font-semibold text-primary">
                       {user.username.charAt(0).toUpperCase()}
@@ -510,7 +529,7 @@ const Dashboard = () => {
                     <div className="font-medium text-foreground text-sm">{user.username}</div>
                     <div className="text-xs text-muted-foreground">{user.email}</div>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           ) : (

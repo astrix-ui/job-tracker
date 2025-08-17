@@ -3,8 +3,8 @@ import { connectionAPI } from '../utils/api';
 import { useToast } from '../context/ToastContext';
 import LoadingSpinner from '../components/LoadingSpinner';
 import StatusBadge from '../components/StatusBadge';
-import { formatDate } from '../utils/helpers';
-import { Users, TrendingUp, Calendar, DollarSign, User, Building, Briefcase } from 'lucide-react';
+import { formatDate, formatCurrency } from '../utils/helpers';
+import { Users, TrendingUp, Calendar, User, Building, Briefcase } from 'lucide-react';
 
 const ConnectionsProgress = () => {
   const [connections, setConnections] = useState([]);
@@ -267,8 +267,7 @@ const ConnectionsProgress = () => {
                           <div className="flex flex-col items-end space-y-1">
                             {company.salaryExpectation && (
                               <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                                <DollarSign className="w-3 h-3" />
-                                <span>${company.salaryExpectation.toLocaleString()}</span>
+                                <span>₹{company.salaryExpectation.toLocaleString('en-IN')}</span>
                               </div>
                             )}
                             {company.interviewRounds > 0 && (

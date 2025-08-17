@@ -66,7 +66,9 @@ const NotificationPanel = ({ isOpen, onClose, isMobile = false }) => {
 
   // Handle follow request response
   const handleRequestResponse = async (connectionId, action, event) => {
-    event.stopPropagation(); // Prevent any parent click handlers
+    if (event) {
+      event.stopPropagation(); // Prevent any parent click handlers
+    }
     
     try {
       await connectionAPI.respondToRequest(connectionId, action);
