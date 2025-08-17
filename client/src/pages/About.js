@@ -135,17 +135,14 @@ const About = () => {
           <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-8">
             Built with modern technology
           </h2>
-          <div className="relative overflow-hidden">
-            <div className="flex gap-6 pb-4 animate-scroll">
-              {['React', 'Node.js', 'MongoDB', 'Express', 'Tailwind CSS', 'JWT', 'Mongoose', 'React Router', 'Context API', 'Axios', 'bcryptjs', 'CORS'].map((tech) => (
-                <div key={tech} className="p-4 bg-card border border-border rounded-lg whitespace-nowrap flex-shrink-0">
+          <div className="overflow-hidden">
+            <div className="flex gap-6 pb-4 animate-scroll-slow">
+              {['React', 'Node.js', 'MongoDB', 'Express', 'Tailwind CSS', 'JWT', 'Mongoose', 'React Router', 'Context API', 'Axios', 'bcryptjs', 'CORS', 'React', 'Node.js', 'MongoDB', 'Express', 'Tailwind CSS', 'JWT'].map((tech, index) => (
+                <div key={`${tech}-${index}`} className="p-4 bg-card border border-border rounded-lg whitespace-nowrap flex-shrink-0">
                   <div className="text-lg font-medium text-foreground">{tech}</div>
                 </div>
               ))}
             </div>
-            {/* Gradient fade effect */}
-            <div className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-muted/30 to-transparent pointer-events-none"></div>
-            <div className="absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-muted/30 to-transparent pointer-events-none"></div>
           </div>
         </div>
       </section>
@@ -201,7 +198,7 @@ const About = () => {
               href="https://instagram.com/ayushsharma" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="p-3 bg-card border border-border rounded-lg"
+              className="p-3 bg-card border border-border rounded-lg hover:bg-muted transition-colors duration-200"
             >
               <div className="flex items-center gap-2">
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -214,7 +211,7 @@ const About = () => {
               href="https://linkedin.com/in/ayushsharma" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="p-3 bg-card border border-border rounded-lg"
+              className="p-3 bg-card border border-border rounded-lg hover:bg-muted transition-colors duration-200"
             >
               <div className="flex items-center gap-2">
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -227,7 +224,7 @@ const About = () => {
               href="https://github.com/ayushsharma" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="p-3 bg-card border border-border rounded-lg"
+              className="p-3 bg-card border border-border rounded-lg hover:bg-muted transition-colors duration-200"
             >
               <div className="flex items-center gap-2">
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -240,7 +237,7 @@ const About = () => {
               href="https://ayushsharma.dev" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="p-3 bg-card border border-border rounded-lg"
+              className="p-3 bg-card border border-border rounded-lg hover:bg-muted transition-colors duration-200"
             >
               <div className="flex items-center gap-2">
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
