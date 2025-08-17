@@ -93,26 +93,14 @@ const CompanyForm = ({ company, onClose }) => {
  };
 
  return (
- <div className="min-h-screen bg-background p-6">
- <form onSubmit={handleSubmit} className="max-w-4xl mx-auto space-y-8">
+ <form onSubmit={handleSubmit} className="space-y-6">
  <ErrorMessage message={error} onClose={() => setError('')} />
 
- {/* Header */}
- <div className="text-center mb-8">
- <h2 className="text-3xl font-bold text-foreground mb-2">
- {company ? 'Update Application' : 'Add New Application'}
- </h2>
- <p className="text-muted-foreground">
- {company ? 'Update your application details' : 'Track your job application journey'}
- </p>
- </div>
-
- {/* Modular Grid Layout */}
- <div className="grid grid-cols-12 gap-6">
- {/* Company Name - Large Card */}
- <div className="col-span-12 md:col-span-8 bg-muted/30 rounded-[20px] p-6">
- <label htmlFor="companyName" className="block text-lg font-semibold text-foreground mb-3">
- 🏢 Company Name *
+ <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+ {/* Company Name */}
+ <div className="md:col-span-2">
+ <label htmlFor="companyName" className="block text-sm font-medium text-foreground mb-2">
+ Company Name *
  </label>
  <input
  ref={companyNameRef}
@@ -122,33 +110,12 @@ const CompanyForm = ({ company, onClose }) => {
  required
  value={formData.companyName}
  onChange={handleChange}
- className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-foreground/20 transition-all text-lg"
+ className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-foreground/20 transition-all"
  placeholder="Enter company name"
  />
  </div>
 
- {/* Status - Medium Card */}
- <div className="col-span-12 md:col-span-4 bg-muted/20 rounded-[16px] p-6">
- <label htmlFor="status" className="block text-sm font-medium text-foreground mb-3">
- 📊 Status
- </label>
- <select
- id="status"
- name="status"
- value={formData.status}
- onChange={handleChange}
- className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-foreground/20 transition-all"
- >
- {APPLICATION_STATUSES.map(status => (
- <option key={status} value={status}>{status}</option>
- ))}
- </select>
- </div>
-
- {/* Position Details - Wide Card */}
- <div className="col-span-12 md:col-span-6 bg-muted/20 rounded-[16px] p-6">
- <h3 className="text-lg font-semibold text-foreground mb-4">💼 Position Details</h3>
- <div className="space-y-4">
+ {/* Position Title */}
  <div>
  <label htmlFor="positionTitle" className="block text-sm font-medium text-foreground mb-2">
  Position Title
@@ -163,6 +130,8 @@ const CompanyForm = ({ company, onClose }) => {
  placeholder="e.g., Software Engineer"
  />
  </div>
+
+ {/* Position Type */}
  <div>
  <label htmlFor="positionType" className="block text-sm font-medium text-foreground mb-2">
  Position Type
@@ -179,13 +148,26 @@ const CompanyForm = ({ company, onClose }) => {
  ))}
  </select>
  </div>
- </div>
+
+ {/* Status */}
+ <div>
+ <label htmlFor="status" className="block text-sm font-medium text-foreground mb-2">
+ Application Status
+ </label>
+ <select
+ id="status"
+ name="status"
+ value={formData.status}
+ onChange={handleChange}
+ className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-foreground/20 transition-all"
+ >
+ {APPLICATION_STATUSES.map(status => (
+ <option key={status} value={status}>{status}</option>
+ ))}
+ </select>
  </div>
 
- {/* Timeline & Progress - Wide Card */}
- <div className="col-span-12 md:col-span-6 bg-muted/20 rounded-[16px] p-6">
- <h3 className="text-lg font-semibold text-foreground mb-4">📅 Timeline & Progress</h3>
- <div className="space-y-4">
+ {/* Next Action Date */}
  <div>
  <label htmlFor="nextActionDate" className="block text-sm font-medium text-foreground mb-2">
  Next Action Date
@@ -199,6 +181,8 @@ const CompanyForm = ({ company, onClose }) => {
  className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-foreground/20 transition-all"
  />
  </div>
+
+ {/* Interview Rounds */}
  <div>
  <label htmlFor="interviewRounds" className="block text-sm font-medium text-foreground mb-2">
  Interview Rounds Completed
@@ -213,12 +197,8 @@ const CompanyForm = ({ company, onClose }) => {
  className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-foreground/20 transition-all"
  />
  </div>
- </div>
- </div>
 
- {/* Financial Details - Medium Card */}
- <div className="col-span-12 md:col-span-4 bg-muted/20 rounded-[16px] p-6">
- <h3 className="text-lg font-semibold text-foreground mb-4">💰 Financial</h3>
+ {/* Salary Expectation */}
  <div>
  <label htmlFor="salaryExpectation" className="block text-sm font-medium text-foreground mb-2">
  Salary Expectation (₹)
@@ -234,11 +214,8 @@ const CompanyForm = ({ company, onClose }) => {
  placeholder="e.g., 75000"
  />
  </div>
- </div>
 
- {/* Application Source - Medium Card */}
- <div className="col-span-12 md:col-span-4 bg-muted/20 rounded-[16px] p-6">
- <h3 className="text-lg font-semibold text-foreground mb-4">🔗 Source</h3>
+ {/* Application Platform */}
  <div>
  <label htmlFor="applicationPlatform" className="block text-sm font-medium text-foreground mb-2">
  Application Platform
@@ -253,12 +230,11 @@ const CompanyForm = ({ company, onClose }) => {
  placeholder="e.g., LinkedIn, Indeed"
  />
  </div>
- </div>
 
- {/* Notes - Full Width Card */}
- <div className="col-span-12 bg-muted/20 rounded-[16px] p-6">
- <label htmlFor="notes" className="block text-lg font-semibold text-foreground mb-3">
- 📝 Notes
+ {/* Notes */}
+ <div className="md:col-span-2">
+ <label htmlFor="notes" className="block text-sm font-medium text-foreground mb-2">
+ Notes
  </label>
  <textarea
  id="notes"
@@ -266,32 +242,31 @@ const CompanyForm = ({ company, onClose }) => {
  rows={4}
  value={formData.notes}
  onChange={handleChange}
- className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-foreground/20 transition-all"
+ className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-foreground/20 transition-all"
  placeholder="Add any additional notes about this application..."
  />
  </div>
  </div>
 
  {/* Form Actions */}
- <div className="flex justify-center gap-4 pt-8">
+ <div className="flex justify-end gap-3 pt-6 border-t border-border">
  <button
  type="button"
  onClick={onClose}
- className="px-6 py-3 border border-border rounded-lg text-muted-foreground bg-background hover:bg-muted transition-colors"
+ className="px-4 py-2 border border-border rounded-lg text-muted-foreground bg-background hover:bg-muted transition-colors"
  >
  Cancel
  </button>
  <button
  type="submit"
  disabled={loading}
- className="px-8 py-3 bg-foreground text-background rounded-lg hover:bg-foreground/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center font-medium"
+ className="px-6 py-2 bg-foreground text-background rounded-lg hover:bg-foreground/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
  >
  {loading && <LoadingSpinner size="small" className="mr-2" />}
  {company ? 'Update Application' : 'Add Application'}
  </button>
  </div>
  </form>
- </div>
  );
 };
 

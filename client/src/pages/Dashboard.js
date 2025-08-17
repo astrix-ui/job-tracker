@@ -304,31 +304,22 @@ const Dashboard = () => {
             </div>
           </div>
           
-          {/* Modular Filters Grid */}
-          <div className="grid grid-cols-12 gap-4 mb-8">
-            {/* Search - Large */}
-            <div className="col-span-12 md:col-span-6 bg-muted/30 rounded-[20px] p-6">
-              <label className="block text-lg font-semibold text-foreground mb-3">
-                🔍 Search Applications
-              </label>
+          {/* Simple Filters */}
+          <div className="flex flex-col md:flex-row gap-4 mb-8">
+            <div className="flex-1">
               <input
                 type="text"
-                placeholder="Search companies, positions, contacts..."
+                placeholder="Search companies, positions..."
                 value={filters.search}
                 onChange={(e) => handleFilterChange('search', e.target.value)}
-                className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-foreground/20 transition-all text-lg"
+                className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-foreground/20 transition-all"
               />
             </div>
-            
-            {/* Status Filter */}
-            <div className="col-span-6 md:col-span-3 bg-muted/20 rounded-[16px] p-4">
-              <label className="block text-sm font-medium text-foreground mb-3">
-                📊 Status
-              </label>
+            <div>
               <select
                 value={filters.status}
                 onChange={(e) => handleFilterChange('status', e.target.value)}
-                className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-foreground/20 transition-all"
+                className="w-full md:w-48 px-3 py-3 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-foreground/20 transition-all"
               >
                 <option value="">All Statuses</option>
                 {APPLICATION_STATUSES.map(status => (
@@ -336,16 +327,11 @@ const Dashboard = () => {
                 ))}
               </select>
             </div>
-            
-            {/* Position Type Filter */}
-            <div className="col-span-6 md:col-span-3 bg-muted/20 rounded-[16px] p-4">
-              <label className="block text-sm font-medium text-foreground mb-3">
-                💼 Type
-              </label>
+            <div>
               <select
                 value={filters.positionType}
                 onChange={(e) => handleFilterChange('positionType', e.target.value)}
-                className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-foreground/20 transition-all"
+                className="w-full md:w-48 px-3 py-3 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-foreground/20 transition-all"
               >
                 <option value="">All Types</option>
                 {POSITION_TYPES.map(type => (
@@ -405,119 +391,65 @@ const Dashboard = () => {
                 ))}
               </div>
 
-              {/* Modular Applications Grid */}
-              <div className="grid grid-cols-12 gap-4 mb-6">
-                {paginatedCompanies.map((company, index) => {
-                  // Create varied layouts for visual interest
-                  const isLarge = index % 5 === 0; // Every 5th item is large
-                  const isMedium = index % 3 === 0 && !isLarge; // Every 3rd item (not large) is medium
-                  
-                  let colSpan = "col-span-12 md:col-span-4"; // Default small
-                  if (isLarge) colSpan = "col-span-12 md:col-span-8";
-                  else if (isMedium) colSpan = "col-span-12 md:col-span-6";
-                  
-                  return (
-                    <div key={company._id} className={`${colSpan} group`}>
-                      <div className="bg-muted/20 rounded-[16px] p-6 h-full hover:bg-muted/30 hover:shadow-md hover:-translate-y-1 transition-all duration-300 border border-transparent hover:border-foreground/10">
-                        {/* Header */}
-                        <div className="flex justify-between items-start mb-4">
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 mb-2">
-                              <div className="w-8 h-8 bg-foreground/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                                <span className="text-sm font-medium text-foreground">
-                                  {company.companyName.charAt(0).toUpperCase()}
-                                </span>
-                              </div>
-                              <h3 className="text-lg font-semibold text-foreground truncate">
-                                {company.companyName}
-                              </h3>
-                            </div>
-                            
-                            {isLarge && (
-                              <div className="mb-3">
-                                <p className="text-foreground font-medium mb-1">
-                                  {company.positionTitle || 'Position not specified'}
-                                </p>
-                                <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-                                  <span className="px-2 py-1 bg-foreground/5 rounded-full">
-                                    {company.positionType}
-                                  </span>
-                                  {company.salaryExpectation && (
-                                    <span className="px-2 py-1 bg-foreground/5 rounded-full">
-                                      ₹{company.salaryExpectation.toLocaleString('en-IN')}
-                                    </span>
-                                  )}
-                                  {company.applicationPlatform && (
-                                    <span className="px-2 py-1 bg-foreground/5 rounded-full">
-                                      {company.applicationPlatform}
-                                    </span>
-                                  )}
-                                </div>
-                              </div>
-                            )}
-                            
-                            {!isLarge && (
-                              <p className="text-sm text-foreground mb-2 truncate">
-                                {company.positionTitle || 'Position not specified'}
-                              </p>
-                            )}
-                          </div>
-                          <StatusBadge status={company.status} className="flex-shrink-0 ml-2" />
+              {/* Simple Applications List */}
+              <div className="space-y-4 mb-6">
+                {paginatedCompanies.map((company) => (
+                  <div key={company._id} className="bg-card border border-border rounded-lg p-6 hover:bg-muted/30 transition-colors">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-2">
+                          <h3 className="text-lg font-semibold text-foreground">
+                            {company.companyName}
+                          </h3>
+                          <StatusBadge status={company.status} />
                         </div>
-                        
-                        {/* Timeline */}
-                        <div className={`grid ${isLarge ? 'grid-cols-3' : 'grid-cols-2'} gap-3 mb-4 text-sm`}>
-                          <div className="bg-background/50 rounded-lg p-3">
-                            <div className="text-xs text-muted-foreground mb-1">Applied</div>
-                            <div className="font-medium text-foreground text-xs">
-                              {formatDate(company.applicationDate)}
-                            </div>
-                          </div>
-                          <div className="bg-background/50 rounded-lg p-3">
-                            <div className="text-xs text-muted-foreground mb-1">Next Action</div>
-                            <div className="font-medium text-foreground text-xs">
-                              {company.nextActionDate ? formatDate(company.nextActionDate) : 'Not set'}
-                            </div>
-                          </div>
-                          {isLarge && (
-                            <div className="bg-background/50 rounded-lg p-3">
-                              <div className="text-xs text-muted-foreground mb-1">Rounds</div>
-                              <div className="font-medium text-foreground text-xs">
-                                {company.interviewRounds || 0} completed
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                        
-                        {/* Notes Preview for Large Cards */}
-                        {isLarge && company.notes && (
-                          <div className="mb-4">
-                            <div className="text-xs text-muted-foreground mb-1">Notes</div>
-                            <p className="text-sm text-foreground bg-background/50 rounded-lg p-3 line-clamp-2">
-                              {company.notes}
-                            </p>
-                          </div>
+                        <p className="text-muted-foreground mb-2">
+                          {company.positionTitle || 'Position not specified'} • {company.positionType}
+                        </p>
+                        {company.salaryExpectation && (
+                          <p className="text-sm text-muted-foreground">
+                            ₹{company.salaryExpectation.toLocaleString('en-IN')}
+                          </p>
                         )}
-                        
-                        {/* Actions */}
-                        <div className="flex justify-end gap-2 pt-3 border-t border-border/50">
-                          <button
-                            onClick={() => handleEditCompany(company)}
-                            className="px-3 py-1.5 text-xs text-foreground bg-foreground/10 hover:bg-foreground/20 rounded-lg transition-colors"
-                          >
-                            Edit
-                          </button>
-                          <button
-                            onClick={() => handleDeleteCompany(company._id, company.companyName)}
-                            className="px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/40 rounded-lg transition-colors"
-                          >
-                            Delete
-                          </button>
+                      </div>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleEditCompany(company)}
+                          className="px-3 py-1.5 text-sm text-foreground bg-foreground/10 hover:bg-foreground/20 rounded-lg transition-colors"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDeleteCompany(company._id, company.companyName)}
+                          className="px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/40 rounded-lg transition-colors"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+                      <div>
+                        <span className="text-muted-foreground">Applied:</span>
+                        <div className="font-medium text-foreground">
+                          {formatDate(company.applicationDate)}
+                        </div>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">Next Action:</span>
+                        <div className="font-medium text-foreground">
+                          {company.nextActionDate ? formatDate(company.nextActionDate) : 'Not set'}
+                        </div>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">Rounds:</span>
+                        <div className="font-medium text-foreground">
+                          {company.interviewRounds || 0} completed
                         </div>
                       </div>
                     </div>
-                  );
-                })}
+                  </div>
+                ))}
               </div>
 
               {/* Pagination */}
