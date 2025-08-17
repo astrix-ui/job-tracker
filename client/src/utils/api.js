@@ -39,7 +39,7 @@ export const connectionAPI = {
  sendFollowRequest: (recipientId) => api.post('/connections/follow', { recipientId }),
  getPendingRequests: () => api.get('/connections/requests'),
  respondToRequest: (connectionId, action) => api.post('/connections/respond', { connectionId, action }),
- getMutualConnections: () => api.get('/connections'),
+ getMutualConnections: (queryParams = '') => api.get(`/connections${queryParams}`),
  getConnectionProgress: (userId) => api.get(`/connections/progress/${userId}`),
 };
 

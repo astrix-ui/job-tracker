@@ -164,6 +164,7 @@ const respondToRequest = async (req, res) => {
 const getMutualConnections = async (req, res) => {
   try {
     const userId = req.session.userId;
+    const { targetUserId } = req.query; // Optional parameter to find mutual connections with specific user
     
     const connections = await Connection.find({
       $or: [
@@ -176,7 +177,7 @@ const getMutualConnections = async (req, res) => {
     .sort({ updatedAt: -1 });
     
     // Format connections to show the other user
-    const formattedConnections = connections.map(connection => {
+    let formattedConnections = connections.map(connection => {
       const otherUser = connection.requester._id.toString() === userId 
         ? connection.recipient 
         : connection.requester;
@@ -187,6 +188,30 @@ const getMutualConnections = async (req, res) => {
         connectedAt: connection.updatedAt
       };
     });
+
+    // If targetUserId is provided, find mutual connections
+    if (targetUserId) {
+      const targetConnections = await Connection.find({
+        $or: [
+          { requester: targetUserId, status: 'accepted' },
+          { recipient: targetUserId, status: 'accepted' }
+        ]
+      })
+      .populate('requester', 'username email')
+      .populate('recipient', 'username email');
+
+      const targetUserConnections = targetConnections.map(connection => {
+        const otherUser = connection.requester._id.toString() === targetUserId 
+          ? connection.recipient 
+          : connection.requester;
+        return otherUser._id.toString();
+      });
+
+      // Filter to show only mutual connections
+      formattedConnections = formattedConnections.filter(conn => 
+        targetUserConnections.includes(conn.user._id.toString())
+      );
+    }
     
     res.json({ connections: formattedConnections });
   } catch (error) {

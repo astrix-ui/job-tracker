@@ -30,8 +30,7 @@ const UserProfile = () => {
         setConnectionStatus(foundUser.connectionStatus);
         setIsRequester(foundUser.isRequester);
         
-        // For viewing other users' profiles, try to get their connection count
-        // Check if this user is in our connections list to show accurate count
+        // For viewing other users' profiles, get mutual connections
         try {
           const myConnectionsResponse = await connectionAPI.getMutualConnections();
           const myConnections = myConnectionsResponse.data.connections || [];
@@ -42,13 +41,15 @@ const UserProfile = () => {
           );
           
           if (isConnected) {
-            // If connected, we can show some connection info
-            // Show the actual connections we have in common or a subset
-            const commonConnections = myConnections.filter(conn => 
-              conn.user && conn.user._id !== foundUser._id
-            ).slice(0, 3); // Show up to 3 connections
-            
-            setConnections(commonConnections);
+            // Get actual mutual connections between you and this user
+            try {
+              const mutualConnectionsResponse = await connectionAPI.getMutualConnections(`?targetUserId=${foundUser._id}`);
+              const mutualConnections = mutualConnectionsResponse.data.connections || [];
+              setConnections(mutualConnections);
+            } catch (mutualError) {
+              console.error('Error fetching mutual connections:', mutualError);
+              setConnections([]);
+            }
           } else {
             setConnections([]);
           }
@@ -268,7 +269,7 @@ const UserProfile = () => {
       <Modal
         isOpen={showConnectionsModal}
         onClose={() => setShowConnectionsModal(false)}
-        title={`${user.username}'s Connections`}
+        title={`Mutual Connections with ${user.username}`}
         size="medium"
       >
         <div className="space-y-4">

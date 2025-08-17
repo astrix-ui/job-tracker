@@ -10,6 +10,64 @@ import CompanyForm from '../components/CompanyForm';
 import { formatDate, formatCurrency, sortCompanies, filterCompanies } from '../utils/helpers';
 import { APPLICATION_STATUSES, POSITION_TYPES } from '../utils/constants';
 
+// Component to display individual connection with their next event
+const ConnectionWidget = ({ connection, username, userInitial }) => {
+  const [nextEvent, setNextEvent] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchConnectionNextEvent = async () => {
+      try {
+        if (connection.user?._id) {
+          const progressResponse = await connectionAPI.getConnectionProgress(connection.user._id);
+          const companies = progressResponse.data.companies || [];
+          
+          // Find the next upcoming event for this connection
+          const upcomingEvents = companies
+            .filter(company => company.nextActionDate && new Date(company.nextActionDate) > new Date())
+            .sort((a, b) => new Date(a.nextActionDate) - new Date(b.nextActionDate));
+          
+          setNextEvent(upcomingEvents.length > 0 ? upcomingEvents[0].companyName : null);
+        }
+      } catch (error) {
+        console.error('Error fetching connection next event:', error);
+        setNextEvent(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchConnectionNextEvent();
+  }, [connection.user?._id]);
+
+  return (
+    <div className="flex items-center justify-between">
+      <div className="flex items-center space-x-3">
+        <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+          <span className="text-xs font-semibold text-primary">
+            {userInitial}
+          </span>
+        </div>
+        <div>
+          <div className="font-medium text-foreground text-sm">
+            {username}
+          </div>
+          <div className="text-xs text-muted-foreground">
+            {loading ? (
+              'Loading...'
+            ) : nextEvent ? (
+              `Next: ${nextEvent}`
+            ) : (
+              'No upcoming events'
+            )}
+          </div>
+        </div>
+      </div>
+      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+    </div>
+  );
+};
+
 const Dashboard = () => {
   const navigate = useNavigate();
   const { companies, loading, error, deleteCompany, clearError } = useCompany();
@@ -424,37 +482,18 @@ const Dashboard = () => {
           {Array.isArray(connectionsCount) && connectionsCount.length > 0 ? (
             <div className="space-y-3">
               {connectionsCount.slice(0, 3).map((connection, index) => {
-                // Find if this connection has any upcoming events
-                const connectionEvents = companies.filter(company => 
-                  company.nextActionDate && 
-                  new Date(company.nextActionDate) > new Date()
-                );
-                const nextEvent = connectionEvents.length > 0 ? connectionEvents[0].companyName : null;
-                
                 // Get the actual connected user info - server returns { user: {...}, connectionId, connectedAt }
                 const connectedUser = connection.user;
                 const username = connectedUser?.username || 'Unknown User';
                 const userInitial = username.charAt(0).toUpperCase();
                 
                 return (
-                  <div key={connection._id || index} className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
-                        <span className="text-xs font-semibold text-primary">
-                          {userInitial}
-                        </span>
-                      </div>
-                      <div>
-                        <div className="font-medium text-foreground text-sm">
-                          {username}
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          {nextEvent ? `Next: ${nextEvent}` : 'No upcoming events'}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  </div>
+                  <ConnectionWidget 
+                    key={connection._id || index}
+                    connection={connection}
+                    username={username}
+                    userInitial={userInitial}
+                  />
                 );
               })}
               {connectionsCount.length > 3 && (
