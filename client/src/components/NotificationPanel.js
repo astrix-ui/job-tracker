@@ -6,7 +6,7 @@ import StatusBadge from './StatusBadge';
 import { formatDate } from '../utils/helpers';
 import { UserPlus, Check, X } from 'lucide-react';
 
-const NotificationPanel = ({ isOpen, onClose }) => {
+const NotificationPanel = ({ isOpen, onClose, isMobile = false }) => {
   const { companies } = useCompany();
   const { showToast } = useToast();
   const panelRef = useRef(null);
@@ -136,25 +136,31 @@ const NotificationPanel = ({ isOpen, onClose }) => {
 
   if (!isOpen) return null;
 
+  const panelClasses = isMobile 
+    ? "w-full bg-card border border-border rounded-lg shadow-lg max-h-80 overflow-hidden"
+    : "absolute top-full right-0 mt-2 w-80 sm:w-96 md:w-80 bg-card border border-border rounded-lg shadow-lg z-50 max-h-96 overflow-hidden";
+
   return (
     <div 
       ref={panelRef}
-      className="absolute top-full right-0 mt-2 w-80 sm:w-96 md:w-80 bg-card border border-border rounded-lg shadow-lg z-50 max-h-96 overflow-hidden"
+      className={panelClasses}
     >
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-border">
-        <h3 className="text-lg font-semibold text-foreground">
-          Notifications
-        </h3>
-        <button
-          onClick={onClose}
-          className="text-muted-foreground hover:text-foreground transition-colors"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
+      {!isMobile && (
+        <div className="flex items-center justify-between p-4 border-b border-border">
+          <h3 className="text-lg font-semibold text-foreground">
+            Notifications
+          </h3>
+          <button
+            onClick={onClose}
+            className="text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      )}
 
       {/* Content */}
       <div className="max-h-80 overflow-y-auto">

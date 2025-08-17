@@ -6,7 +6,7 @@ import ErrorMessage from '../components/ErrorMessage';
 
 const Profile = () => {
   const { user, logout, updateUser, deleteAccount } = useAuth();
-  const { showSuccess, showError } = useToast();
+  const { showSuccess, showError, showConfirmToast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -102,24 +102,29 @@ const Profile = () => {
     }
   };
 
-  const handleDeleteAccount = async () => {
-    if (window.confirm('Are you sure you want to delete your account? This action cannot be undone and will permanently delete all your data.')) {
-      if (window.confirm('This will permanently delete your account and all associated data. Are you absolutely sure?')) {
+  const handleDeleteAccount = () => {
+    showConfirmToast(
+      'Are you sure you want to delete your account? This action cannot be undone and will permanently delete all your data.',
+      async () => {
         try {
-          setLoading(true);
           const result = await deleteAccount();
           if (result.success) {
             showSuccess('Account deleted successfully');
           } else {
-            showError(result.error);
+            showError(result.error || 'Failed to delete account');
           }
         } catch (error) {
           showError('Failed to delete account');
-        } finally {
-          setLoading(false);
         }
+      },
+      () => {
+        // Cancel action - do nothing
+      },
+      {
+        confirmText: 'Delete Account',
+        cancelText: 'Cancel'
       }
-    }
+    );
   };
 
   return (
@@ -263,10 +268,9 @@ const Profile = () => {
                 <button
                   type="button"
                   onClick={handleDeleteAccount}
-                  disabled={loading}
-                  className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="px-4 py-2 bg-destructive text-destructive-foreground rounded-md hover:bg-destructive/90 transition-colors"
                 >
-                  {loading ? 'Deleting...' : 'Delete Account'}
+                  Delete Account
                 </button>
                 <div className="flex space-x-3">
                   <button
