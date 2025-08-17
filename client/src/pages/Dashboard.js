@@ -242,29 +242,51 @@ const Dashboard = () => {
           {/* Error Message */}
           <ErrorMessage message={error} onClose={clearError} />
 
-          {/* Statistics Cards */}
-          <div className="bg-muted/30 rounded-[20px] p-8 mb-8">
-            <h2 className="text-2xl font-bold text-foreground mb-6 text-center">Overview</h2>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-              <div className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-foreground mb-2">{stats.total}</div>
-                <div className="text-sm text-muted-foreground">Total</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-foreground mb-2">{stats.applied}</div>
+          {/* Modular Grid Layout */}
+          <div className="grid grid-cols-12 gap-4 mb-8">
+            {/* Total Applications - Large Card */}
+            <div className="col-span-12 md:col-span-4 bg-muted/30 rounded-[20px] p-6 flex flex-col justify-center">
+              <div className="text-5xl font-bold text-foreground mb-2">{stats.total}</div>
+              <div className="text-lg text-muted-foreground">Total Applications</div>
+              <div className="text-sm text-muted-foreground mt-1">Your complete job search journey</div>
+            </div>
+
+            {/* Applied & In Progress - Stacked Cards */}
+            <div className="col-span-6 md:col-span-2 space-y-4">
+              <div className="bg-muted/20 rounded-[16px] p-4 text-center">
+                <div className="text-3xl font-bold text-foreground">{stats.applied}</div>
                 <div className="text-sm text-muted-foreground">Applied</div>
               </div>
-              <div className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-foreground mb-2">{stats.interviews}</div>
+              <div className="bg-muted/20 rounded-[16px] p-4 text-center">
+                <div className="text-3xl font-bold text-foreground">{stats.interviews}</div>
                 <div className="text-sm text-muted-foreground">In Progress</div>
               </div>
-              <div className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-foreground mb-2">{stats.offers}</div>
+            </div>
+
+            {/* Offers & Rejected - Stacked Cards */}
+            <div className="col-span-6 md:col-span-2 space-y-4">
+              <div className="bg-muted/20 rounded-[16px] p-4 text-center">
+                <div className="text-3xl font-bold text-foreground">{stats.offers}</div>
                 <div className="text-sm text-muted-foreground">Offers</div>
               </div>
-              <div className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-foreground mb-2">{stats.rejected}</div>
+              <div className="bg-muted/20 rounded-[16px] p-4 text-center">
+                <div className="text-3xl font-bold text-foreground">{stats.rejected}</div>
                 <div className="text-sm text-muted-foreground">Rejected</div>
+              </div>
+            </div>
+
+            {/* Quick Stats - Wide Card */}
+            <div className="col-span-12 md:col-span-4 bg-muted/30 rounded-[20px] p-6">
+              <h3 className="text-lg font-semibold text-foreground mb-4">Quick Stats</h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <div className="text-2xl font-bold text-foreground">{connectionsCount.length}</div>
+                  <div className="text-sm text-muted-foreground">Connections</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-foreground">{upcomingEvents.length}</div>
+                  <div className="text-sm text-muted-foreground">Upcoming Events</div>
+                </div>
               </div>
             </div>
           </div>
@@ -490,24 +512,24 @@ const Dashboard = () => {
         </div>
       </section>
 
-      {/* Widgets Section */}
+      {/* Modular Widgets Section */}
       <section className="py-8 px-4">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl font-bold text-foreground mb-8">Quick Access</h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* My Connections Widget */}
-            <div className="bg-muted/20 rounded-[16px] p-6">
+          <div className="grid grid-cols-12 gap-4">
+            {/* My Connections - Tall Card */}
+            <div className="col-span-12 md:col-span-5 bg-muted/20 rounded-[16px] p-6">
               <h3 className="text-lg font-semibold text-foreground mb-4">My Connections</h3>
               {Array.isArray(connectionsCount) && connectionsCount.length > 0 ? (
                 <div className="space-y-4">
-                  {connectionsCount.slice(0, 3).map((connection, index) => {
+                  {connectionsCount.slice(0, 4).map((connection, index) => {
                     const connectedUser = connection.user;
                     const username = connectedUser?.username || 'Unknown User';
                     const userInitial = username.charAt(0).toUpperCase();
                     
                     return (
-                      <div key={connection._id || index} className="flex items-center space-x-3">
+                      <div key={connection._id || index} className="flex items-center space-x-3 p-2 rounded-lg hover:bg-foreground/5 transition-colors">
                         <div className="w-10 h-10 bg-foreground/10 rounded-full flex items-center justify-center">
                           <span className="text-sm font-medium text-foreground">
                             {userInitial}
@@ -520,27 +542,30 @@ const Dashboard = () => {
                       </div>
                     );
                   })}
-                  {connectionsCount.length > 3 && (
-                    <div className="text-sm text-muted-foreground text-center pt-2">
-                      +{connectionsCount.length - 3} more connections
+                  {connectionsCount.length > 4 && (
+                    <div className="text-sm text-muted-foreground text-center pt-2 border-t border-border">
+                      +{connectionsCount.length - 4} more connections
                     </div>
                   )}
                 </div>
               ) : (
-                <p className="text-muted-foreground">No connections yet</p>
+                <div className="text-center py-8">
+                  <div className="text-4xl mb-2">👥</div>
+                  <p className="text-muted-foreground">No connections yet</p>
+                </div>
               )}
             </div>
 
-            {/* Next Events Widget */}
-            <div className="bg-muted/20 rounded-[16px] p-6">
+            {/* Upcoming Events - Medium Card */}
+            <div className="col-span-12 md:col-span-4 bg-muted/30 rounded-[20px] p-6">
               <h3 className="text-lg font-semibold text-foreground mb-4">Upcoming Events</h3>
               {upcomingEvents.length > 0 ? (
                 <div className="space-y-4">
                   {upcomingEvents.slice(0, 3).map((event) => (
-                    <div key={event._id} className="border-l-2 border-foreground pl-4">
+                    <div key={event._id} className="border-l-3 border-foreground pl-4 py-2">
                       <div className="font-medium text-foreground">{event.companyName}</div>
                       <div className="text-sm text-muted-foreground">{formatDate(event.nextActionDate)}</div>
-                      <div className="text-sm text-foreground/70">{event.status}</div>
+                      <div className="text-xs text-foreground/70 mt-1">{event.status}</div>
                     </div>
                   ))}
                   {upcomingEvents.length > 3 && (
@@ -553,35 +578,47 @@ const Dashboard = () => {
                   )}
                 </div>
               ) : (
-                <p className="text-muted-foreground">No upcoming events</p>
+                <div className="text-center py-8">
+                  <div className="text-4xl mb-2">📅</div>
+                  <p className="text-muted-foreground">No upcoming events</p>
+                </div>
               )}
             </div>
 
-            {/* Popular Users Widget */}
-            <div className="bg-muted/20 rounded-[16px] p-6">
+            {/* Discover Users - Compact Card */}
+            <div className="col-span-12 md:col-span-3 bg-muted/20 rounded-[16px] p-6">
               <h3 className="text-lg font-semibold text-foreground mb-4">Discover Users</h3>
               {popularUsers.length > 0 ? (
-                <div className="space-y-4">
-                  {popularUsers.map((user) => (
+                <div className="space-y-3">
+                  {popularUsers.slice(0, 3).map((user) => (
                     <button
                       key={user.id}
                       onClick={() => navigate(`/user/${user.id}`)}
-                      className="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-foreground/10 transition-colors text-left"
+                      className="w-full flex items-center space-x-3 p-2 rounded-lg hover:bg-foreground/10 transition-colors text-left"
                     >
-                      <div className="w-10 h-10 bg-foreground/10 rounded-full flex items-center justify-center">
-                        <span className="text-sm font-medium text-foreground">
+                      <div className="w-8 h-8 bg-foreground/10 rounded-full flex items-center justify-center">
+                        <span className="text-xs font-medium text-foreground">
                           {user.username.charAt(0).toUpperCase()}
                         </span>
                       </div>
-                      <div className="flex-1">
-                        <div className="font-medium text-foreground">{user.username}</div>
-                        <div className="text-sm text-muted-foreground">{user.email}</div>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-foreground text-sm truncate">{user.username}</div>
+                        <div className="text-xs text-muted-foreground truncate">{user.email}</div>
                       </div>
                     </button>
                   ))}
+                  <button
+                    onClick={() => navigate('/explore')}
+                    className="w-full mt-3 px-3 py-2 text-xs bg-foreground/10 text-foreground rounded-lg hover:bg-foreground/20 transition-colors"
+                  >
+                    Explore More
+                  </button>
                 </div>
               ) : (
-                <p className="text-muted-foreground">No users available</p>
+                <div className="text-center py-6">
+                  <div className="text-3xl mb-2">🔍</div>
+                  <p className="text-muted-foreground text-sm">No users available</p>
+                </div>
               )}
             </div>
           </div>
