@@ -40,10 +40,19 @@ const getAllUsers = async (req, res) => {
           isRequester = connection.requester.toString() === currentUserId;
         }
         
+        // Get connection count for this user
+        const userConnectionCount = await Connection.countDocuments({
+          $or: [
+            { requester: user._id, status: 'accepted' },
+            { recipient: user._id, status: 'accepted' }
+          ]
+        });
+
         return {
           ...user.toObject(),
           connectionStatus,
-          isRequester
+          isRequester,
+          connectionsCount: userConnectionCount
         };
       })
     );
