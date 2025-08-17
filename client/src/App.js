@@ -13,6 +13,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import ExploreUsers from './pages/ExploreUsers';
 import ConnectionsProgress from './pages/ConnectionsProgress';
+import UserProfile from './pages/UserProfile';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -65,6 +66,14 @@ function App() {
  element={
  <ProtectedRoute>
  <ConnectionsProgress />
+ </ProtectedRoute>
+ }
+ />
+ <Route
+ path="/user/:userId"
+ element={
+ <ProtectedRoute>
+ <UserProfile />
  </ProtectedRoute>
  }
  />

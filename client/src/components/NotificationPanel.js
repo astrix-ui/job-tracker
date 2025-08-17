@@ -65,7 +65,9 @@ const NotificationPanel = ({ isOpen, onClose }) => {
   };
 
   // Handle follow request response
-  const handleRequestResponse = async (connectionId, action) => {
+  const handleRequestResponse = async (connectionId, action, event) => {
+    event.stopPropagation(); // Prevent any parent click handlers
+    
     try {
       await connectionAPI.respondToRequest(connectionId, action);
       showToast(
@@ -73,11 +75,13 @@ const NotificationPanel = ({ isOpen, onClose }) => {
         'success'
       );
       
-      // Remove the request from the list
+      // Remove the request from the list immediately for better UX
       setFollowRequests(prev => prev.filter(req => req._id !== connectionId));
     } catch (error) {
       console.error('Error responding to request:', error);
       showToast('Failed to respond to request', 'error');
+      // Refresh the requests list in case of error
+      fetchFollowRequests();
     }
   };
 
@@ -185,14 +189,14 @@ const NotificationPanel = ({ isOpen, onClose }) => {
                     </div>
                     <div className="flex space-x-2">
                       <button
-                        onClick={() => handleRequestResponse(request._id, 'accept')}
+                        onClick={(e) => handleRequestResponse(request._id, 'accept', e)}
                         className="p-1 bg-green-100 text-green-700 rounded-full hover:bg-green-200 transition-colors"
                         title="Accept"
                       >
                         <Check className="w-4 h-4" />
                       </button>
                       <button
-                        onClick={() => handleRequestResponse(request._id, 'reject')}
+                        onClick={(e) => handleRequestResponse(request._id, 'reject', e)}
                         className="p-1 bg-red-100 text-red-700 rounded-full hover:bg-red-200 transition-colors"
                         title="Reject"
                       >

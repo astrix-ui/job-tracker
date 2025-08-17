@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { connectionAPI } from '../utils/api';
 import { useToast } from '../context/ToastContext';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { Search, Users, UserPlus, UserCheck, Clock } from 'lucide-react';
 
 const ExploreUsers = () => {
+  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchLoading, setSearchLoading] = useState(false);
+  const [followingUsers, setFollowingUsers] = useState(new Set());
   const { showToast } = useToast();
 
   // Fetch users
@@ -44,8 +47,11 @@ const ExploreUsers = () => {
   }, [searchTerm]);
 
   // Send follow request
-  const handleFollowRequest = async (userId) => {
+  const handleFollowRequest = async (userId, event) => {
+    event.stopPropagation(); // Prevent navigation when clicking follow button
+    
     try {
+      setFollowingUsers(prev => new Set(prev).add(userId));
       await connectionAPI.sendFollowRequest(userId);
       showToast('Follow request sent successfully!', 'success');
       
@@ -58,7 +64,18 @@ const ExploreUsers = () => {
     } catch (error) {
       console.error('Error sending follow request:', error);
       showToast(error.response?.data?.error || 'Failed to send follow request', 'error');
+    } finally {
+      setFollowingUsers(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(userId);
+        return newSet;
+      });
     }
+  };
+
+  // Handle user card click
+  const handleUserClick = (userId) => {
+    navigate(`/user/${userId}`);
   };
 
   // Get button text and style based on connection status
@@ -95,7 +112,7 @@ const ExploreUsers = () => {
           icon: UserPlus,
           disabled: false,
           className: 'bg-primary text-primary-foreground hover:bg-primary/90 border-primary',
-          onClick: () => handleFollowRequest(user._id)
+          onClick: (event) => handleFollowRequest(user._id, event)
         };
     }
   };
@@ -162,7 +179,8 @@ const ExploreUsers = () => {
             return (
               <div
                 key={user._id}
-                className="bg-card border border-border rounded-lg p-6 hover:shadow-md transition-shadow"
+                onClick={() => handleUserClick(user._id)}
+                className="bg-card border border-border rounded-lg p-6 hover:shadow-md transition-shadow cursor-pointer"
               >
                 {/* User Avatar */}
                 <div className="flex items-center space-x-4 mb-4">
@@ -191,11 +209,19 @@ const ExploreUsers = () => {
                 {/* Action Button */}
                 <button
                   onClick={buttonConfig.onClick}
-                  disabled={buttonConfig.disabled}
-                  className={`w-full flex items-center justify-center space-x-2 px-4 py-2 rounded-lg border transition-colors ${buttonConfig.className}`}
+                  disabled={buttonConfig.disabled || followingUsers.has(user._id)}
+                  className={`w-full flex items-center justify-center space-x-2 px-4 py-2 rounded-lg border transition-colors ${buttonConfig.className} ${
+                    followingUsers.has(user._id) ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
                 >
-                  <ButtonIcon className="w-4 h-4" />
-                  <span className="font-medium">{buttonConfig.text}</span>
+                  {followingUsers.has(user._id) ? (
+                    <LoadingSpinner size="sm" />
+                  ) : (
+                    <ButtonIcon className="w-4 h-4" />
+                  )}
+                  <span className="font-medium">
+                    {followingUsers.has(user._id) ? 'Sending...' : buttonConfig.text}
+                  </span>
                 </button>
               </div>
             );
