@@ -17,6 +17,7 @@ const UserProfile = () => {
   const [actionLoading, setActionLoading] = useState(false);
   const [connections, setConnections] = useState([]);
   const [showConnectionsModal, setShowConnectionsModal] = useState(false);
+  const [isConnectedToUser, setIsConnectedToUser] = useState(false);
 
   // Fetch user profile and connection status
   const fetchUserProfile = async () => {
@@ -39,6 +40,8 @@ const UserProfile = () => {
           const isConnected = myConnections.some(conn => 
             conn.user && conn.user._id === foundUser._id
           );
+          
+          setIsConnectedToUser(isConnected);
           
           if (isConnected) {
             // If connected, we can see some of their connections
@@ -322,7 +325,7 @@ const UserProfile = () => {
           ) : (
             <div className="text-center py-8">
               <p className="text-muted-foreground">
-                {myConnections.some(conn => conn.user && conn.user._id === foundUser._id) 
+                {isConnectedToUser 
                   ? 'No mutual connections found' 
                   : 'Connect to view their connections'
                 }
