@@ -43,8 +43,12 @@ const UserProfile = () => {
           
           if (isConnected) {
             // If connected, we can show some connection info
-            // For now, show a placeholder count based on the connection status
-            setConnections([{ username: 'Connected User', email: 'connection@example.com' }]);
+            // Show the actual connections we have in common or a subset
+            const commonConnections = myConnections.filter(conn => 
+              conn.user && conn.user._id !== foundUser._id
+            ).slice(0, 3); // Show up to 3 connections
+            
+            setConnections(commonConnections);
           } else {
             setConnections([]);
           }
@@ -270,7 +274,11 @@ const UserProfile = () => {
         <div className="space-y-4">
           {connections.length > 0 ? (
             connections.map((connection, index) => (
-              <div key={index} className="flex items-center space-x-4 p-4 border border-border rounded-lg">
+              <button
+                key={index}
+                onClick={() => navigate(`/user/${connection.user?._id}`)}
+                className="w-full flex items-center space-x-4 p-4 border border-border rounded-lg hover:bg-muted transition-colors text-left"
+              >
                 <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
                   <span className="text-sm font-semibold text-primary">
                     {(connection.user?.username || 'U').charAt(0).toUpperCase()}
@@ -287,7 +295,7 @@ const UserProfile = () => {
                 <div className="text-xs text-muted-foreground">
                   Connected
                 </div>
-              </div>
+              </button>
             ))
           ) : (
             <div className="text-center py-8">

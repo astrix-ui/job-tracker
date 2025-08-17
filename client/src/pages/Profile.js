@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { connectionAPI } from '../utils/api';
@@ -7,6 +8,7 @@ import ErrorMessage from '../components/ErrorMessage';
 import Modal from '../components/Modal';
 
 const Profile = () => {
+  const navigate = useNavigate();
   const { user, logout, updateUser, deleteAccount, isAuthenticated } = useAuth();
   const { showSuccess, showError, showConfirmToast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
@@ -412,7 +414,11 @@ const Profile = () => {
         <div className="space-y-4">
           {connections.length > 0 ? (
             connections.map((connection, index) => (
-              <div key={index} className="flex items-center space-x-4 p-4 border border-border rounded-lg">
+              <button
+                key={index}
+                onClick={() => navigate(`/user/${connection.user?._id}`)}
+                className="w-full flex items-center space-x-4 p-4 border border-border rounded-lg hover:bg-muted transition-colors text-left"
+              >
                 <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
                   <span className="text-sm font-semibold text-primary">
                     {(connection.user?.username || 'U').charAt(0).toUpperCase()}
@@ -429,7 +435,7 @@ const Profile = () => {
                 <div className="text-xs text-muted-foreground">
                   Connected
                 </div>
-              </div>
+              </button>
             ))
           ) : (
             <div className="text-center py-8">
