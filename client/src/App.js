@@ -11,6 +11,8 @@ import Profile from './pages/Profile';
 import About from './pages/About';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ExploreUsers from './pages/ExploreUsers';
+import ConnectionsProgress from './pages/ConnectionsProgress';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -47,6 +49,22 @@ function App() {
  element={
  <ProtectedRoute>
  <Profile />
+ </ProtectedRoute>
+ }
+ />
+ <Route
+ path="/explore"
+ element={
+ <ProtectedRoute>
+ <ExploreUsers />
+ </ProtectedRoute>
+ }
+ />
+ <Route
+ path="/connections"
+ element={
+ <ProtectedRoute>
+ <ConnectionsProgress />
  </ProtectedRoute>
  }
  />

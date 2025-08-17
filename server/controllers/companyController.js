@@ -94,10 +94,260 @@ const deleteCompany = async (req, res) => {
   }
 };
 
+// Helper function to normalize column headers
+const normalizeHeader = (header) => {
+  if (!header) return '';
+  return header.toString().toLowerCase().trim().replace(/[^a-z0-9]/g, '');
+};
+
+// Mapping function for flexible column headers
+const mapHeaders = (headers) => {
+  const headerMap = {};
+  
+  const fieldMappings = {
+    companyName: ['companyname', 'company', 'employer', 'organization', 'companyname'],
+    positionTitle: ['positiontitle', 'position', 'title', 'jobtitle', 'role'],
+    status: ['status', 'applicationstatus', 'jobstatus'],
+    positionType: ['positiontype', 'type', 'jobtype', 'employmenttype'],
+    applicationDate: ['applicationdate', 'dateapplied', 'applied', 'date'],
+    nextActionDate: ['nextactiondate', 'nextaction', 'followup', 'followupdate'],
+    interviewRounds: ['interviewrounds', 'rounds', 'interviews', 'interviewcount'],
+    salaryExpectation: ['salaryexpectation', 'salary', 'expectedsalary', 'pay'],
+    contactPerson: ['contactperson', 'contact', 'recruiter', 'hr'],
+    notes: ['notes', 'comments', 'description', 'remarks'],
+    applicationPlatform: ['applicationplatform', 'platform', 'source', 'website']
+  };
+
+  headers.forEach((header, index) => {
+    const normalizedHeader = normalizeHeader(header);
+    
+    for (const [field, variations] of Object.entries(fieldMappings)) {
+      if (variations.includes(normalizedHeader)) {
+        headerMap[field] = index;
+        break;
+      }
+    }
+  });
+
+  return headerMap;
+};
+
+// Helper function to parse and normalize date
+const parseDate = (dateValue) => {
+  if (!dateValue) return null;
+  
+  // If it's already a Date object
+  if (dateValue instanceof Date) {
+    return dateValue;
+  }
+  
+  // If it's an Excel serial number
+  if (typeof dateValue === 'number' && dateValue > 25000) {
+    // Excel date serial number to JS Date
+    const excelEpoch = new Date(1900, 0, 1);
+    const jsDate = new Date(excelEpoch.getTime() + (dateValue - 2) * 24 * 60 * 60 * 1000);
+    return jsDate;
+  }
+  
+  // Try to parse as string
+  const parsed = new Date(dateValue);
+  return isNaN(parsed.getTime()) ? null : parsed;
+};
+
+// Helper function to normalize status values
+const normalizeStatus = (status) => {
+  if (!status) return 'Applied';
+  
+  const statusStr = status.toString().toLowerCase().trim();
+  const statusMappings = {
+    'applied': 'Applied',
+    'interview': 'Interview Scheduled',
+    'interview scheduled': 'Interview Scheduled',
+    'technical': 'Technical Round',
+    'technical round': 'Technical Round',
+    'hr': 'HR Round',
+    'hr round': 'HR Round',
+    'final': 'Final Round',
+    'final round': 'Final Round',
+    'offer': 'Offer Received',
+    'offer received': 'Offer Received',
+    'rejected': 'Rejected',
+    'withdrawn': 'Withdrawn'
+  };
+  
+  return statusMappings[statusStr] || 'Applied';
+};
+
+// Helper function to normalize position type
+const normalizePositionType = (type) => {
+  if (!type) return 'Full-time';
+  
+  const typeStr = type.toString().toLowerCase().trim();
+  const typeMappings = {
+    'internship': 'Internship',
+    'intern': 'Internship',
+    'fulltime': 'Full-time',
+    'full-time': 'Full-time',
+    'full time': 'Full-time',
+    'contract': 'Contract',
+    'contractor': 'Contract',
+    'leadstofulltime': 'Leads to Full Time',
+    'leads to full time': 'Leads to Full Time'
+  };
+  
+  return typeMappings[typeStr] || 'Full-time';
+};
+
+const importExcelData = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'No file uploaded' 
+      });
+    }
+
+    // Read the uploaded file
+    const workbook = XLSX.read(req.file.buffer, { type: 'buffer' });
+    const sheetName = workbook.SheetNames[0];
+    const worksheet = workbook.Sheets[sheetName];
+    
+    // Convert to JSON
+    const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+    
+    if (jsonData.length < 2) {
+      return res.status(400).json({
+        success: false,
+        error: 'File must contain at least a header row and one data row'
+      });
+    }
+
+    const headers = jsonData[0];
+    const dataRows = jsonData.slice(1);
+    
+    // Map headers to schema fields
+    const headerMap = mapHeaders(headers);
+    
+    // Check if we have required fields
+    if (!headerMap.companyName) {
+      return res.status(400).json({
+        success: false,
+        error: 'Could not find a column for Company Name. Please ensure your file has a column with headers like: Company, Company Name, or Employer'
+      });
+    }
+
+    const results = {
+      inserted: 0,
+      skipped: [],
+      errors: []
+    };
+
+    const validCompanies = [];
+
+    // Process each row
+    for (let i = 0; i < dataRows.length; i++) {
+      const row = dataRows[i];
+      const rowNumber = i + 2; // +2 because we start from row 1 and skip header
+      
+      try {
+        // Skip empty rows
+        if (!row || row.every(cell => !cell || cell.toString().trim() === '')) {
+          results.skipped.push({
+            row: rowNumber,
+            reason: 'Empty row'
+          });
+          continue;
+        }
+
+        // Extract company name (required)
+        const companyName = row[headerMap.companyName];
+        if (!companyName || companyName.toString().trim() === '') {
+          results.skipped.push({
+            row: rowNumber,
+            reason: 'Missing company name'
+          });
+          continue;
+        }
+
+        // Build company object
+        const companyData = {
+          userId: req.session.userId,
+          companyName: companyName.toString().trim(),
+          positionTitle: headerMap.positionTitle ? (row[headerMap.positionTitle] || 'N/A').toString().trim() : 'N/A',
+          status: headerMap.status ? normalizeStatus(row[headerMap.status]) : 'Applied',
+          positionType: headerMap.positionType ? normalizePositionType(row[headerMap.positionType]) : 'Full-time',
+          applicationDate: headerMap.applicationDate ? parseDate(row[headerMap.applicationDate]) || new Date() : new Date(),
+          nextActionDate: headerMap.nextActionDate ? parseDate(row[headerMap.nextActionDate]) : null,
+          interviewRounds: headerMap.interviewRounds ? parseInt(row[headerMap.interviewRounds]) || 0 : 0,
+          salaryExpectation: headerMap.salaryExpectation ? parseFloat(row[headerMap.salaryExpectation]) || null : null,
+          contactPerson: headerMap.contactPerson ? (row[headerMap.contactPerson] || 'N/A').toString().trim() : 'N/A',
+          notes: headerMap.notes ? (row[headerMap.notes] || '').toString().trim() : '',
+          applicationPlatform: headerMap.applicationPlatform ? (row[headerMap.applicationPlatform] || 'N/A').toString().trim() : 'N/A'
+        };
+
+        validCompanies.push(companyData);
+        
+      } catch (error) {
+        results.skipped.push({
+          row: rowNumber,
+          reason: `Data processing error: ${error.message}`
+        });
+      }
+    }
+
+    // Insert valid companies
+    if (validCompanies.length > 0) {
+      try {
+        const insertedCompanies = await Company.insertMany(validCompanies, { ordered: false });
+        results.inserted = insertedCompanies.length;
+      } catch (error) {
+        // Handle partial inserts
+        if (error.writeErrors) {
+          results.inserted = validCompanies.length - error.writeErrors.length;
+          error.writeErrors.forEach(writeError => {
+            results.errors.push({
+              row: writeError.index + 2,
+              reason: writeError.errmsg
+            });
+          });
+        } else {
+          throw error;
+        }
+      }
+    }
+
+    // Prepare response
+    const response = {
+      success: true,
+      message: `Import completed. ${results.inserted} companies imported successfully.`,
+      summary: {
+        totalRows: dataRows.length,
+        inserted: results.inserted,
+        skipped: results.skipped.length,
+        errors: results.errors.length
+      },
+      details: {
+        skippedRows: results.skipped,
+        errorRows: results.errors
+      }
+    };
+
+    res.json(response);
+
+  } catch (error) {
+    console.error('Excel import error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Server error while processing file: ' + error.message 
+    });
+  }
+};
+
 module.exports = {
   getAllCompanies,
   getCompanyById,
   createCompany,
   updateCompany,
-  deleteCompany
+  deleteCompany,
+  importExcelData
 };

@@ -33,6 +33,16 @@ export const calendarAPI = {
  getEvents: () => api.get('/calendar/events'),
 };
 
+// Connection API endpoints
+export const connectionAPI = {
+ getAllUsers: (search) => api.get(`/connections/users${search ? `?search=${search}` : ''}`),
+ sendFollowRequest: (recipientId) => api.post('/connections/follow', { recipientId }),
+ getPendingRequests: () => api.get('/connections/requests'),
+ respondToRequest: (connectionId, action) => api.post('/connections/respond', { connectionId, action }),
+ getMutualConnections: () => api.get('/connections'),
+ getConnectionProgress: (userId) => api.get(`/connections/progress/${userId}`),
+};
+
 // Response interceptor for error handling
 api.interceptors.response.use(
  (response) => response,

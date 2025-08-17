@@ -8,6 +8,7 @@ require('dotenv').config();
 const authRoutes = require('./routes/auth');
 const companyRoutes = require('./routes/companies');
 const calendarRoutes = require('./routes/calendar');
+const connectionRoutes = require('./routes/connections');
 
 const app = express();
 
@@ -57,6 +58,7 @@ mongoose.connect(mongoUri, {
 app.use('/api/auth', authRoutes);
 app.use('/api/companies', companyRoutes);
 app.use('/api/calendar', calendarRoutes);
+app.use('/api/connections', connectionRoutes);
 
 // Serve static files from the React app build directory
 if (process.env.NODE_ENV === 'production') {

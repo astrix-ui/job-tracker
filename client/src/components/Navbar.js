@@ -47,6 +47,8 @@ const Navbar = () => {
  const navLinks = [
  { path: '/dashboard', label: 'Dashboard', requireAuth: true },
  { path: '/calendar', label: 'Calendar', requireAuth: true },
+ { path: '/explore', label: 'Explore Users', requireAuth: true },
+ { path: '/connections', label: 'Connections', requireAuth: true },
  { path: '/profile', label: 'Profile', requireAuth: true },
  { path: '/about', label: 'About', requireAuth: false },
  ];
