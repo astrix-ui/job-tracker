@@ -17,14 +17,14 @@ export const POSITION_TYPES = [
 ];
 
 export const STATUS_COLORS = {
- 'Applied': 'bg-blue-500 text-white',
- 'Interview Scheduled': 'bg-yellow-100 text-yellow-800',
- 'Technical Round': 'bg-purple-100 text-purple-800',
- 'HR Round': 'bg-indigo-100 text-indigo-800',
- 'Final Round': 'bg-orange-100 text-orange-800',
- 'Offer Received': 'bg-green-100 text-green-800',
- 'Rejected': 'bg-red-100 text-red-800',
- 'Withdrawn': 'bg-gray-100 text-gray-800'
+ 'Applied': 'bg-blue-50 text-blue-600 border border-blue-200',
+ 'Interview Scheduled': 'bg-amber-50 text-amber-600 border border-amber-200',
+ 'Technical Round': 'bg-purple-50 text-purple-600 border border-purple-200',
+ 'HR Round': 'bg-indigo-50 text-indigo-600 border border-indigo-200',
+ 'Final Round': 'bg-orange-50 text-orange-600 border border-orange-200',
+ 'Offer Received': 'bg-emerald-50 text-emerald-600 border border-emerald-200',
+ 'Rejected': 'bg-red-50 text-red-600 border border-red-200',
+ 'Withdrawn': 'bg-slate-50 text-slate-600 border border-slate-200'
 };
 
 export const CALENDAR_EVENT_COLORS = {

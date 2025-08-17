@@ -404,62 +404,119 @@ const Dashboard = () => {
                 ))}
               </div>
 
-              {/* Applications Cards Grid */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
-                {paginatedCompanies.map((company) => (
-                  <div key={company._id} className="bg-muted/20 rounded-[16px] p-6 hover:bg-muted/30 transition-all duration-200">
-                    <div className="flex justify-between items-start mb-4">
-                      <div className="flex-1">
-                        <h3 className="text-lg font-semibold text-foreground mb-1">
-                          {company.companyName}
-                        </h3>
-                        <p className="text-foreground mb-2">
-                          {company.positionTitle || 'N/A'}
-                        </p>
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <span>{company.positionType}</span>
-                          {company.salaryExpectation && (
-                            <>
-                              <span>•</span>
-                              <span>₹{company.salaryExpectation.toLocaleString('en-IN')}</span>
-                            </>
+              {/* Modular Applications Grid */}
+              <div className="grid grid-cols-12 gap-4 mb-6">
+                {paginatedCompanies.map((company, index) => {
+                  // Create varied layouts for visual interest
+                  const isLarge = index % 5 === 0; // Every 5th item is large
+                  const isMedium = index % 3 === 0 && !isLarge; // Every 3rd item (not large) is medium
+                  
+                  let colSpan = "col-span-12 md:col-span-4"; // Default small
+                  if (isLarge) colSpan = "col-span-12 md:col-span-8";
+                  else if (isMedium) colSpan = "col-span-12 md:col-span-6";
+                  
+                  return (
+                    <div key={company._id} className={`${colSpan} group`}>
+                      <div className="bg-muted/20 rounded-[16px] p-6 h-full hover:bg-muted/30 hover:shadow-md hover:-translate-y-1 transition-all duration-300 border border-transparent hover:border-foreground/10">
+                        {/* Header */}
+                        <div className="flex justify-between items-start mb-4">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-2">
+                              <div className="w-8 h-8 bg-foreground/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <span className="text-sm font-medium text-foreground">
+                                  {company.companyName.charAt(0).toUpperCase()}
+                                </span>
+                              </div>
+                              <h3 className="text-lg font-semibold text-foreground truncate">
+                                {company.companyName}
+                              </h3>
+                            </div>
+                            
+                            {isLarge && (
+                              <div className="mb-3">
+                                <p className="text-foreground font-medium mb-1">
+                                  {company.positionTitle || 'Position not specified'}
+                                </p>
+                                <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+                                  <span className="px-2 py-1 bg-foreground/5 rounded-full">
+                                    {company.positionType}
+                                  </span>
+                                  {company.salaryExpectation && (
+                                    <span className="px-2 py-1 bg-foreground/5 rounded-full">
+                                      ₹{company.salaryExpectation.toLocaleString('en-IN')}
+                                    </span>
+                                  )}
+                                  {company.applicationPlatform && (
+                                    <span className="px-2 py-1 bg-foreground/5 rounded-full">
+                                      {company.applicationPlatform}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+                            
+                            {!isLarge && (
+                              <p className="text-sm text-foreground mb-2 truncate">
+                                {company.positionTitle || 'Position not specified'}
+                              </p>
+                            )}
+                          </div>
+                          <StatusBadge status={company.status} className="flex-shrink-0 ml-2" />
+                        </div>
+                        
+                        {/* Timeline */}
+                        <div className={`grid ${isLarge ? 'grid-cols-3' : 'grid-cols-2'} gap-3 mb-4 text-sm`}>
+                          <div className="bg-background/50 rounded-lg p-3">
+                            <div className="text-xs text-muted-foreground mb-1">Applied</div>
+                            <div className="font-medium text-foreground text-xs">
+                              {formatDate(company.applicationDate)}
+                            </div>
+                          </div>
+                          <div className="bg-background/50 rounded-lg p-3">
+                            <div className="text-xs text-muted-foreground mb-1">Next Action</div>
+                            <div className="font-medium text-foreground text-xs">
+                              {company.nextActionDate ? formatDate(company.nextActionDate) : 'Not set'}
+                            </div>
+                          </div>
+                          {isLarge && (
+                            <div className="bg-background/50 rounded-lg p-3">
+                              <div className="text-xs text-muted-foreground mb-1">Rounds</div>
+                              <div className="font-medium text-foreground text-xs">
+                                {company.interviewRounds || 0} completed
+                              </div>
+                            </div>
                           )}
                         </div>
-                      </div>
-                      <StatusBadge status={company.status} />
-                    </div>
-                    
-                    <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
-                      <div>
-                        <span className="text-muted-foreground">Applied:</span>
-                        <div className="font-medium text-foreground">
-                          {formatDate(company.applicationDate)}
+                        
+                        {/* Notes Preview for Large Cards */}
+                        {isLarge && company.notes && (
+                          <div className="mb-4">
+                            <div className="text-xs text-muted-foreground mb-1">Notes</div>
+                            <p className="text-sm text-foreground bg-background/50 rounded-lg p-3 line-clamp-2">
+                              {company.notes}
+                            </p>
+                          </div>
+                        )}
+                        
+                        {/* Actions */}
+                        <div className="flex justify-end gap-2 pt-3 border-t border-border/50">
+                          <button
+                            onClick={() => handleEditCompany(company)}
+                            className="px-3 py-1.5 text-xs text-foreground bg-foreground/10 hover:bg-foreground/20 rounded-lg transition-colors"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDeleteCompany(company._id, company.companyName)}
+                            className="px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/40 rounded-lg transition-colors"
+                          >
+                            Delete
+                          </button>
                         </div>
                       </div>
-                      <div>
-                        <span className="text-muted-foreground">Next Action:</span>
-                        <div className="font-medium text-foreground">
-                          {company.nextActionDate ? formatDate(company.nextActionDate) : 'N/A'}
-                        </div>
-                      </div>
                     </div>
-                    
-                    <div className="flex justify-end gap-2 pt-2 border-t border-border">
-                      <button
-                        onClick={() => handleEditCompany(company)}
-                        className="px-4 py-2 text-sm text-foreground bg-foreground/10 hover:bg-foreground/20 rounded-lg transition-colors"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDeleteCompany(company._id, company.companyName)}
-                        className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/40 rounded-lg transition-colors"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
               {/* Pagination */}

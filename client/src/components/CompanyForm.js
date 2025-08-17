@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useCompany } from '../context/CompanyContext';
 import { useToast } from '../context/ToastContext';
 import LoadingSpinner from './LoadingSpinner';
@@ -8,6 +8,7 @@ import { APPLICATION_STATUSES, POSITION_TYPES } from '../utils/constants';
 const CompanyForm = ({ company, onClose }) => {
  const { createCompany, updateCompany } = useCompany();
  const { showSuccess, showError } = useToast();
+ const companyNameRef = useRef(null);
  const [loading, setLoading] = useState(false);
  const [error, setError] = useState('');
  const [formData, setFormData] = useState({
@@ -38,6 +39,12 @@ const CompanyForm = ({ company, onClose }) => {
  applicationPlatform: company.applicationPlatform || company.contactPerson || ''
  });
  }
+ // Auto-focus company name field
+ setTimeout(() => {
+ if (companyNameRef.current) {
+ companyNameRef.current.focus();
+ }
+ }, 100);
  }, [company]);
 
  const handleChange = (e) => {
@@ -86,30 +93,64 @@ const CompanyForm = ({ company, onClose }) => {
  };
 
  return (
- <form onSubmit={handleSubmit} className="space-y-6">
+ <div className="min-h-screen bg-background p-6">
+ <form onSubmit={handleSubmit} className="max-w-4xl mx-auto space-y-8">
  <ErrorMessage message={error} onClose={() => setError('')} />
 
- <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
- {/* Company Name */}
- <div className="md:col-span-2">
- <label htmlFor="companyName" className="block text-sm font-medium text-foreground">
- Company Name *
+ {/* Header */}
+ <div className="text-center mb-8">
+ <h2 className="text-3xl font-bold text-foreground mb-2">
+ {company ? 'Update Application' : 'Add New Application'}
+ </h2>
+ <p className="text-muted-foreground">
+ {company ? 'Update your application details' : 'Track your job application journey'}
+ </p>
+ </div>
+
+ {/* Modular Grid Layout */}
+ <div className="grid grid-cols-12 gap-6">
+ {/* Company Name - Large Card */}
+ <div className="col-span-12 md:col-span-8 bg-muted/30 rounded-[20px] p-6">
+ <label htmlFor="companyName" className="block text-lg font-semibold text-foreground mb-3">
+ 🏢 Company Name *
  </label>
  <input
+ ref={companyNameRef}
  type="text"
  id="companyName"
  name="companyName"
  required
  value={formData.companyName}
  onChange={handleChange}
- className="mt-1 block w-full px-3 py-2 border border-input rounded-md shadow-sm bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-ring"
+ className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-foreground/20 transition-all text-lg"
  placeholder="Enter company name"
  />
  </div>
 
- {/* Position Title */}
+ {/* Status - Medium Card */}
+ <div className="col-span-12 md:col-span-4 bg-muted/20 rounded-[16px] p-6">
+ <label htmlFor="status" className="block text-sm font-medium text-foreground mb-3">
+ 📊 Status
+ </label>
+ <select
+ id="status"
+ name="status"
+ value={formData.status}
+ onChange={handleChange}
+ className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-foreground/20 transition-all"
+ >
+ {APPLICATION_STATUSES.map(status => (
+ <option key={status} value={status}>{status}</option>
+ ))}
+ </select>
+ </div>
+
+ {/* Position Details - Wide Card */}
+ <div className="col-span-12 md:col-span-6 bg-muted/20 rounded-[16px] p-6">
+ <h3 className="text-lg font-semibold text-foreground mb-4">💼 Position Details</h3>
+ <div className="space-y-4">
  <div>
- <label htmlFor="positionTitle" className="block text-sm font-medium text-muted-foreground">
+ <label htmlFor="positionTitle" className="block text-sm font-medium text-foreground mb-2">
  Position Title
  </label>
  <input
@@ -118,14 +159,12 @@ const CompanyForm = ({ company, onClose }) => {
  name="positionTitle"
  value={formData.positionTitle}
  onChange={handleChange}
- className="mt-1 block w-full px-3 py-2 border border-border rounded-md shadow-sm bg-card bg-card text-card-foreground focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+ className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-foreground/20 transition-all"
  placeholder="e.g., Software Engineer"
  />
  </div>
-
- {/* Position Type */}
  <div>
- <label htmlFor="positionType" className="block text-sm font-medium text-muted-foreground">
+ <label htmlFor="positionType" className="block text-sm font-medium text-foreground mb-2">
  Position Type
  </label>
  <select
@@ -133,35 +172,35 @@ const CompanyForm = ({ company, onClose }) => {
  name="positionType"
  value={formData.positionType}
  onChange={handleChange}
- className="mt-1 block w-full px-3 py-2 border border-border rounded-md shadow-sm bg-card bg-card text-card-foreground focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+ className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-foreground/20 transition-all"
  >
  {POSITION_TYPES.map(type => (
  <option key={type} value={type}>{type}</option>
  ))}
  </select>
  </div>
-
- {/* Status */}
- <div>
- <label htmlFor="status" className="block text-sm font-medium text-muted-foreground">
- Application Status
- </label>
- <select
- id="status"
- name="status"
- value={formData.status}
- onChange={handleChange}
- className="mt-1 block w-full px-3 py-2 border border-border rounded-md shadow-sm bg-card bg-card text-card-foreground focus:outline-none focus:ring-blue-500 focus:border-blue-500"
- >
- {APPLICATION_STATUSES.map(status => (
- <option key={status} value={status}>{status}</option>
- ))}
- </select>
+ </div>
  </div>
 
- {/* Interview Rounds */}
+ {/* Timeline & Progress - Wide Card */}
+ <div className="col-span-12 md:col-span-6 bg-muted/20 rounded-[16px] p-6">
+ <h3 className="text-lg font-semibold text-foreground mb-4">📅 Timeline & Progress</h3>
+ <div className="space-y-4">
  <div>
- <label htmlFor="interviewRounds" className="block text-sm font-medium text-muted-foreground">
+ <label htmlFor="nextActionDate" className="block text-sm font-medium text-foreground mb-2">
+ Next Action Date
+ </label>
+ <input
+ type="date"
+ id="nextActionDate"
+ name="nextActionDate"
+ value={formData.nextActionDate}
+ onChange={handleChange}
+ className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-foreground/20 transition-all"
+ />
+ </div>
+ <div>
+ <label htmlFor="interviewRounds" className="block text-sm font-medium text-foreground mb-2">
  Interview Rounds Completed
  </label>
  <input
@@ -171,29 +210,18 @@ const CompanyForm = ({ company, onClose }) => {
  min="0"
  value={formData.interviewRounds}
  onChange={handleChange}
- className="mt-1 block w-full px-3 py-2 border border-border rounded-md shadow-sm bg-card bg-card text-card-foreground focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+ className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-foreground/20 transition-all"
  />
  </div>
-
- {/* Next Action Date */}
- <div>
- <label htmlFor="nextActionDate" className="block text-sm font-medium text-muted-foreground">
- Next Action Date
- </label>
- <input
- type="date"
- id="nextActionDate"
- name="nextActionDate"
- value={formData.nextActionDate}
- onChange={handleChange}
- className="mt-1 block w-full px-3 py-2 border border-border rounded-md shadow-sm bg-card bg-card text-card-foreground focus:outline-none focus:ring-blue-500 focus:border-blue-500"
- />
+ </div>
  </div>
 
- {/* Salary Expectation */}
+ {/* Financial Details - Medium Card */}
+ <div className="col-span-12 md:col-span-4 bg-muted/20 rounded-[16px] p-6">
+ <h3 className="text-lg font-semibold text-foreground mb-4">💰 Financial</h3>
  <div>
- <label htmlFor="salaryExpectation" className="block text-sm font-medium text-muted-foreground">
- Salary Expectation (Rupees)
+ <label htmlFor="salaryExpectation" className="block text-sm font-medium text-foreground mb-2">
+ Salary Expectation (₹)
  </label>
  <input
  type="number"
@@ -202,14 +230,17 @@ const CompanyForm = ({ company, onClose }) => {
  min="0"
  value={formData.salaryExpectation}
  onChange={handleChange}
- className="mt-1 block w-full px-3 py-2 border border-border rounded-md shadow-sm bg-card bg-card text-card-foreground focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+ className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-foreground/20 transition-all"
  placeholder="e.g., 75000"
  />
  </div>
+ </div>
 
- {/* Application Platform */}
+ {/* Application Source - Medium Card */}
+ <div className="col-span-12 md:col-span-4 bg-muted/20 rounded-[16px] p-6">
+ <h3 className="text-lg font-semibold text-foreground mb-4">🔗 Source</h3>
  <div>
- <label htmlFor="applicationPlatform" className="block text-sm font-medium text-muted-foreground">
+ <label htmlFor="applicationPlatform" className="block text-sm font-medium text-foreground mb-2">
  Application Platform
  </label>
  <input
@@ -218,15 +249,16 @@ const CompanyForm = ({ company, onClose }) => {
  name="applicationPlatform"
  value={formData.applicationPlatform}
  onChange={handleChange}
- className="mt-1 block w-full px-3 py-2 border border-border rounded-md shadow-sm bg-card bg-card text-card-foreground focus:outline-none focus:ring-blue-500 focus:border-blue-500"
- placeholder="e.g., LinkedIn, Indeed, Company Website"
+ className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-foreground/20 transition-all"
+ placeholder="e.g., LinkedIn, Indeed"
  />
  </div>
+ </div>
 
- {/* Notes */}
- <div className="md:col-span-2">
- <label htmlFor="notes" className="block text-sm font-medium text-muted-foreground">
- Notes
+ {/* Notes - Full Width Card */}
+ <div className="col-span-12 bg-muted/20 rounded-[16px] p-6">
+ <label htmlFor="notes" className="block text-lg font-semibold text-foreground mb-3">
+ 📝 Notes
  </label>
  <textarea
  id="notes"
@@ -234,31 +266,32 @@ const CompanyForm = ({ company, onClose }) => {
  rows={4}
  value={formData.notes}
  onChange={handleChange}
- className="mt-1 block w-full px-3 py-2 border border-border rounded-md shadow-sm bg-card bg-card text-card-foreground focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+ className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-foreground/20 transition-all"
  placeholder="Add any additional notes about this application..."
  />
  </div>
  </div>
 
  {/* Form Actions */}
- <div className="flex justify-end space-x-3 pt-6 border-t border-border text-card-foreground">
+ <div className="flex justify-center gap-4 pt-8">
  <button
  type="button"
  onClick={onClose}
- className="px-4 py-2 border border-border rounded-md text-muted-foreground bg-background hover:bg-muted transition-colors"
+ className="px-6 py-3 border border-border rounded-lg text-muted-foreground bg-background hover:bg-muted transition-colors"
  >
  Cancel
  </button>
  <button
  type="submit"
  disabled={loading}
- className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
+ className="px-8 py-3 bg-foreground text-background rounded-lg hover:bg-foreground/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center font-medium"
  >
  {loading && <LoadingSpinner size="small" className="mr-2" />}
  {company ? 'Update Application' : 'Add Application'}
  </button>
  </div>
  </form>
+ </div>
  );
 };
 
