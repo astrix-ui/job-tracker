@@ -131,17 +131,19 @@ const About = () => {
 
       {/* Technology Stack */}
       <section className="py-16 px-4">
-        <div className="max-w-6xl mx-auto text-center">
-          <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-8">
-            Built with modern technology
-          </h2>
-          <div className="overflow-hidden rounded-[20px] bg-muted/30 py-6">
-            <div className="flex gap-6 pb-4 animate-scroll-slow">
-              {['React', 'Node.js', 'MongoDB', 'Express', 'Tailwind CSS', 'JWT', 'Mongoose', 'React Router', 'Context API', 'Axios', 'bcryptjs', 'CORS', 'React', 'Node.js', 'MongoDB', 'Express', 'Tailwind CSS', 'JWT'].map((tech, index) => (
-                <div key={`${tech}-${index}`} className="p-4 bg-card border border-border rounded-lg whitespace-nowrap flex-shrink-0">
-                  <div className="text-lg font-medium text-foreground">{tech}</div>
-                </div>
-              ))}
+        <div className="max-w-6xl mx-auto">
+          <div className="bg-muted/30 rounded-[20px] py-12 px-8 text-center">
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-8">
+              Built with modern technology
+            </h2>
+            <div className="overflow-hidden">
+              <div className="flex gap-6 pb-4 animate-scroll-slow">
+                {['React', 'Node.js', 'MongoDB', 'Express', 'Tailwind CSS', 'JWT', 'Mongoose', 'React Router', 'Context API', 'Axios', 'bcryptjs', 'CORS', 'React', 'Node.js', 'MongoDB', 'Express', 'Tailwind CSS', 'JWT'].map((tech, index) => (
+                  <div key={`${tech}-${index}`} className="p-4 bg-card border border-border rounded-lg whitespace-nowrap flex-shrink-0">
+                    <div className="text-lg font-medium text-foreground">{tech}</div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -230,7 +232,7 @@ const About = () => {
               className="p-2 rounded-lg hover:bg-muted transition-colors duration-200"
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
               </svg>
             </a>
           </div>
