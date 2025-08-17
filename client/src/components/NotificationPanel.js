@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useCompany } from '../context/CompanyContext';
 import { connectionAPI } from '../utils/api';
 import { useToast } from '../context/ToastContext';
@@ -9,6 +10,7 @@ import { UserPlus, Check, X } from 'lucide-react';
 const NotificationPanel = ({ isOpen, onClose, isMobile = false }) => {
   const { companies } = useCompany();
   const { showToast } = useToast();
+  const navigate = useNavigate();
   const panelRef = useRef(null);
   const [followRequests, setFollowRequests] = useState([]);
   const [requestsLoading, setRequestsLoading] = useState(false);
@@ -185,7 +187,15 @@ const NotificationPanel = ({ isOpen, onClose, isMobile = false }) => {
                   className="p-3 bg-muted/50 rounded-lg border border-border"
                 >
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
+                    <button
+                      onClick={() => {
+                        if (request.requester?._id) {
+                          navigate(`/user/${request.requester._id}`);
+                          onClose();
+                        }
+                      }}
+                      className="flex items-center space-x-3 flex-1 text-left hover:bg-foreground/5 rounded-lg p-2 -m-2 transition-colors"
+                    >
                       <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
                         <span className="text-xs font-semibold text-primary">
                           {(request.requester?.username || 'U').charAt(0).toUpperCase()}
@@ -196,10 +206,10 @@ const NotificationPanel = ({ isOpen, onClose, isMobile = false }) => {
                           {request.requester?.username || 'Unknown User'}
                         </p>
                         <p className="text-xs text-muted-foreground">
-                          wants to connect
+                          wants to connect • Click to view profile
                         </p>
                       </div>
-                    </div>
+                    </button>
                     <div className="flex space-x-2">
                       <button
                         onClick={(e) => handleRequestResponse(request._id, 'accept', e)}

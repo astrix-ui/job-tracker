@@ -11,7 +11,7 @@ import { formatDate, formatCurrency, sortCompanies, filterCompanies } from '../u
 import { APPLICATION_STATUSES, POSITION_TYPES } from '../utils/constants';
 
 // Component to display individual connection with their next event
-const ConnectionWidget = ({ connection, username, userInitial }) => {
+const ConnectionWidget = ({ connection, username, userInitial, userId, navigate }) => {
   const [nextEvent, setNextEvent] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -41,30 +41,31 @@ const ConnectionWidget = ({ connection, username, userInitial }) => {
   }, [connection.user?._id]);
 
   return (
-    <div className="flex items-center justify-between">
-      <div className="flex items-center space-x-3">
-        <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
-          <span className="text-xs font-semibold text-primary">
-            {userInitial}
-          </span>
-        </div>
-        <div>
-          <div className="font-medium text-foreground text-sm">
-            {username}
-          </div>
-          <div className="text-xs text-muted-foreground">
-            {loading ? (
-              'Loading...'
-            ) : nextEvent ? (
-              `Next: ${nextEvent}`
-            ) : (
-              'No upcoming events'
-            )}
-          </div>
+    <button
+      onClick={() => userId && navigate(`/user/${userId}`)}
+      className="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-foreground/10 transition-colors text-left cursor-pointer"
+    >
+      <div className="w-10 h-10 bg-foreground/10 rounded-full flex items-center justify-center">
+        <span className="text-sm font-medium text-foreground">
+          {userInitial}
+        </span>
+      </div>
+      <div className="flex-1">
+        <div className="font-medium text-foreground">{username}</div>
+        <div className="text-sm text-muted-foreground">
+          {loading ? (
+            'Loading...'
+          ) : nextEvent ? (
+            `Next: ${nextEvent}`
+          ) : (
+            'No upcoming events'
+          )}
         </div>
       </div>
-      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-    </div>
+      <div className="text-muted-foreground">
+        →
+      </div>
+    </button>
   );
 };
 
@@ -598,24 +599,14 @@ const Dashboard = () => {
                     const userId = connectedUser?._id;
                     
                     return (
-                      <button
+                      <ConnectionWidget 
                         key={connection._id || index}
-                        onClick={() => userId && navigate(`/user/${userId}`)}
-                        className="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-foreground/10 transition-colors text-left cursor-pointer"
-                      >
-                        <div className="w-10 h-10 bg-foreground/10 rounded-full flex items-center justify-center">
-                          <span className="text-sm font-medium text-foreground">
-                            {userInitial}
-                          </span>
-                        </div>
-                        <div className="flex-1">
-                          <div className="font-medium text-foreground">{username}</div>
-                          <div className="text-sm text-muted-foreground">Connected • Click to view</div>
-                        </div>
-                        <div className="text-muted-foreground">
-                          →
-                        </div>
-                      </button>
+                        connection={connection}
+                        username={username}
+                        userInitial={userInitial}
+                        userId={userId}
+                        navigate={navigate}
+                      />
                     );
                   })}
                   {connectionsCount.length > 4 && (
