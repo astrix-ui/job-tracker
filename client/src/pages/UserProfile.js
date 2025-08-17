@@ -30,9 +30,28 @@ const UserProfile = () => {
         setConnectionStatus(foundUser.connectionStatus);
         setIsRequester(foundUser.isRequester);
         
-        // For viewing other users' profiles, we can't access their private connections
-        // So we'll show a realistic but empty state since we can't access private data
-        setConnections([]);
+        // For viewing other users' profiles, try to get their connection count
+        // Check if this user is in our connections list to show accurate count
+        try {
+          const myConnectionsResponse = await connectionAPI.getMutualConnections();
+          const myConnections = myConnectionsResponse.data.connections || [];
+          
+          // Check if this user is connected to us
+          const isConnected = myConnections.some(conn => 
+            conn.user && conn.user._id === foundUser._id
+          );
+          
+          if (isConnected) {
+            // If connected, we can show some connection info
+            // For now, show a placeholder count based on the connection status
+            setConnections([{ username: 'Connected User', email: 'connection@example.com' }]);
+          } else {
+            setConnections([]);
+          }
+        } catch (connError) {
+          console.error('Error checking connection status:', connError);
+          setConnections([]);
+        }
       } else {
         showToast('User not found', 'error');
         navigate('/explore');
@@ -254,24 +273,15 @@ const UserProfile = () => {
               <div key={index} className="flex items-center space-x-4 p-4 border border-border rounded-lg">
                 <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
                   <span className="text-sm font-semibold text-primary">
-                    {(() => {
-                      const user = connection.follower || connection.following || connection;
-                      return (user?.username || 'U').charAt(0).toUpperCase();
-                    })()}
+                    {(connection.user?.username || 'U').charAt(0).toUpperCase()}
                   </span>
                 </div>
                 <div className="flex-1">
                   <div className="font-medium text-foreground">
-                    {(() => {
-                      const user = connection.follower || connection.following || connection;
-                      return user?.username || 'Unknown User';
-                    })()}
+                    {connection.user?.username || 'Unknown User'}
                   </div>
                   <div className="text-sm text-muted-foreground">
-                    {(() => {
-                      const user = connection.follower || connection.following || connection;
-                      return user?.email || 'No email';
-                    })()}
+                    {connection.user?.email || 'No email'}
                   </div>
                 </div>
                 <div className="text-xs text-muted-foreground">

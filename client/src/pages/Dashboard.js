@@ -431,25 +431,10 @@ const Dashboard = () => {
                 );
                 const nextEvent = connectionEvents.length > 0 ? connectionEvents[0].companyName : null;
                 
-                // Get the actual connected user info - handle both follower and following relationships
-                let connectedUser, username, userInitial;
-                
-                if (connection.follower && connection.follower._id) {
-                  // This user is being followed by someone
-                  connectedUser = connection.follower;
-                  username = connectedUser.username;
-                } else if (connection.following && connection.following._id) {
-                  // This user is following someone
-                  connectedUser = connection.following;
-                  username = connectedUser.username;
-                } else if (connection.username) {
-                  // Direct connection object
-                  username = connection.username;
-                } else {
-                  username = 'Unknown User';
-                }
-                
-                userInitial = username.charAt(0).toUpperCase();
+                // Get the actual connected user info - server returns { user: {...}, connectionId, connectedAt }
+                const connectedUser = connection.user;
+                const username = connectedUser?.username || 'Unknown User';
+                const userInitial = username.charAt(0).toUpperCase();
                 
                 return (
                   <div key={connection._id || index} className="flex items-center justify-between">

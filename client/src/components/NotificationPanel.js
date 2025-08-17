@@ -56,9 +56,14 @@ const NotificationPanel = ({ isOpen, onClose, isMobile = false }) => {
     try {
       setRequestsLoading(true);
       const response = await connectionAPI.getPendingRequests();
-      setFollowRequests(response.data.requests);
+      // Filter out requests from deleted users
+      const validRequests = (response.data.requests || []).filter(request => 
+        request.requester && request.requester._id && request.requester.username
+      );
+      setFollowRequests(validRequests);
     } catch (error) {
       console.error('Error fetching follow requests:', error);
+      setFollowRequests([]);
     } finally {
       setRequestsLoading(false);
     }
@@ -183,12 +188,12 @@ const NotificationPanel = ({ isOpen, onClose, isMobile = false }) => {
                     <div className="flex items-center space-x-3">
                       <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
                         <span className="text-xs font-semibold text-primary">
-                          {request.requester.username.charAt(0).toUpperCase()}
+                          {(request.requester?.username || 'U').charAt(0).toUpperCase()}
                         </span>
                       </div>
                       <div>
                         <p className="text-sm font-medium text-foreground">
-                          {request.requester.username}
+                          {request.requester?.username || 'Unknown User'}
                         </p>
                         <p className="text-xs text-muted-foreground">
                           wants to connect
