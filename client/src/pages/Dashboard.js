@@ -51,34 +51,21 @@ const Dashboard = () => {
         const connections = connectionsResponse.data.connections || [];
         setConnectionsCount(connections);
 
-        // Fetch popular users from explore API
+        // Fetch real users from explore API
         try {
           const usersResponse = await connectionAPI.getAllUsers();
           const users = usersResponse.data.users || [];
           
-          // Calculate connection counts for each user
-          // Since we can't access other users' private connections, we'll simulate based on user activity
-          const usersWithCounts = users.map((user) => {
-            // Use a deterministic approach based on user ID to simulate consistent connection counts
-            const seed = user._id ? user._id.slice(-2) : '00';
-            const connectionCount = parseInt(seed, 16) % 30 + 5; // 5-34 connections
-            
-            return {
-              id: user._id,
-              username: user.username,
-              connectionsCount: connectionCount
-            };
-          });
+          // Take first 3 users (real users, no ranking)
+          const displayUsers = users.slice(0, 3).map(user => ({
+            id: user._id,
+            username: user.username,
+            email: user.email
+          }));
           
-          // Sort by connection count and take top 3
-          const sortedUsers = usersWithCounts
-            .filter(user => user.connectionsCount > 0)
-            .sort((a, b) => b.connectionsCount - a.connectionsCount)
-            .slice(0, 3);
-          
-          setPopularUsers(sortedUsers);
+          setPopularUsers(displayUsers);
         } catch (userError) {
-          console.error('Error fetching popular users:', userError);
+          console.error('Error fetching users:', userError);
           setPopularUsers([]);
         }
       } catch (error) {
@@ -197,26 +184,26 @@ const Dashboard = () => {
 
 
       {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <div className="bg-card p-4 rounded-lg shadow border border-border">
-          <div className="text-2xl font-bold text-foreground">{stats.total}</div>
-          <div className="text-sm text-muted-foreground">Total Applications</div>
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <div className="bg-card p-3 sm:p-4 rounded-lg shadow border border-border">
+          <div className="text-xl sm:text-2xl font-bold text-foreground">{stats.total}</div>
+          <div className="text-xs sm:text-sm text-muted-foreground">Total Applications</div>
         </div>
-        <div className="bg-card p-4 rounded-lg shadow border border-border">
-          <div className="text-2xl font-bold text-foreground">{stats.applied}</div>
-          <div className="text-sm text-muted-foreground">Applied</div>
+        <div className="bg-card p-3 sm:p-4 rounded-lg shadow border border-border">
+          <div className="text-xl sm:text-2xl font-bold text-foreground">{stats.applied}</div>
+          <div className="text-xs sm:text-sm text-muted-foreground">Applied</div>
         </div>
-        <div className="bg-card p-4 rounded-lg shadow border border-border">
-          <div className="text-2xl font-bold text-foreground">{stats.interviews}</div>
-          <div className="text-sm text-muted-foreground">In Progress</div>
+        <div className="bg-card p-3 sm:p-4 rounded-lg shadow border border-border">
+          <div className="text-xl sm:text-2xl font-bold text-foreground">{stats.interviews}</div>
+          <div className="text-xs sm:text-sm text-muted-foreground">In Progress</div>
         </div>
-        <div className="bg-card p-4 rounded-lg shadow border border-border">
-          <div className="text-2xl font-bold text-foreground">{stats.offers}</div>
-          <div className="text-sm text-muted-foreground">Offers</div>
+        <div className="bg-card p-3 sm:p-4 rounded-lg shadow border border-border">
+          <div className="text-xl sm:text-2xl font-bold text-foreground">{stats.offers}</div>
+          <div className="text-xs sm:text-sm text-muted-foreground">Offers</div>
         </div>
-        <div className="bg-card p-4 rounded-lg shadow border border-border">
-          <div className="text-2xl font-bold text-foreground">{stats.rejected}</div>
-          <div className="text-sm text-muted-foreground">Rejected</div>
+        <div className="bg-card p-3 sm:p-4 rounded-lg shadow border border-border">
+          <div className="text-xl sm:text-2xl font-bold text-foreground">{stats.rejected}</div>
+          <div className="text-xs sm:text-sm text-muted-foreground">Rejected</div>
         </div>
       </div>
 
@@ -430,10 +417,10 @@ const Dashboard = () => {
       </div>
 
       {/* Dashboard Widgets - Below Applications */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {/* My Connections Widget */}
-        <div className="bg-card p-6 rounded-lg shadow border border-border">
-          <h3 className="text-lg font-semibold text-foreground mb-4">My Connections</h3>
+        <div className="bg-card p-4 sm:p-6 rounded-lg shadow border border-border">
+          <h3 className="text-base sm:text-lg font-semibold text-foreground mb-3 sm:mb-4">My Connections</h3>
           {Array.isArray(connectionsCount) && connectionsCount.length > 0 ? (
             <div className="space-y-3">
               {connectionsCount.slice(0, 3).map((connection, index) => {
@@ -449,12 +436,12 @@ const Dashboard = () => {
                     <div className="flex items-center space-x-3">
                       <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
                         <span className="text-xs font-semibold text-primary">
-                          {(connection.username || connection.follower?.username || 'U').charAt(0).toUpperCase()}
+                          {(connection.follower?.username || connection.following?.username || connection.username || 'U').charAt(0).toUpperCase()}
                         </span>
                       </div>
                       <div>
                         <div className="font-medium text-foreground text-sm">
-                          {connection.username || connection.follower?.username || 'Unknown User'}
+                          {connection.follower?.username || connection.following?.username || connection.username || 'Unknown User'}
                         </div>
                         <div className="text-xs text-muted-foreground">
                           {nextEvent ? `Next: ${nextEvent}` : 'No upcoming events'}
@@ -477,8 +464,8 @@ const Dashboard = () => {
         </div>
 
         {/* Next Events Widget */}
-        <div className="bg-card p-6 rounded-lg shadow border border-border">
-          <h3 className="text-lg font-semibold text-foreground mb-4">Next Events</h3>
+        <div className="bg-card p-4 sm:p-6 rounded-lg shadow border border-border">
+          <h3 className="text-base sm:text-lg font-semibold text-foreground mb-3 sm:mb-4">Next Events</h3>
           {upcomingEvents.length > 0 ? (
             <div className="space-y-3">
               {upcomingEvents.slice(0, 3).map((event) => (
@@ -502,30 +489,27 @@ const Dashboard = () => {
           )}
         </div>
 
-        {/* Popular Users Widget */}
-        <div className="bg-card p-6 rounded-lg shadow border border-border">
-          <h3 className="text-lg font-semibold text-foreground mb-4">Popular Users</h3>
+        {/* Users Widget */}
+        <div className="bg-card p-4 sm:p-6 rounded-lg shadow border border-border">
+          <h3 className="text-base sm:text-lg font-semibold text-foreground mb-3 sm:mb-4">Users</h3>
           {popularUsers.length > 0 ? (
             <div className="space-y-3">
-              {popularUsers.map((user, index) => (
-                <div key={user.id} className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
-                      <span className="text-xs font-semibold text-primary">
-                        {user.username.charAt(0).toUpperCase()}
-                      </span>
-                    </div>
-                    <div>
-                      <div className="font-medium text-foreground text-sm">{user.username}</div>
-                      <div className="text-xs text-muted-foreground">{user.connectionsCount} connections</div>
-                    </div>
+              {popularUsers.map((user) => (
+                <div key={user.id} className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                    <span className="text-xs font-semibold text-primary">
+                      {user.username.charAt(0).toUpperCase()}
+                    </span>
                   </div>
-                  <div className="text-xs text-muted-foreground">#{index + 1}</div>
+                  <div className="flex-1">
+                    <div className="font-medium text-foreground text-sm">{user.username}</div>
+                    <div className="text-xs text-muted-foreground">{user.email}</div>
+                  </div>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="text-sm text-muted-foreground">No data available</p>
+            <p className="text-sm text-muted-foreground">No users available</p>
           )}
         </div>
       </div>

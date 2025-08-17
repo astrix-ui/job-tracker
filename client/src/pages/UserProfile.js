@@ -261,12 +261,16 @@ const UserProfile = () => {
               <div key={index} className="flex items-center space-x-4 p-4 border border-border rounded-lg">
                 <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
                   <span className="text-sm font-semibold text-primary">
-                    {connection.username?.charAt(0).toUpperCase() || 'U'}
+                    {(connection.follower?.username || connection.following?.username || connection.username || 'U').charAt(0).toUpperCase()}
                   </span>
                 </div>
                 <div className="flex-1">
-                  <div className="font-medium text-foreground">{connection.username || 'Unknown User'}</div>
-                  <div className="text-sm text-muted-foreground">{connection.email || 'No email'}</div>
+                  <div className="font-medium text-foreground">
+                    {connection.follower?.username || connection.following?.username || connection.username || 'Unknown User'}
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    {connection.follower?.email || connection.following?.email || connection.email || 'No email'}
+                  </div>
                 </div>
                 <div className="text-xs text-muted-foreground">
                   Connected
