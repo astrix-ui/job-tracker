@@ -28,7 +28,7 @@ const Toast = ({
   }, [duration, onClose, showConfirm, showCancelOption]);
 
   const getToastStyles = () => {
-    const baseStyles = "fixed top-20 right-4 z-50 px-4 py-3 rounded-md shadow-lg transition-all duration-300 transform border";
+    const baseStyles = "fixed top-20 right-4 left-4 sm:left-auto sm:right-4 z-50 px-4 py-4 rounded-lg shadow-xl transition-all duration-300 transform border max-w-md sm:max-w-sm mx-auto sm:mx-0";
     
     if (!isVisible) {
       return `${baseStyles} opacity-0 translate-x-full`;
@@ -108,22 +108,22 @@ const Toast = ({
       <div className="flex items-start">
         {getIcon()}
         <div className="flex-1">
-          <span className="text-sm font-medium">{message}</span>
+          <span className="text-sm font-medium leading-relaxed">{message}</span>
           
           {/* Confirmation buttons */}
           {showConfirm && (
-            <div className="flex space-x-2 mt-3">
+            <div className="flex flex-col sm:flex-row gap-2 mt-4">
               <button
                 onClick={handleConfirm}
                 disabled={isProcessing}
-                className="px-3 py-1 bg-primary text-primary-foreground rounded text-xs hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 bg-destructive text-destructive-foreground rounded-md text-sm font-medium hover:bg-destructive/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
-                {isProcessing ? 'Processing...' : confirmText}
+                {isProcessing ? 'Deleting Account...' : confirmText}
               </button>
               <button
                 onClick={handleCancel}
                 disabled={isProcessing}
-                className="px-3 py-1 bg-muted text-muted-foreground rounded text-xs hover:bg-muted/80 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 bg-muted text-muted-foreground rounded-md text-sm font-medium hover:bg-muted/80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 {cancelText}
               </button>

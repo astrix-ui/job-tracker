@@ -30,16 +30,9 @@ const UserProfile = () => {
         setConnectionStatus(foundUser.connectionStatus);
         setIsRequester(foundUser.isRequester);
         
-        // For viewing other users' profiles, simulate connection count based on user ID
-        const seed = foundUser._id ? foundUser._id.slice(-2) : '00';
-        const userConnectionCount = parseInt(seed, 16) % 20 + 1; // 1-20 connections
-        
-        // Create mock connections for display purposes
-        const mockConnections = Array.from({ length: Math.min(userConnectionCount, 5) }, (_, i) => ({
-          username: `user_${seed}_${i + 1}`,
-          email: `user${i + 1}@example.com`
-        }));
-        setConnections(mockConnections);
+        // For viewing other users' profiles, we can't access their private connections
+        // So we'll show a realistic but empty state since we can't access private data
+        setConnections([]);
       } else {
         showToast('User not found', 'error');
         navigate('/explore');

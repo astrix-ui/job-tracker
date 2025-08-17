@@ -7,7 +7,8 @@ const {
   login,
   logout,
   getCurrentUser,
-  updateProfile
+  updateProfile,
+  deleteAccount
 } = require('../controllers/authController');
 
 // POST /api/auth/register
@@ -24,5 +25,8 @@ router.get('/user', requireAuth, getCurrentUser);
 
 // PUT /api/auth/profile
 router.put('/profile', requireAuth, updateProfile);
+
+// DELETE /api/auth/account
+router.delete('/account', requireAuth, deleteAccount);
 
 module.exports = router;

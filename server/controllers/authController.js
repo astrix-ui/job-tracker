@@ -165,10 +165,43 @@ const updateProfile = async (req, res) => {
   }
 };
 
+const deleteAccount = async (req, res) => {
+  try {
+    const userId = req.session.userId;
+
+    // Find and delete the user
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Delete the user account
+    await User.findByIdAndDelete(userId);
+
+    // Destroy the session
+    req.session.destroy((err) => {
+      if (err) {
+        console.error('Session destroy error:', err);
+        return res.status(500).json({ error: 'Error logging out after account deletion' });
+      }
+      
+      res.json({
+        success: true,
+        message: 'Account deleted successfully'
+      });
+    });
+
+  } catch (error) {
+    console.error('Delete account error:', error);
+    res.status(500).json({ error: 'Server error during account deletion' });
+  }
+};
+
 module.exports = {
   register,
   login,
   logout,
   getCurrentUser,
-  updateProfile
+  updateProfile,
+  deleteAccount
 };

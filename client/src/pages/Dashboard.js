@@ -431,17 +431,22 @@ const Dashboard = () => {
                 );
                 const nextEvent = connectionEvents.length > 0 ? connectionEvents[0].companyName : null;
                 
+                // Get the actual connected user info
+                const connectedUser = connection.follower || connection.following || connection;
+                const username = connectedUser?.username || 'Unknown User';
+                const userInitial = username.charAt(0).toUpperCase();
+                
                 return (
                   <div key={connection._id || index} className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
                       <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
                         <span className="text-xs font-semibold text-primary">
-                          {(connection.follower?.username || connection.following?.username || connection.username || 'U').charAt(0).toUpperCase()}
+                          {userInitial}
                         </span>
                       </div>
                       <div>
                         <div className="font-medium text-foreground text-sm">
-                          {connection.follower?.username || connection.following?.username || connection.username || 'Unknown User'}
+                          {username}
                         </div>
                         <div className="text-xs text-muted-foreground">
                           {nextEvent ? `Next: ${nextEvent}` : 'No upcoming events'}

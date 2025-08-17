@@ -114,10 +114,15 @@ const Profile = () => {
           const result = await deleteAccount();
           if (result.success) {
             showSuccess('Account deleted successfully');
+            // Redirect to login page after successful deletion
+            setTimeout(() => {
+              window.location.href = '/login';
+            }, 2000);
           } else {
             showError(result.error || 'Failed to delete account');
           }
         } catch (error) {
+          console.error('Delete account error:', error);
           showError('Failed to delete account');
         }
       },
@@ -323,15 +328,15 @@ const Profile = () => {
                 </div>
               </div>
 
-              <div className="flex justify-between items-center pt-6 border-t border-border text-card-foreground">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 pt-6 border-t border-border text-card-foreground">
                 <button
                   type="button"
                   onClick={handleDeleteAccount}
-                  className="px-4 py-2 bg-destructive text-destructive-foreground rounded-md hover:bg-destructive/90 transition-colors"
+                  className="w-full sm:w-auto px-4 py-2 bg-destructive text-destructive-foreground rounded-md hover:bg-destructive/90 transition-colors order-2 sm:order-1"
                 >
                   Delete Account
                 </button>
-                <div className="flex space-x-3">
+                <div className="flex flex-col sm:flex-row gap-3 order-1 sm:order-2">
                   <button
                     type="button"
                     onClick={() => {
@@ -346,14 +351,14 @@ const Profile = () => {
                       setError('');
                       setSuccess('');
                     }}
-                    className="px-4 py-2 border border-border rounded-md text-muted-foreground bg-background hover:bg-muted transition-colors"
+                    className="w-full sm:w-auto px-4 py-2 border border-border rounded-md text-muted-foreground bg-background hover:bg-muted transition-colors"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={loading}
-                    className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
+                    className="w-full sm:w-auto px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
                   >
                     {loading && <LoadingSpinner size="small" className="mr-2" />}
                     Save Changes
