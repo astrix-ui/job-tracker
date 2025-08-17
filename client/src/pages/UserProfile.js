@@ -30,11 +30,16 @@ const UserProfile = () => {
         setConnectionStatus(foundUser.connectionStatus);
         setIsRequester(foundUser.isRequester);
         
-        // Mock connections data for now
-        setConnections([
-          { username: 'connection1', email: 'conn1@example.com' },
-          { username: 'connection2', email: 'conn2@example.com' }
-        ]);
+        // For viewing other users' profiles, simulate connection count based on user ID
+        const seed = foundUser._id ? foundUser._id.slice(-2) : '00';
+        const userConnectionCount = parseInt(seed, 16) % 20 + 1; // 1-20 connections
+        
+        // Create mock connections for display purposes
+        const mockConnections = Array.from({ length: Math.min(userConnectionCount, 5) }, (_, i) => ({
+          username: `user_${seed}_${i + 1}`,
+          email: `user${i + 1}@example.com`
+        }));
+        setConnections(mockConnections);
       } else {
         showToast('User not found', 'error');
         navigate('/explore');

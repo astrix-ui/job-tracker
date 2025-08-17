@@ -135,10 +135,11 @@ const Profile = () => {
   useEffect(() => {
     const fetchConnections = async () => {
       try {
-        const response = await connectionAPI.getConnections();
+        const response = await connectionAPI.getMutualConnections();
         setConnections(response.data.connections || []);
       } catch (error) {
         console.error('Error fetching connections:', error);
+        setConnections([]);
       }
     };
 
