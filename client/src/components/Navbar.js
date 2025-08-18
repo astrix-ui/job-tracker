@@ -55,31 +55,31 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="bg-card shadow-lg border-b border-border sticky top-0 z-50">
-      <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center h-16">
+    <nav className="bg-background/80 backdrop-blur-md border-b border-border/50 sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-14">
           {/* Logo */}
           <Link 
             to="/" 
-            className="flex items-center space-x-2 text-xl font-bold text-foreground"
+            className="flex items-center space-x-3 group"
           >
-            <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
-              <span className="text-accent-foreground font-bold">JT</span>
+            <div className="w-9 h-9 bg-gradient-to-br from-foreground to-foreground/80 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-200">
+              <span className="text-background font-bold text-sm">JT</span>
             </div>
-            <span>Job Tracker</span>
+            <span className="text-lg font-semibold text-foreground hidden sm:block">Job Tracker</span>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-6">
+          <div className="hidden md:flex items-center space-x-1">
             {navLinks.map(link => (
               (!link.requireAuth || isAuthenticated) && !link.mobileOnly && (
                 <Link
                   key={link.path}
                   to={link.path}
-                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
                     isActive(link.path)
-                      ? 'bg-accent text-accent-foreground'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                      ? 'bg-foreground text-background shadow-sm'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                   }`}
                 >
                   {link.label}
@@ -89,18 +89,18 @@ const Navbar = () => {
 
             {/* Notifications */}
             {isAuthenticated && (
-              <div className="relative">
+              <div className="relative ml-2">
                 <button
                   onClick={() => setIsNotificationOpen(!isNotificationOpen)}
-                  className="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors relative"
+                  className="p-2.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200 relative group"
                   aria-label="Notifications"
                 >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.73 21a2 2 0 01-3.46 0" />
                   </svg>
                   {notificationCount > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium">
+                    <span className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center font-medium animate-pulse">
                       {notificationCount > 9 ? '9+' : notificationCount}
                     </span>
                   )}
@@ -115,15 +115,15 @@ const Navbar = () => {
             {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+              className="p-2.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200 group ml-1"
               aria-label="Toggle theme"
             >
               {isDark ? (
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-5 h-5 group-hover:scale-110 group-hover:rotate-12 transition-all duration-200" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" clipRule="evenodd" />
                 </svg>
               ) : (
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-5 h-5 group-hover:scale-110 group-hover:-rotate-12 transition-all duration-200" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
                 </svg>
               )}
@@ -131,18 +131,18 @@ const Navbar = () => {
 
             {/* Auth Buttons */}
             {!isAuthenticated && (
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-3 ml-4">
                 <Link
                   to="/login"
-                  className="px-4 py-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors"
+                  className="px-4 py-2 text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-full transition-all duration-200 text-sm font-medium"
                 >
                   Login
                 </Link>
                 <Link
                   to="/register"
-                  className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
+                  className="px-5 py-2 bg-foreground text-background rounded-full hover:bg-foreground/90 hover:scale-105 transition-all duration-200 text-sm font-medium shadow-sm"
                 >
-                  Register
+                  Sign Up
                 </Link>
               </div>
             )}
@@ -152,9 +152,9 @@ const Navbar = () => {
           <div className="md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted"
+              className="p-2.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200 group"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {isMenuOpen ? (
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 ) : (
@@ -170,27 +170,27 @@ const Navbar = () => {
           <div className="fixed inset-0 z-50 md:hidden">
             {/* Backdrop */}
             <div 
-              className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-all duration-300"
               onClick={() => setIsMenuOpen(false)}
             />
             
             {/* Slide-in Drawer */}
-            <div className={`fixed top-0 right-0 h-full w-80 max-w-sm bg-card shadow-xl transform transition-transform duration-300 ease-in-out ${
+            <div className={`fixed top-0 right-0 h-full w-80 max-w-sm bg-background/95 backdrop-blur-md border-l border-border/50 shadow-2xl transform transition-all duration-300 ease-out ${
               isMenuOpen ? 'translate-x-0' : 'translate-x-full'
             }`}>
               {/* Drawer Header */}
-              <div className="flex items-center justify-between p-4 border-b border-border">
-                <div className="flex items-center space-x-2">
-                  <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
-                    <span className="text-accent-foreground font-bold">JT</span>
+              <div className="flex items-center justify-between p-6 border-b border-border/50">
+                <div className="flex items-center space-x-3">
+                  <div className="w-9 h-9 bg-gradient-to-br from-foreground to-foreground/80 rounded-xl flex items-center justify-center">
+                    <span className="text-background font-bold text-sm">JT</span>
                   </div>
-                  <span className="text-lg font-bold text-foreground">Job Tracker</span>
+                  <span className="text-lg font-semibold text-foreground">Job Tracker</span>
                 </div>
                 <button
                   onClick={() => setIsMenuOpen(false)}
-                  className="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                  className="p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200 group"
                 >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </button>
@@ -199,23 +199,23 @@ const Navbar = () => {
               {/* Drawer Content */}
               <div className="flex flex-col h-full">
                 {/* Navigation Links */}
-                <div className="flex-1 py-4">
-                  <div className="space-y-1 px-4">
+                <div className="flex-1 py-6">
+                  <div className="space-y-2 px-6">
                     {navLinks.map(link => (
                       (!link.requireAuth || isAuthenticated) && (
                         <Link
                           key={link.path}
                           to={link.path}
                           onClick={() => setIsMenuOpen(false)}
-                          className={`flex items-center px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
+                          className={`flex items-center px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
                             isActive(link.path)
-                              ? 'bg-accent text-accent-foreground'
-                              : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                              ? 'bg-foreground text-background shadow-sm'
+                              : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                           }`}
                         >
                           {link.label}
                           {link.path === '/notifications' && notificationCount > 0 && (
-                            <span className="ml-auto bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium">
+                            <span className="ml-auto bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center font-medium animate-pulse">
                               {notificationCount > 9 ? '9+' : notificationCount}
                             </span>
                           )}
@@ -225,19 +225,19 @@ const Navbar = () => {
                   </div>
 
                   {/* Theme Toggle Section */}
-                  <div className="px-4 py-4 border-t border-border mt-4">
-                    <div className="flex items-center justify-between px-4 py-3 rounded-lg hover:bg-muted transition-colors">
+                  <div className="px-6 py-4 border-t border-border/50 mt-4">
+                    <div className="flex items-center justify-between px-4 py-3 rounded-xl hover:bg-muted/50 transition-all duration-200">
                       <span className="text-sm font-medium text-foreground">Theme</span>
                       <button
                         onClick={toggleTheme}
-                        className="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                        className="p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200 group"
                       >
                         {isDark ? (
-                          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                          <svg className="w-5 h-5 group-hover:scale-110 group-hover:rotate-12 transition-all duration-200" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" clipRule="evenodd" />
                           </svg>
                         ) : (
-                          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                          <svg className="w-5 h-5 group-hover:scale-110 group-hover:-rotate-12 transition-all duration-200" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
                           </svg>
                         )}
@@ -247,33 +247,33 @@ const Navbar = () => {
                 </div>
 
                 {/* User Section */}
-                <div className="border-t border-border p-4">
+                <div className="border-t border-border/50 p-6">
                   {isAuthenticated ? (
-                    <div className="space-y-3">
-                      <div className="px-4 py-2">
-                        <p className="text-sm text-muted-foreground">Signed in as</p>
-                        <p className="text-sm font-medium text-foreground">{user?.username}</p>
+                    <div className="space-y-4">
+                      <div className="px-4 py-3 bg-muted/30 rounded-xl">
+                        <p className="text-xs text-muted-foreground uppercase tracking-wide">Signed in as</p>
+                        <p className="text-sm font-semibold text-foreground mt-1">{user?.username}</p>
                       </div>
                       <button
                         onClick={handleLogout}
-                        className="w-full px-4 py-3 bg-destructive text-destructive-foreground rounded-lg hover:bg-destructive/90 transition-colors font-medium"
+                        className="w-full px-4 py-3 bg-red-500 text-white rounded-xl hover:bg-red-600 hover:scale-[0.98] transition-all duration-200 font-medium shadow-sm"
                       >
                         Sign Out
                       </button>
                     </div>
                   ) : (
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                       <Link
                         to="/login"
                         onClick={() => setIsMenuOpen(false)}
-                        className="block w-full px-4 py-3 text-center text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors font-medium"
+                        className="block w-full px-4 py-3 text-center text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-xl transition-all duration-200 font-medium"
                       >
                         Sign In
                       </Link>
                       <Link
                         to="/register"
                         onClick={() => setIsMenuOpen(false)}
-                        className="block w-full px-4 py-3 text-center bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium"
+                        className="block w-full px-4 py-3 text-center bg-foreground text-background rounded-xl hover:bg-foreground/90 hover:scale-[0.98] transition-all duration-200 font-medium shadow-sm"
                       >
                         Sign Up
                       </Link>
