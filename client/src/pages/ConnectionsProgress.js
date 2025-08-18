@@ -19,10 +19,34 @@ const ConnectionsProgress = () => {
     try {
       setLoading(true);
       setError('');
-      const response = await connectionAPI.getConnections();
-      setConnections(response.data.connections || []);
+      const response = await connectionAPI.getMutualConnections();
+      
+      // Fetch progress for each connection
+      const connectionsWithProgress = await Promise.all(
+        response.data.connections.map(async (connection) => {
+          try {
+            const progressResponse = await connectionAPI.getConnectionProgress(connection.user._id);
+            return {
+              userId: connection.user._id,
+              username: connection.user.username,
+              email: connection.user.email,
+              companies: progressResponse.data.companies || []
+            };
+          } catch (error) {
+            console.error(`Failed to fetch progress for user ${connection.user._id}:`, error);
+            return {
+              userId: connection.user._id,
+              username: connection.user.username,
+              email: connection.user.email,
+              companies: []
+            };
+          }
+        })
+      );
+      
+      setConnections(connectionsWithProgress);
     } catch (error) {
-      setError(error.response?.data?.error || 'Failed to fetch connections');
+      setError(error.response?.data?.error || 'Failed to fetch connection progress');
       console.error('Fetch connections error:', error);
     } finally {
       setLoading(false);
