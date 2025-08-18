@@ -149,10 +149,10 @@ const ExploreUsers = () => {
               {popularUsers.map((user, index) => (
                 <div
                   key={user._id}
-                  className="group relative bg-background/60 backdrop-blur-xl border border-border/50 rounded-2xl p-6 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 overflow-hidden"
+                  className="group relative bg-background/60 backdrop-blur-xl border border-border/50 rounded-2xl p-6 hover:shadow-lg transition-all duration-200 overflow-hidden"
                 >
                   {/* Background Pattern */}
-                  <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-foreground/5 to-transparent rounded-full -translate-y-10 translate-x-10 group-hover:scale-150 transition-transform duration-500"></div>
+                  <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-foreground/3 to-transparent rounded-full -translate-y-8 translate-x-8 group-hover:scale-110 transition-transform duration-200"></div>
                   
                   {/* Rank Badge */}
                   {index < 3 && (
@@ -182,17 +182,8 @@ const ExploreUsers = () => {
                       </div>
                     </div>
 
-                    {/* Stats */}
-                    <div className="flex items-center justify-between mb-6">
-                      <div className="flex items-center gap-2 px-3 py-1.5 bg-muted/30 rounded-full">
-                        <svg className="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                        </svg>
-                        <span className="text-sm font-semibold text-foreground">
-                          {user.connectionsCount || 0} connections
-                        </span>
-                      </div>
-                    </div>
+                    {/* Spacer */}
+                    <div className="mb-6"></div>
 
                     {/* Actions */}
                     <div className="flex gap-3">
@@ -209,7 +200,7 @@ const ExploreUsers = () => {
                       <button
                         onClick={() => handleSendRequest(user._id)}
                         disabled={isButtonDisabled(user)}
-                        className={getConnectionButtonStyle(user)}
+                        className={getConnectionButtonStyle(user).replace('hover:scale-105', '')}
                       >
                         {sendingRequest[user._id] && <LoadingSpinner size="small" />}
                         {!sendingRequest[user._id] && user.connectionStatus === 'accepted' && (
@@ -276,7 +267,7 @@ const ExploreUsers = () => {
                 {filteredUsers.map((user) => (
                   <div
                     key={user._id}
-                    className="bg-background/60 backdrop-blur-xl border border-border/50 rounded-2xl p-6 hover:shadow-lg hover:scale-[1.01] transition-all duration-200"
+                    className="bg-background/60 backdrop-blur-xl border border-border/50 rounded-2xl p-6 hover:shadow-md transition-all duration-200"
                   >
                     <div className="flex items-center gap-4 mb-4">
                       <div className="w-12 h-12 bg-gradient-to-br from-foreground/10 to-foreground/20 rounded-xl flex items-center justify-center">
@@ -294,10 +285,7 @@ const ExploreUsers = () => {
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between">
-                      <div className="text-sm text-muted-foreground">
-                        {user.connectionsCount || 0} connections
-                      </div>
+                    <div className="flex items-center justify-end">
                       <div className="flex gap-2">
                         <button
                           onClick={() => navigate(`/user/${user._id}`)}

@@ -249,9 +249,7 @@ const JobDetails = () => {
                       </svg>
                       Notes
                     </h4>
-                    <div className="bg-background/50 rounded-lg p-4 border border-border/30">
-                      <p className="text-foreground whitespace-pre-wrap leading-relaxed">{company.notes}</p>
-                    </div>
+                    <p className="text-foreground whitespace-pre-wrap leading-relaxed">{company.notes}</p>
                   </div>
                 )}
 
