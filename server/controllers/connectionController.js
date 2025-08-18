@@ -289,19 +289,30 @@ const getConnectionProgress = async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
     
-    // Get user's companies (excluding private ones)
-    const companies = await Company.find({ 
-      userId,
-      isPrivate: { $ne: true }
-    })
-      .select('companyName status positionTitle positionType applicationDate nextActionDate interviewRounds salaryExpectation contactPerson')
-      .sort({ createdAt: -1 });
+    // Only show companies if users are connected
+    let companies = [];
+    let totalApplications = 0;
+    let statusBreakdown = {};
+    
+    if (connection && connection.status === 'accepted') {
+      // Get user's companies (excluding private ones) only for connected users
+      companies = await Company.find({ 
+        userId,
+        isPrivate: { $ne: true }
+      })
+        .select('companyName status positionTitle positionType applicationDate nextActionDate interviewRounds salaryExpectation contactPerson')
+        .sort({ createdAt: -1 });
+      
+      totalApplications = companies.length;
+      statusBreakdown = getStatusBreakdown(companies);
+    }
     
     res.json({
       user,
       companies,
-      totalApplications: companies.length,
-      statusBreakdown: getStatusBreakdown(companies)
+      totalApplications,
+      statusBreakdown,
+      isConnected: connection && connection.status === 'accepted'
     });
   } catch (error) {
     console.error('Get connection progress error:', error);

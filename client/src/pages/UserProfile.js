@@ -298,8 +298,18 @@ const UserProfile = () => {
                       <StatusBadge status={company.status} size="small" />
                     </div>
                   </div>
-                  <div className="text-xs text-muted-foreground">
-                    {formatDate(company.updatedAt || company.createdAt)}
+                  <div className="text-xs text-muted-foreground space-y-1">
+                    <div>{formatDate(company.updatedAt || company.createdAt)}</div>
+                    {company.salaryExpectation && (
+                      <div className="font-medium text-foreground">
+                        ${company.salaryExpectation.toLocaleString()}
+                      </div>
+                    )}
+                    {company.positionType && (
+                      <div className="text-xs bg-muted/30 px-2 py-1 rounded-md inline-block">
+                        {company.positionType}
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
