@@ -35,23 +35,50 @@ const Navbar = () => {
     }).length;
   }, [companies, isAuthenticated]);
 
+  // Handle click outside to close dropdowns
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      // Close users dropdown if clicking outside
+      if (isUsersDropdownOpen && !event.target.closest('.users-dropdown')) {
+        setIsUsersDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isUsersDropdownOpen]);
+
   const handleLogout = async () => {
     await logout();
     navigate('/login');
     setIsMenuOpen(false);
     setIsNotificationOpen(false);
+    setIsUsersDropdownOpen(false);
   };
 
   const isActive = (path) => location.pathname === path;
 
+  const [isUsersDropdownOpen, setIsUsersDropdownOpen] = useState(false);
+
   const navLinks = [
+    { path: '/dashboard', label: 'Dashboard', requireAuth: true },
+    { path: '/calendar', label: 'Calendar', requireAuth: true },
+    { path: '/about', label: 'About', requireAuth: false },
+  ];
+
+  const usersDropdownLinks = [
+    { path: '/explore', label: 'Explore Users', requireAuth: true },
+    { path: '/connections', label: 'Connections', requireAuth: true },
+  ];
+
+  const mobileNavLinks = [
     { path: '/dashboard', label: 'Dashboard', requireAuth: true },
     { path: '/calendar', label: 'Calendar', requireAuth: true },
     { path: '/explore', label: 'Explore Users', requireAuth: true },
     { path: '/connections', label: 'Connections', requireAuth: true },
-    { path: '/notifications', label: 'Notifications', requireAuth: true, mobileOnly: true },
-    { path: '/profile', label: 'Profile', requireAuth: true },
     { path: '/about', label: 'About', requireAuth: false },
+    { path: '/notifications', label: 'Notifications', requireAuth: true },
+    { path: '/profile', label: 'Profile', requireAuth: true },
   ];
 
   return (
@@ -72,7 +99,7 @@ const Navbar = () => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-2">
             {navLinks.map(link => (
-              (!link.requireAuth || isAuthenticated) && !link.mobileOnly && (
+              (!link.requireAuth || isAuthenticated) && (
                 <Link
                   key={link.path}
                   to={link.path}
@@ -86,6 +113,45 @@ const Navbar = () => {
                 </Link>
               )
             ))}
+
+            {/* Users Dropdown */}
+            {isAuthenticated && (
+              <div className="relative users-dropdown">
+                <button
+                  onClick={() => setIsUsersDropdownOpen(!isUsersDropdownOpen)}
+                  className={`px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 flex items-center space-x-1 ${
+                    (isActive('/explore') || isActive('/connections'))
+                      ? 'bg-foreground text-background shadow-md'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-muted/60'
+                  }`}
+                >
+                  <span>Users</span>
+                  <svg className={`w-4 h-4 transition-transform duration-200 ${isUsersDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                
+                {/* Dropdown Menu */}
+                {isUsersDropdownOpen && (
+                  <div className="absolute top-full left-0 mt-2 w-48 bg-background/98 backdrop-blur-xl border border-border/50 rounded-xl shadow-lg z-50 py-2">
+                    {usersDropdownLinks.map(link => (
+                      <Link
+                        key={link.path}
+                        to={link.path}
+                        onClick={() => setIsUsersDropdownOpen(false)}
+                        className={`block px-4 py-3 text-sm font-medium transition-all duration-200 ${
+                          isActive(link.path)
+                            ? 'bg-foreground text-background mx-2 rounded-lg'
+                            : 'text-muted-foreground hover:text-foreground hover:bg-muted/60 mx-2 rounded-lg'
+                        }`}
+                      >
+                        {link.label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Notifications */}
             {isAuthenticated && (
@@ -129,6 +195,20 @@ const Navbar = () => {
               )}
             </button>
 
+            {/* Profile Button */}
+            {isAuthenticated && (
+              <Link
+                to="/profile"
+                className={`px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ml-2 ${
+                  isActive('/profile')
+                    ? 'bg-blue-500 text-white shadow-md'
+                    : 'text-muted-foreground hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 dark:hover:text-blue-400 border border-blue-200 dark:border-blue-800'
+                }`}
+              >
+                Profile
+              </Link>
+            )}
+
             {/* Auth Buttons */}
             {!isAuthenticated && (
               <div className="flex items-center space-x-3 ml-6">
@@ -152,9 +232,9 @@ const Navbar = () => {
           <div className="md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-2.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200 group"
+              className="p-3 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-all duration-200 group"
             >
-              <svg className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {isMenuOpen ? (
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 ) : (
@@ -175,22 +255,22 @@ const Navbar = () => {
             />
             
             {/* Slide-in Drawer */}
-            <div className={`fixed top-0 right-0 h-full w-80 max-w-sm bg-background/95 backdrop-blur-md border-l border-border/50 shadow-2xl transform transition-all duration-300 ease-out ${
+            <div className={`fixed top-0 right-0 h-full w-80 max-w-sm bg-background/98 backdrop-blur-xl border-l border-border/30 shadow-2xl transform transition-all duration-300 ease-out ${
               isMenuOpen ? 'translate-x-0' : 'translate-x-full'
             }`}>
               {/* Drawer Header */}
-              <div className="flex items-center justify-between p-6 border-b border-border/50">
+              <div className="flex items-center justify-between p-6 border-b border-border/30">
                 <div className="flex items-center space-x-3">
-                  <div className="w-9 h-9 bg-gradient-to-br from-foreground to-foreground/80 rounded-xl flex items-center justify-center">
+                  <div className="w-10 h-10 bg-gradient-to-br from-foreground to-foreground/80 rounded-2xl flex items-center justify-center shadow-md">
                     <span className="text-background font-bold text-sm">JT</span>
                   </div>
-                  <span className="text-lg font-semibold text-foreground">Job Tracker</span>
+                  <span className="text-xl font-semibold text-foreground">Job Tracker</span>
                 </div>
                 <button
                   onClick={() => setIsMenuOpen(false)}
-                  className="p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200 group"
+                  className="p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-all duration-200 group"
                 >
-                  <svg className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-6 h-6 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </button>
@@ -199,23 +279,27 @@ const Navbar = () => {
               {/* Drawer Content */}
               <div className="flex flex-col h-full">
                 {/* Navigation Links */}
-                <div className="flex-1 py-6">
-                  <div className="space-y-2 px-6">
-                    {navLinks.map(link => (
+                <div className="flex-1 py-8">
+                  <div className="space-y-3 px-6">
+                    {mobileNavLinks.map(link => (
                       (!link.requireAuth || isAuthenticated) && (
                         <Link
                           key={link.path}
                           to={link.path}
                           onClick={() => setIsMenuOpen(false)}
-                          className={`flex items-center px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
-                            isActive(link.path)
-                              ? 'bg-foreground text-background shadow-sm'
-                              : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                          className={`flex items-center px-5 py-4 rounded-2xl text-base font-medium transition-all duration-200 ${
+                            link.path === '/profile' 
+                              ? (isActive(link.path)
+                                  ? 'bg-blue-500 text-white shadow-lg'
+                                  : 'text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 dark:hover:text-blue-400 dark:text-blue-400 border border-blue-200 dark:border-blue-800')
+                              : (isActive(link.path)
+                                  ? 'bg-foreground text-background shadow-lg'
+                                  : 'text-muted-foreground hover:text-foreground hover:bg-muted/60')
                           }`}
                         >
                           {link.label}
                           {link.path === '/notifications' && notificationCount > 0 && (
-                            <span className="ml-auto bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center font-medium animate-pulse">
+                            <span className="ml-auto bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium animate-pulse">
                               {notificationCount > 9 ? '9+' : notificationCount}
                             </span>
                           )}
@@ -225,12 +309,12 @@ const Navbar = () => {
                   </div>
 
                   {/* Theme Toggle Section */}
-                  <div className="px-6 py-4 border-t border-border/50 mt-4">
-                    <div className="flex items-center justify-between px-4 py-3 rounded-xl hover:bg-muted/50 transition-all duration-200">
-                      <span className="text-sm font-medium text-foreground">Theme</span>
+                  <div className="px-6 py-6 border-t border-border/30 mt-6">
+                    <div className="flex items-center justify-between px-5 py-4 rounded-2xl hover:bg-muted/60 transition-all duration-200">
+                      <span className="text-base font-medium text-foreground">Theme</span>
                       <button
                         onClick={toggleTheme}
-                        className="p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200 group"
+                        className="p-3 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-all duration-200 group"
                       >
                         {isDark ? (
                           <svg className="w-5 h-5 group-hover:scale-110 group-hover:rotate-12 transition-all duration-200" fill="currentColor" viewBox="0 0 20 20">
@@ -247,33 +331,33 @@ const Navbar = () => {
                 </div>
 
                 {/* User Section */}
-                <div className="border-t border-border/50 p-6">
+                <div className="border-t border-border/30 p-6">
                   {isAuthenticated ? (
-                    <div className="space-y-4">
-                      <div className="px-4 py-3 bg-muted/30 rounded-xl">
-                        <p className="text-xs text-muted-foreground uppercase tracking-wide">Signed in as</p>
-                        <p className="text-sm font-semibold text-foreground mt-1">{user?.username}</p>
+                    <div className="space-y-5">
+                      <div className="px-5 py-4 bg-muted/40 rounded-2xl border border-border/20">
+                        <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Signed in as</p>
+                        <p className="text-base font-semibold text-foreground mt-2">{user?.username}</p>
                       </div>
                       <button
                         onClick={handleLogout}
-                        className="w-full px-4 py-3 bg-red-500 text-white rounded-xl hover:bg-red-600 hover:scale-[0.98] transition-all duration-200 font-medium shadow-sm"
+                        className="w-full px-5 py-4 bg-red-500 text-white rounded-2xl hover:bg-red-600 hover:scale-[0.98] transition-all duration-200 font-semibold shadow-lg text-base"
                       >
                         Sign Out
                       </button>
                     </div>
                   ) : (
-                    <div className="space-y-3">
+                    <div className="space-y-4">
                       <Link
                         to="/login"
                         onClick={() => setIsMenuOpen(false)}
-                        className="block w-full px-4 py-3 text-center text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-xl transition-all duration-200 font-medium"
+                        className="block w-full px-5 py-4 text-center text-muted-foreground hover:text-foreground hover:bg-muted/60 rounded-2xl transition-all duration-200 font-medium text-base"
                       >
                         Sign In
                       </Link>
                       <Link
                         to="/register"
                         onClick={() => setIsMenuOpen(false)}
-                        className="block w-full px-4 py-3 text-center bg-foreground text-background rounded-xl hover:bg-foreground/90 hover:scale-[0.98] transition-all duration-200 font-medium shadow-sm"
+                        className="block w-full px-5 py-4 text-center bg-foreground text-background rounded-2xl hover:bg-foreground/90 hover:scale-[0.98] transition-all duration-200 font-semibold shadow-lg text-base"
                       >
                         Sign Up
                       </Link>
