@@ -232,27 +232,8 @@ const Navbar = () => {
             )}
           </div>
 
-          {/* Mobile menu button and notifications */}
-          <div className="md:hidden flex items-center space-x-2">
-            {/* Mobile Notifications */}
-            {isAuthenticated && (
-              <button
-                onClick={() => setIsNotificationOpen(!isNotificationOpen)}
-                className="p-3 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-all duration-200 relative group"
-                aria-label="Notifications"
-              >
-                <svg className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.73 21a2 2 0 01-3.46 0" />
-                </svg>
-                {notificationCount > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center font-medium animate-pulse">
-                    {notificationCount > 9 ? '9+' : notificationCount}
-                  </span>
-                )}
-              </button>
-            )}
-            
+          {/* Mobile menu button */}
+          <div className="md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="mobile-menu-button p-3 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-all duration-200 group"
@@ -386,14 +367,6 @@ const Navbar = () => {
               </div>
             </div>
           </div>
-        )}
-        
-        {/* Mobile Notification Panel */}
-        {isAuthenticated && (
-          <NotificationPanel 
-            isOpen={isNotificationOpen} 
-            onClose={() => setIsNotificationOpen(false)} 
-          />
         )}
       </div>
     </nav>
