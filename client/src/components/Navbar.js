@@ -55,9 +55,9 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="bg-background/80 backdrop-blur-md border-b border-border/50 sticky top-0 z-50">
+    <nav className="bg-background/95 backdrop-blur-md border-b border-border/50 sticky top-0 z-50 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-14">
+        <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link 
             to="/" 
@@ -70,16 +70,16 @@ const Navbar = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-1">
+          <div className="hidden md:flex items-center space-x-2">
             {navLinks.map(link => (
               (!link.requireAuth || isAuthenticated) && !link.mobileOnly && (
                 <Link
                   key={link.path}
                   to={link.path}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                  className={`px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
                     isActive(link.path)
-                      ? 'bg-foreground text-background shadow-sm'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                      ? 'bg-foreground text-background shadow-md'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-muted/60'
                   }`}
                 >
                   {link.label}
@@ -89,10 +89,10 @@ const Navbar = () => {
 
             {/* Notifications */}
             {isAuthenticated && (
-              <div className="relative ml-2">
+              <div className="relative ml-4">
                 <button
                   onClick={() => setIsNotificationOpen(!isNotificationOpen)}
-                  className="p-2.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200 relative group"
+                  className="p-3 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-all duration-200 relative group"
                   aria-label="Notifications"
                 >
                   <svg className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -115,7 +115,7 @@ const Navbar = () => {
             {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
-              className="p-2.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200 group ml-1"
+              className="p-3 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-all duration-200 group ml-2"
               aria-label="Toggle theme"
             >
               {isDark ? (
@@ -131,16 +131,16 @@ const Navbar = () => {
 
             {/* Auth Buttons */}
             {!isAuthenticated && (
-              <div className="flex items-center space-x-3 ml-4">
+              <div className="flex items-center space-x-3 ml-6">
                 <Link
                   to="/login"
-                  className="px-4 py-2 text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-full transition-all duration-200 text-sm font-medium"
+                  className="px-5 py-2.5 text-muted-foreground hover:text-foreground hover:bg-muted/60 rounded-xl transition-all duration-200 text-sm font-medium"
                 >
                   Login
                 </Link>
                 <Link
                   to="/register"
-                  className="px-5 py-2 bg-foreground text-background rounded-full hover:bg-foreground/90 hover:scale-105 transition-all duration-200 text-sm font-medium shadow-sm"
+                  className="px-6 py-2.5 bg-foreground text-background rounded-xl hover:bg-foreground/90 hover:scale-105 transition-all duration-200 text-sm font-medium shadow-md"
                 >
                   Sign Up
                 </Link>
