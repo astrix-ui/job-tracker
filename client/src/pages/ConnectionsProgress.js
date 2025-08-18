@@ -1,306 +1,209 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { connectionAPI } from '../utils/api';
-import { useToast } from '../context/ToastContext';
 import LoadingSpinner from '../components/LoadingSpinner';
+import ErrorMessage from '../components/ErrorMessage';
 import StatusBadge from '../components/StatusBadge';
-import { formatDate, formatCurrency } from '../utils/helpers';
-import { Users, TrendingUp, Calendar, User, Building, Briefcase } from 'lucide-react';
 
 const ConnectionsProgress = () => {
+  const navigate = useNavigate();
   const [connections, setConnections] = useState([]);
-  const [selectedConnection, setSelectedConnection] = useState(null);
-  const [progressData, setProgressData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [progressLoading, setProgressLoading] = useState(false);
-  const { showToast } = useToast();
-
-  // Fetch mutual connections
-  const fetchConnections = async () => {
-    try {
-      const response = await connectionAPI.getMutualConnections();
-      setConnections(response.data.connections);
-    } catch (error) {
-      console.error('Error fetching connections:', error);
-      showToast('Failed to fetch connections', 'error');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Fetch connection's progress
-  const fetchConnectionProgress = async (userId) => {
-    try {
-      setProgressLoading(true);
-      const response = await connectionAPI.getConnectionProgress(userId);
-      setProgressData(response.data);
-    } catch (error) {
-      console.error('Error fetching progress:', error);
-      showToast('Failed to fetch connection progress', 'error');
-    } finally {
-      setProgressLoading(false);
-    }
-  };
+  const [error, setError] = useState('');
 
   useEffect(() => {
     fetchConnections();
   }, []);
 
-  // Handle connection selection
-  const handleConnectionSelect = (connection) => {
-    setSelectedConnection(connection);
-    fetchConnectionProgress(connection.user._id);
+  const fetchConnections = async () => {
+    try {
+      setLoading(true);
+      setError('');
+      const response = await connectionAPI.getConnections();
+      setConnections(response.data.connections || []);
+    } catch (error) {
+      setError(error.response?.data?.error || 'Failed to fetch connections');
+      console.error('Fetch connections error:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Get status color for progress stats
-  const getStatusColor = (status) => {
-    const colors = {
-      'Applied': 'bg-blue-100 text-blue-800',
-      'Interview Scheduled': 'bg-yellow-100 text-yellow-800',
-      'Technical Round': 'bg-purple-100 text-purple-800',
-      'HR Round': 'bg-indigo-100 text-indigo-800',
-      'Final Round': 'bg-orange-100 text-orange-800',
-      'Offer Received': 'bg-green-100 text-green-800',
-      'Rejected': 'bg-red-100 text-red-800',
-      'Withdrawn': 'bg-gray-100 text-gray-800'
-    };
-    return colors[status] || 'bg-gray-100 text-gray-800';
+  const formatDate = (dateString) => {
+    if (!dateString) return 'Not specified';
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
+
+  const getProgressStats = (companies) => {
+    const total = companies.length;
+    const active = companies.filter(c => !['Rejected', 'Offered'].includes(c.status)).length;
+    const offered = companies.filter(c => c.status === 'Offered').length;
+    const rejected = companies.filter(c => c.status === 'Rejected').length;
+    
+    return { total, active, offered, rejected };
+  };
+
+  const getRecentActivity = (companies) => {
+    return companies
+      .sort((a, b) => new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt))
+      .slice(0, 2);
   };
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-[400px]">
-        <LoadingSpinner />
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 flex items-center justify-center">
+        <div className="text-center">
+          <LoadingSpinner size="large" />
+          <p className="mt-4 text-muted-foreground">Loading connections...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto">
-      {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-center space-x-3 mb-4">
-          <TrendingUp className="w-8 h-8 text-primary" />
-          <h1 className="text-3xl font-bold text-foreground">Connections Progress</h1>
-        </div>
-        <p className="text-muted-foreground">
-          View job application progress of your connected users
-        </p>
-      </div>
-
-      {connections.length === 0 ? (
-        <div className="text-center py-12">
-          <Users className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-foreground mb-2">
-            No connections yet
-          </h3>
-          <p className="text-muted-foreground mb-4">
-            Connect with other users to view their job application progress
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Hero Section */}
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-foreground/5 rounded-full mb-6">
+            <svg className="w-4 h-4 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+            <span className="text-sm font-medium text-foreground">Network Insights</span>
+          </div>
+          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+            Connection <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Progress</span>
+          </h1>
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            Stay updated with your network's job search journey and celebrate their achievements together.
           </p>
         </div>
-      ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Connections List */}
-          <div className="lg:col-span-1">
-            <div className="bg-card border border-border rounded-lg p-6">
-              <h2 className="text-xl font-semibold text-foreground mb-4">
-                Your Connections ({Math.min(connections.length, 4)})
-              </h2>
-              <div className="space-y-3">
-                {connections.slice(0, 4).map((connection) => (
-                  <div
-                    key={connection.connectionId}
-                    onClick={() => handleConnectionSelect(connection)}
-                    className={`p-4 rounded-lg border cursor-pointer transition-all hover:shadow-sm ${
-                      selectedConnection?.connectionId === connection.connectionId
-                        ? 'border-primary bg-primary/5'
-                        : 'border-border hover:border-primary/50'
-                    }`}
-                  >
-                    <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                        <span className="text-sm font-semibold text-primary">
-                          {connection.user.username.charAt(0).toUpperCase()}
-                        </span>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-medium text-foreground truncate">
-                          {connection.user.username}
-                        </h3>
-                        <p className="text-xs text-muted-foreground truncate">
-                          {connection.user.email}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          Connected {formatDate(connection.connectedAt)}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-                {connections.length > 4 && (
-                  <div className="text-center pt-4 border-t border-border">
-                    <p className="text-sm text-muted-foreground">
-                      Showing 4 of {connections.length} connections
-                    </p>
-                  </div>
-                )}
+
+        {/* Error Message */}
+        <ErrorMessage message={error} onClose={() => setError('')} />
+
+        {/* Connections Grid */}
+        {connections.length === 0 ? (
+          <div className="text-center py-16">
+            <div className="bg-background/60 backdrop-blur-xl border border-border/50 rounded-2xl p-12 max-w-md mx-auto">
+              <div className="w-20 h-20 bg-muted/30 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <svg className="w-10 h-10 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
               </div>
+              <h3 className="text-xl font-bold text-foreground mb-3">No connections yet</h3>
+              <p className="text-muted-foreground mb-6 leading-relaxed">
+                Connect with other professionals to see their job search progress and support each other.
+              </p>
+              <button
+                onClick={() => navigate('/explore')}
+                className="px-6 py-3 bg-foreground text-background rounded-xl hover:bg-foreground/90 transition-all duration-200 font-semibold flex items-center gap-2 mx-auto"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                Explore Users
+              </button>
             </div>
           </div>
-
-          {/* Progress Details */}
-          <div className="lg:col-span-2">
-            {!selectedConnection ? (
-              <div className="bg-card border border-border rounded-lg p-12 text-center">
-                <User className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-foreground mb-2">
-                  Select a connection
-                </h3>
-                <p className="text-muted-foreground">
-                  Choose a connection from the list to view their job application progress
-                </p>
-              </div>
-            ) : progressLoading ? (
-              <div className="bg-card border border-border rounded-lg p-12 flex justify-center">
-                <LoadingSpinner />
-              </div>
-            ) : progressData ? (
-              <div className="space-y-6">
-                {/* User Info & Stats */}
-                <div className="bg-card border border-border rounded-lg p-6">
-                  <div className="flex items-center space-x-4 mb-6">
-                    <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
-                      <span className="text-xl font-semibold text-primary">
-                        {progressData.user.username.charAt(0).toUpperCase()}
-                      </span>
-                    </div>
-                    <div>
-                      <h2 className="text-2xl font-bold text-foreground">
-                        {progressData.user.username}
-                      </h2>
-                      <p className="text-muted-foreground">{progressData.user.email}</p>
-                    </div>
-                  </div>
-
-                  {/* Progress Stats */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                    <div className="text-center p-4 bg-muted/50 rounded-lg">
-                      <Briefcase className="w-6 h-6 text-primary mx-auto mb-2" />
-                      <div className="text-2xl font-bold text-foreground">
-                        {progressData.totalApplications}
-                      </div>
-                      <div className="text-sm text-muted-foreground">Applications</div>
-                    </div>
-                    <div className="text-center p-4 bg-muted/50 rounded-lg">
-                      <TrendingUp className="w-6 h-6 text-green-600 mx-auto mb-2" />
-                      <div className="text-2xl font-bold text-foreground">
-                        {progressData.statusBreakdown['Offer Received'] || 0}
-                      </div>
-                      <div className="text-sm text-muted-foreground">Offers</div>
-                    </div>
-                    <div className="text-center p-4 bg-muted/50 rounded-lg">
-                      <Calendar className="w-6 h-6 text-blue-600 mx-auto mb-2" />
-                      <div className="text-2xl font-bold text-foreground">
-                        {(progressData.statusBreakdown['Interview Scheduled'] || 0) +
-                         (progressData.statusBreakdown['Technical Round'] || 0) +
-                         (progressData.statusBreakdown['HR Round'] || 0) +
-                         (progressData.statusBreakdown['Final Round'] || 0)}
-                      </div>
-                      <div className="text-sm text-muted-foreground">Interviews</div>
-                    </div>
-                    <div className="text-center p-4 bg-muted/50 rounded-lg">
-                      <Building className="w-6 h-6 text-purple-600 mx-auto mb-2" />
-                      <div className="text-2xl font-bold text-foreground">
-                        {Object.keys(progressData.statusBreakdown).length}
-                      </div>
-                      <div className="text-sm text-muted-foreground">Statuses</div>
-                    </div>
-                  </div>
-
-                  {/* Status Breakdown */}
-                  <div className="mb-6">
-                    <h3 className="text-lg font-semibold text-foreground mb-3">Status Breakdown</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {Object.entries(progressData.statusBreakdown).map(([status, count]) => (
-                        <span
-                          key={status}
-                          className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(status)}`}
-                        >
-                          {status}: {count}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Applications List */}
-                <div className="bg-card border border-border rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-foreground mb-4">
-                    Recent Applications ({progressData.companies.length})
-                  </h3>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {connections.map((connection) => {
+              const stats = getProgressStats(connection.companies);
+              const recentActivity = getRecentActivity(connection.companies);
+              
+              return (
+                <div
+                  key={connection.userId}
+                  className="group bg-background/60 backdrop-blur-xl border border-border/50 rounded-2xl p-6 hover:shadow-lg transition-all duration-200 cursor-pointer overflow-hidden relative"
+                  onClick={() => navigate(`/user/${connection.userId}`)}
+                >
+                  {/* Background Pattern */}
+                  <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-foreground/3 to-transparent rounded-full -translate-y-8 translate-x-8 group-hover:scale-110 transition-transform duration-200"></div>
                   
-                  {progressData.companies.length === 0 ? (
-                    <div className="text-center py-8">
-                      <Briefcase className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
-                      <p className="text-muted-foreground">No applications yet</p>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      {progressData.companies.slice(0, 10).map((company) => (
-                        <div
-                          key={company._id}
-                          className="flex items-center justify-between p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors"
-                        >
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center space-x-3 mb-2">
-                              <h4 className="font-medium text-foreground truncate">
-                                {company.companyName}
-                              </h4>
-                              <StatusBadge status={company.status} size="sm" />
-                            </div>
-                            <div className="flex items-center space-x-4 text-sm text-muted-foreground">
-                              {company.positionTitle && (
-                                <span>{company.positionTitle}</span>
-                              )}
-                              <span>{company.positionType}</span>
-                              <span>Applied: {formatDate(company.applicationDate)}</span>
-                            </div>
-                            {company.nextActionDate && (
-                              <div className="flex items-center space-x-1 mt-1 text-sm text-muted-foreground">
-                                <Calendar className="w-3 h-3" />
-                                <span>Next: {formatDate(company.nextActionDate)}</span>
-                              </div>
-                            )}
-                          </div>
-                          <div className="flex flex-col items-end space-y-1">
-                            {company.salaryExpectation && (
-                              <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                                <span>₹{company.salaryExpectation.toLocaleString('en-IN')}</span>
-                              </div>
-                            )}
-                            {company.interviewRounds > 0 && (
-                              <span className="text-xs bg-muted px-2 py-1 rounded">
-                                {company.interviewRounds} rounds
-                              </span>
-                            )}
-                          </div>
+                  <div className="relative z-10">
+                    {/* User Header */}
+                    <div className="flex items-center gap-4 mb-6">
+                      <div className="relative">
+                        <div className="w-14 h-14 bg-gradient-to-br from-foreground/10 to-foreground/20 rounded-2xl flex items-center justify-center shadow-sm">
+                          <span className="text-xl font-bold text-foreground">
+                            {connection.username.charAt(0).toUpperCase()}
+                          </span>
                         </div>
-                      ))}
-                      
-                      {progressData.companies.length > 10 && (
-                        <div className="text-center pt-4">
-                          <p className="text-sm text-muted-foreground">
-                            Showing 10 of {progressData.companies.length} applications
-                          </p>
-                        </div>
-                      )}
+                        <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-background"></div>
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-lg font-bold text-foreground mb-1">
+                          {connection.username}
+                        </h3>
+                        <p className="text-sm text-muted-foreground">
+                          {stats.total} applications
+                        </p>
+                      </div>
                     </div>
-                  )}
+
+                    {/* Progress Stats */}
+                    <div className="grid grid-cols-3 gap-3 mb-6">
+                      <div className="text-center p-3 bg-blue-50/50 dark:bg-blue-900/20 rounded-xl border border-blue-200/30 dark:border-blue-800/30">
+                        <div className="text-lg font-bold text-blue-600 dark:text-blue-400">{stats.active}</div>
+                        <div className="text-xs text-blue-600/70 dark:text-blue-400/70 font-medium">Active</div>
+                      </div>
+                      <div className="text-center p-3 bg-green-50/50 dark:bg-green-900/20 rounded-xl border border-green-200/30 dark:border-green-800/30">
+                        <div className="text-lg font-bold text-green-600 dark:text-green-400">{stats.offered}</div>
+                        <div className="text-xs text-green-600/70 dark:text-green-400/70 font-medium">Offers</div>
+                      </div>
+                      <div className="text-center p-3 bg-red-50/50 dark:bg-red-900/20 rounded-xl border border-red-200/30 dark:border-red-800/30">
+                        <div className="text-lg font-bold text-red-600 dark:text-red-400">{stats.rejected}</div>
+                        <div className="text-xs text-red-600/70 dark:text-red-400/70 font-medium">Rejected</div>
+                      </div>
+                    </div>
+
+                    {/* Recent Activity */}
+                    {recentActivity.length > 0 && (
+                      <div className="mb-6">
+                        <h4 className="text-sm font-semibold text-foreground mb-3 flex items-center">
+                          <div className="w-2 h-2 bg-foreground rounded-full mr-2"></div>
+                          Recent Activity
+                        </h4>
+                        <div className="space-y-2">
+                          {recentActivity.map((company, index) => (
+                            <div key={index} className="flex items-center justify-between p-3 bg-muted/20 rounded-xl">
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-medium text-foreground truncate">
+                                  {company.companyName}
+                                </p>
+                                <p className="text-xs text-muted-foreground truncate">
+                                  {company.positionTitle || 'Position not specified'}
+                                </p>
+                              </div>
+                              <div className="ml-3 flex-shrink-0">
+                                <StatusBadge status={company.status} size="small" />
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Action Button */}
+                    <button className="w-full px-4 py-3 text-sm font-semibold text-foreground bg-muted/30 hover:bg-muted/50 rounded-xl transition-all duration-200 flex items-center justify-center gap-2">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
+                      View Profile
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ) : null}
+              );
+            })}
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };
