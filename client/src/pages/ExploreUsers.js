@@ -148,12 +148,6 @@ const ExploreUsers = () => {
                   {/* Background Pattern */}
                   <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-foreground/3 to-transparent rounded-full -translate-y-8 translate-x-8 group-hover:scale-110 transition-transform duration-200"></div>
                   
-                  {/* Rank Badge */}
-                  {index < 3 && (
-                    <div className="absolute top-4 right-4 w-8 h-8 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-lg">
-                      {index + 1}
-                    </div>
-                  )}
                   
                   <div className="relative z-10">
                     {/* User Avatar & Info */}
