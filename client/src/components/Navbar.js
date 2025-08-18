@@ -36,18 +36,23 @@ const Navbar = () => {
     }).length;
   }, [companies, isAuthenticated]);
 
-  // Handle click outside to close dropdowns
+  // Handle click outside to close dropdowns and mobile menu
   useEffect(() => {
     const handleClickOutside = (event) => {
       // Close users dropdown if clicking outside
       if (isUsersDropdownOpen && !event.target.closest('.users-dropdown')) {
         setIsUsersDropdownOpen(false);
       }
+      
+      // Close mobile menu if clicking outside (but not on mobile menu button)
+      if (isMenuOpen && !event.target.closest('.mobile-menu-container') && !event.target.closest('.mobile-menu-button')) {
+        setIsMenuOpen(false);
+      }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isUsersDropdownOpen]);
+  }, [isUsersDropdownOpen, isMenuOpen]);
 
   const handleLogout = async () => {
     await logout();
@@ -200,8 +205,8 @@ const Navbar = () => {
                 to="/profile"
                 className={`px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ml-2 ${
                   isActive('/profile')
-                    ? 'bg-blue-500 text-white shadow-md'
-                    : 'text-muted-foreground hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 dark:hover:text-blue-400 border border-blue-200 dark:border-blue-800'
+                    ? 'bg-foreground text-background shadow-md'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/60'
                 }`}
               >
                 Profile
@@ -227,11 +232,30 @@ const Navbar = () => {
             )}
           </div>
 
-          {/* Mobile menu button */}
-          <div className="md:hidden">
+          {/* Mobile menu button and notifications */}
+          <div className="md:hidden flex items-center space-x-2">
+            {/* Mobile Notifications */}
+            {isAuthenticated && (
+              <button
+                onClick={() => setIsNotificationOpen(!isNotificationOpen)}
+                className="p-3 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-all duration-200 relative group"
+                aria-label="Notifications"
+              >
+                <svg className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.73 21a2 2 0 01-3.46 0" />
+                </svg>
+                {notificationCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center font-medium animate-pulse">
+                    {notificationCount > 9 ? '9+' : notificationCount}
+                  </span>
+                )}
+              </button>
+            )}
+            
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-3 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-all duration-200 group"
+              className="mobile-menu-button p-3 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-all duration-200 group"
             >
               <svg className="w-6 h-6 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {isMenuOpen ? (
@@ -246,7 +270,7 @@ const Navbar = () => {
 
         {/* Mobile Navigation Overlay */}
         {isMenuOpen && (
-          <div className="fixed inset-0 z-50 md:hidden">
+          <div className="mobile-menu-container fixed inset-0 z-50 md:hidden">
             {/* Backdrop */}
             <div 
               className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-all duration-300"
@@ -362,6 +386,14 @@ const Navbar = () => {
               </div>
             </div>
           </div>
+        )}
+        
+        {/* Mobile Notification Panel */}
+        {isAuthenticated && (
+          <NotificationPanel 
+            isOpen={isNotificationOpen} 
+            onClose={() => setIsNotificationOpen(false)} 
+          />
         )}
       </div>
     </nav>
