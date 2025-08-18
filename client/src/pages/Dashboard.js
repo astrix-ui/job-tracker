@@ -84,7 +84,7 @@ const Dashboard = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [connectionsCount, setConnectionsCount] = useState([]);
   const [popularUsers, setPopularUsers] = useState([]);
-  const itemsPerPage = 7;
+  const itemsPerPage = 5;
 
   // Filter and sort companies
   const filteredAndSortedCompanies = useMemo(() => {

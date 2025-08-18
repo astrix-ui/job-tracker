@@ -59,7 +59,7 @@ const About = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="relative py-20 px-4">
+      <section className="relative py-12 md:py-20 px-4">
         <div className="max-w-6xl mx-auto text-center">
           <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6">
             Job Tracker
@@ -82,7 +82,7 @@ const About = () => {
 
 
       {/* Features Grid */}
-      <section className="py-12 px-4">
+      <section className="py-8 md:py-12 px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
@@ -130,17 +130,17 @@ const About = () => {
       </section>
 
       {/* Technology Stack */}
-      <section className="py-16 px-4">
+      <section className="py-10 md:py-16 px-4">
         <div className="max-w-6xl mx-auto">
           <div className="bg-muted/30 rounded-[20px] py-12 px-8 text-center">
             <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-8">
               Built with modern technology
             </h2>
             <div className="overflow-hidden">
-              <div className="flex gap-6 pb-4 animate-scroll-slow">
+              <div className="flex gap-6 pb-4 animate-scroll-fast">
                 {['React', 'Node.js', 'MongoDB', 'Express', 'Tailwind CSS', 'JWT', 'Mongoose', 'React Router', 'Context API', 'Axios', 'bcryptjs', 'CORS', 'React', 'Node.js', 'MongoDB', 'Express', 'Tailwind CSS', 'JWT'].map((tech, index) => (
-                  <div key={`${tech}-${index}`} className="p-4 bg-card border border-border rounded-lg whitespace-nowrap flex-shrink-0">
-                    <div className="text-lg font-medium text-foreground">{tech}</div>
+                  <div key={`${tech}-${index}`} className="p-3 md:p-4 bg-card border border-border rounded-lg whitespace-nowrap flex-shrink-0">
+                    <div className="text-sm md:text-lg font-medium text-foreground">{tech}</div>
                   </div>
                 ))}
               </div>
@@ -150,7 +150,7 @@ const About = () => {
       </section>
 
       {/* Mission Statement */}
-      <section className="py-20 px-4">
+      <section className="py-12 md:py-20 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-8">
             Our Mission
@@ -184,7 +184,7 @@ const About = () => {
       </section>
 
       {/* Creator Section */}
-      <section className="py-16 px-4 border-t border-border">
+      <section className="py-10 md:py-16 px-4 border-t border-border">
         <div className="max-w-3xl mx-auto text-center">
           <div className="mb-8">
             <h3 className="text-2xl font-bold text-foreground mb-2">

@@ -427,6 +427,19 @@
   }
 }
 
+@keyframes scroll-fast {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
 .animate-scroll-slow {
   animation: scroll-slow 30s linear infinite;
+}
+
+.animate-scroll-fast {
+  animation: scroll-fast 15s linear infinite;
 }

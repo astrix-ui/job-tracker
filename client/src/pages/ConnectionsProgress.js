@@ -103,10 +103,10 @@ const ConnectionsProgress = () => {
           <div className="lg:col-span-1">
             <div className="bg-card border border-border rounded-lg p-6">
               <h2 className="text-xl font-semibold text-foreground mb-4">
-                Your Connections ({connections.length})
+                Your Connections ({Math.min(connections.length, 4)})
               </h2>
               <div className="space-y-3">
-                {connections.map((connection) => (
+                {connections.slice(0, 4).map((connection) => (
                   <div
                     key={connection.connectionId}
                     onClick={() => handleConnectionSelect(connection)}
@@ -136,6 +136,13 @@ const ConnectionsProgress = () => {
                     </div>
                   </div>
                 ))}
+                {connections.length > 4 && (
+                  <div className="text-center pt-4 border-t border-border">
+                    <p className="text-sm text-muted-foreground">
+                      Showing 4 of {connections.length} connections
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           </div>

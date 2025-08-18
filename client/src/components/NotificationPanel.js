@@ -146,7 +146,7 @@ const NotificationPanel = ({ isOpen, onClose, isMobile = false }) => {
   if (!isOpen) return null;
 
   const panelClasses = isMobile 
-    ? "w-full bg-card border border-border rounded-lg shadow-lg max-h-80 overflow-hidden"
+    ? "w-full h-screen bg-card border border-border rounded-lg shadow-lg overflow-hidden"
     : "absolute top-full right-0 mt-2 w-80 sm:w-96 md:w-80 bg-card border border-border rounded-lg shadow-lg z-50 max-h-96 overflow-hidden";
 
   return (
@@ -172,7 +172,7 @@ const NotificationPanel = ({ isOpen, onClose, isMobile = false }) => {
       )}
 
       {/* Content */}
-      <div className="max-h-80 overflow-y-auto">
+      <div className={isMobile ? "flex-1 overflow-y-auto" : "max-h-80 overflow-y-auto"}>
         {/* Follow Requests Section */}
         {followRequests.length > 0 && (
           <div className="p-4 border-b border-border">
