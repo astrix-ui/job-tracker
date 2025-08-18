@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
@@ -13,6 +13,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const [isUsersDropdownOpen, setIsUsersDropdownOpen] = useState(false);
 
   // Calculate notification count for upcoming actions within 3 days
   const notificationCount = useMemo(() => {
@@ -57,8 +58,6 @@ const Navbar = () => {
   };
 
   const isActive = (path) => location.pathname === path;
-
-  const [isUsersDropdownOpen, setIsUsersDropdownOpen] = useState(false);
 
   const navLinks = [
     { path: '/dashboard', label: 'Dashboard', requireAuth: true },
