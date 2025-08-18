@@ -48,7 +48,7 @@ const UserProfile = () => {
   const handleSendRequest = async () => {
     try {
       setSendingRequest(true);
-      await connectionAPI.sendFollowRequest({ recipientId: userId });
+      await connectionAPI.sendFollowRequest(userId);
       showSuccess('Follow request sent successfully!');
       setConnectionStatus('pending');
     } catch (error) {

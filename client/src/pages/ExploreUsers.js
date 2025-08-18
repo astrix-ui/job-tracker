@@ -35,7 +35,7 @@ const ExploreUsers = () => {
   const handleSendRequest = async (userId) => {
     try {
       setSendingRequest(prev => ({ ...prev, [userId]: true }));
-      await connectionAPI.sendFollowRequest({ recipientId: userId });
+      await connectionAPI.sendFollowRequest(userId);
       showSuccess('Follow request sent successfully!');
       
       // Update user status locally
