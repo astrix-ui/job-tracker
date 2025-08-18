@@ -147,7 +147,7 @@ const NotificationPanel = ({ isOpen, onClose, isMobile = false }) => {
 
   const panelClasses = isMobile 
     ? "w-full h-screen bg-card border border-border rounded-lg shadow-lg overflow-hidden"
-    : "absolute top-full right-0 mt-2 w-80 sm:w-96 md:w-80 bg-card border border-border rounded-lg shadow-lg z-50 max-h-96 overflow-hidden";
+    : "absolute top-full right-0 mt-3 w-80 sm:w-96 md:w-80 bg-background/95 backdrop-blur-xl border border-border/30 rounded-2xl shadow-2xl z-50 max-h-96 overflow-hidden transition-all duration-300";
 
   return (
     <div 
@@ -156,23 +156,36 @@ const NotificationPanel = ({ isOpen, onClose, isMobile = false }) => {
     >
       {/* Header */}
       {!isMobile && (
-        <div className="flex items-center justify-between p-4 border-b border-border">
-          <h3 className="text-lg font-semibold text-foreground">
-            Notifications
-          </h3>
-          <button
-            onClick={onClose}
-            className="text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
+        <div className="p-5 border-b border-border/20 bg-gradient-to-r from-background/50 to-muted/20 rounded-t-2xl">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-gradient-to-br from-foreground/10 to-foreground/20 rounded-lg flex items-center justify-center">
+                <svg className="w-4 h-4 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5 5v-5z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-bold text-foreground">Notifications</h3>
+            </div>
+            <div className="flex items-center space-x-2">
+              <span className="px-2 py-1 text-xs font-medium bg-foreground/10 text-foreground rounded-full">
+                {upcomingActions.length} upcoming
+              </span>
+              <button
+                onClick={onClose}
+                className="text-muted-foreground hover:text-foreground transition-colors p-1 rounded-lg hover:bg-foreground/10"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
       {/* Content */}
-      <div className={isMobile ? "flex-1 overflow-y-auto" : "max-h-80 overflow-y-auto"}>
+      <div className={isMobile ? "flex-1 overflow-y-auto" : "max-h-80 overflow-y-auto custom-scrollbar"}>
         {/* Follow Requests Section */}
         {followRequests.length > 0 && (
           <div className="p-4 border-b border-border">
@@ -234,49 +247,78 @@ const NotificationPanel = ({ isOpen, onClose, isMobile = false }) => {
         )}
 
         {/* Upcoming Actions Section */}
-        <div className="p-4">
-          <h4 className="text-sm font-semibold text-foreground mb-3">
+        <div className="p-5">
+          <h4 className="text-sm font-semibold text-foreground mb-4 flex items-center">
+            <div className="w-2 h-2 bg-foreground rounded-full mr-2"></div>
             Upcoming Actions
           </h4>
           {upcomingActions.length === 0 ? (
-            <div className="text-center py-4">
-              <p className="text-sm text-muted-foreground">
-                No upcoming actions in the next 3 days
+            <div className="text-center py-8">
+              <div className="w-16 h-16 bg-gradient-to-br from-muted/20 to-muted/40 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-inner">
+                <svg className="w-8 h-8 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h4 className="font-bold text-foreground mb-2">All caught up!</h4>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                No upcoming actions in the next 3 days.<br />
+                <span className="text-xs">You're doing great! 🎉</span>
               </p>
             </div>
           ) : (
             <div className="space-y-3">
-              {upcomingActions.map((company) => (
-                <div
-                  key={company._id}
-                  className={`p-3 rounded-lg border transition-all hover:shadow-sm ${getUrgencyColor(company.urgency)}`}
-                >
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center space-x-2 mb-1">
-                        <h4 className="text-sm font-medium truncate">
-                          {company.companyName}
-                        </h4>
-                        <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-accent text-accent-foreground">
+              {upcomingActions.map((company) => {
+                const isUrgent = company.daysUntil <= 1;
+                const isToday = company.daysUntil === 0;
+                
+                return (
+                  <div
+                    key={company._id}
+                    className={`group p-4 rounded-xl border transition-all duration-300 hover:shadow-lg hover:scale-[1.02] cursor-pointer relative overflow-hidden ${
+                      isUrgent 
+                        ? 'bg-gradient-to-r from-red-50 to-red-100/50 border-red-200 hover:from-red-100 hover:to-red-200/50 dark:from-red-900/20 dark:to-red-800/10 dark:border-red-800/50 dark:hover:from-red-900/30 dark:hover:to-red-800/20' 
+                        : 'bg-gradient-to-r from-background to-muted/30 border-border/30 hover:from-muted/20 hover:to-muted/50'
+                    }`}
+                    onClick={() => navigate(`/job/${company._id}`)}
+                  >
+                    {/* Subtle background pattern */}
+                    <div className="absolute top-0 right-0 w-16 h-16 bg-foreground/5 rounded-full -translate-y-8 translate-x-8 group-hover:scale-110 transition-transform duration-300"></div>
+                    
+                    <div className="relative z-10">
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center space-x-2 mb-1">
+                            <h4 className="text-sm font-bold text-foreground truncate">
+                              {company.companyName}
+                            </h4>
+                            <div className="w-1 h-1 bg-muted-foreground rounded-full"></div>
+                          </div>
+                          <p className="text-xs text-muted-foreground mb-2">
+                            {getActionTitle(company.status)}
+                            {company.positionTitle && ` • ${company.positionTitle}`}
+                          </p>
+                        </div>
+                        <div className={`px-3 py-1.5 rounded-full text-xs font-bold shadow-sm ${
+                          isToday 
+                            ? 'bg-red-500 text-white shadow-red-200' 
+                            : isUrgent 
+                              ? 'bg-orange-100 text-orange-700 shadow-orange-200 dark:bg-orange-900/40 dark:text-orange-300'
+                              : 'bg-foreground/10 text-foreground shadow-foreground/10'
+                        }`}>
                           {getUrgencyText(company.daysUntil)}
-                        </span>
+                        </div>
                       </div>
-                      
-                      <p className="text-xs text-muted-foreground mb-2">
-                        {getActionTitle(company.status)}
-                        {company.positionTitle && ` • ${company.positionTitle}`}
-                      </p>
                       
                       <div className="flex items-center justify-between">
                         <StatusBadge status={company.status} size="sm" />
-                        <span className="text-xs text-muted-foreground">
+                        <span className="text-xs text-muted-foreground font-medium">
                           {formatDate(company.nextActionDate)}
                         </span>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

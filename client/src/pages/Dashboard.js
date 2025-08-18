@@ -723,6 +723,7 @@ const Dashboard = () => {
         onClose={handleCloseModal}
         title={editingCompany ? 'Edit Application' : 'Add New Application'}
         size="large"
+        className="dashboard-modal"
       >
         <CompanyForm
           company={editingCompany}
