@@ -692,7 +692,8 @@ const Calendar = () => {
             <div style={{ 
               height: view === 'month' ? 'calc(100vh - 500px)' : 'calc(100vh - 350px)',
               minHeight: view === 'month' ? '500px' : '700px',
-              maxHeight: view === 'month' ? '800px' : '900px'
+              maxHeight: view === 'month' ? '800px' : '900px',
+              overflow: view !== 'month' ? 'hidden' : 'visible'
             }}>
               <BigCalendar
                 localizer={localizer}
@@ -723,8 +724,9 @@ const Calendar = () => {
                 }}
                 step={60}
                 timeslots={1}
-                min={new Date(2024, 0, 1, 8, 0, 0)}
-                max={new Date(2024, 0, 1, 20, 0, 0)}
+                min={new Date(2024, 0, 1, 0, 0, 0)}
+                max={new Date(2024, 0, 1, 23, 59, 59)}
+                scrollToTime={new Date(2024, 0, 1, 8, 0, 0)}
                 onNavigate={(date) => {
                   console.log('Navigated to:', date);
                   console.log('Events for this period:', calendarEvents.filter(event => {

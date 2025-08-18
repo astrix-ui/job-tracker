@@ -70,6 +70,8 @@
   
   .rbc-time-content {
     min-height: 400px !important;
+    overflow-y: auto !important;
+    max-height: 600px !important;
   }
 
   .rbc-time-slot {

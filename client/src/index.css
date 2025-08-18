@@ -446,6 +446,8 @@
   border-top: none !important;
   min-height: 600px !important;
   background-color: hsl(var(--card)) !important;
+  overflow-y: auto !important;
+  max-height: 800px !important;
 }
 
 .rbc-time-gutter {
@@ -474,6 +476,7 @@
 .rbc-day-slot {
   min-height: 600px !important;
   background-color: hsl(var(--card)) !important;
+  overflow-y: auto !important;
 }
 
 .rbc-time-column {
