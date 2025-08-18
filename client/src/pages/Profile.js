@@ -1,453 +1,342 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
-import { connectionAPI } from '../utils/api';
+import { authAPI } from '../utils/api';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage';
 import Modal from '../components/Modal';
+import Toast from '../components/Toast';
 
 const Profile = () => {
-  const navigate = useNavigate();
-  const { user, logout, updateUser, deleteAccount, isAuthenticated } = useAuth();
-  const { showSuccess, showError, showConfirmToast } = useToast();
-  const [isEditing, setIsEditing] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-  const [connections, setConnections] = useState([]);
-  const [showConnectionsModal, setShowConnectionsModal] = useState(false);
-  const [formData, setFormData] = useState({
-    username: user?.username || '',
-    email: user?.email || '',
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: ''
+  const { user, logout } = useAuth();
+  const { showSuccess, showError } = useToast();
+  const [stats, setStats] = useState({
+    totalApplications: 0,
+    activeApplications: 0,
+    offersReceived: 0
   });
+  const [error, setError] = useState('');
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deleteConfirmation, setDeleteConfirmation] = useState('');
+  const [deleting, setDeleting] = useState(false);
+  const [showConfirmToast, setShowConfirmToast] = useState(false);
+  const [confirmAction, setConfirmAction] = useState(null);
+  const [confirmTitle, setConfirmTitle] = useState('');
+  const [confirmMessage, setConfirmMessage] = useState('');
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-    setError('');
-    setSuccess('');
+  useEffect(() => {
+    fetchUserStats();
+  }, []);
+
+  const fetchUserStats = async () => {
+    try {
+      const response = await authAPI.getUserStats();
+      setStats(response.data.stats);
+    } catch (error) {
+      console.error('Failed to fetch user stats:', error);
+    }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-    setSuccess('');
+  const formatDate = (dateString) => {
+    if (!dateString) return 'Unknown';
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
 
-    // Basic validation
-    if (formData.newPassword && formData.newPassword !== formData.confirmPassword) {
-      setError('New passwords do not match');
-      setLoading(false);
-      return;
-    }
-
-    if (formData.newPassword && formData.newPassword.length < 6) {
-      setError('New password must be at least 6 characters long');
-      setLoading(false);
-      return;
-    }
-
-    if (formData.newPassword && !formData.currentPassword) {
-      setError('Current password is required to change password');
-      setLoading(false);
-      return;
-    }
+  const handleDeleteAccount = async () => {
+    if (deleteConfirmation !== 'DELETE') return;
 
     try {
-      // Prepare update data
-      const updatedUserData = {
-        username: formData.username,
-        email: formData.email
-      };
-
-      // Add password fields if user is changing password
-      if (formData.newPassword) {
-        updatedUserData.currentPassword = formData.currentPassword;
-        updatedUserData.newPassword = formData.newPassword;
-      }
-
-      // Call the API to update the user profile
-      const result = await updateUser(updatedUserData);
-      
-      if (result.success) {
-        showSuccess('Profile updated successfully!');
-        setIsEditing(false);
-        setFormData({
-          ...formData,
-          currentPassword: '',
-          newPassword: '',
-          confirmPassword: ''
-        });
-      } else {
-        setError(result.error);
-        showError(result.error);
-      }
+      setDeleting(true);
+      await authAPI.deleteAccount();
+      showSuccess('Account deleted successfully');
+      logout();
     } catch (error) {
-      const errorMessage = error.response?.data?.error || 'Failed to update profile';
-      setError(errorMessage);
-      showError(errorMessage);
+      showError(error.response?.data?.error || 'Failed to delete account');
     } finally {
-      setLoading(false);
+      setDeleting(false);
+      setIsDeleteModalOpen(false);
+      setDeleteConfirmation('');
     }
-  };
-
-  const handleLogout = async () => {
-    if (window.confirm('Are you sure you want to log out?')) {
-      try {
-        await logout();
-        showSuccess('Logged out successfully!');
-      } catch (error) {
-        showError('Failed to log out');
-      }
-    }
-  };
-
-  const handleDeleteAccount = () => {
-    showConfirmToast(
-      'Are you sure you want to delete your account? This action cannot be undone and will permanently delete all your data.',
-      async () => {
-        try {
-          const result = await deleteAccount();
-          if (result.success) {
-            showSuccess('Account deleted successfully');
-            // Redirect to login page after successful deletion
-            setTimeout(() => {
-              window.location.href = '/login';
-            }, 2000);
-          } else {
-            showError(result.error || 'Failed to delete account');
-          }
-        } catch (error) {
-          console.error('Delete account error:', error);
-          showError('Failed to delete account');
-        }
-      },
-      () => {
-        // Cancel action - do nothing
-      },
-      {
-        confirmText: 'Delete Account',
-        cancelText: 'Cancel'
-      }
-    );
-  };
-
-  // Fetch connections
-  useEffect(() => {
-    const fetchConnections = async () => {
-      try {
-        const response = await connectionAPI.getMutualConnections();
-        setConnections(response.data.connections || []);
-      } catch (error) {
-        console.error('Error fetching connections:', error);
-        setConnections([]);
-      }
-    };
-
-    if (isAuthenticated) {
-      fetchConnections();
-    }
-  }, [isAuthenticated]);
-
-  const handleConnectionsClick = () => {
-    setShowConnectionsModal(true);
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-foreground">Profile</h1>
-        <p className="mt-2 text-muted-foreground">
-          Manage your account settings and preferences
-        </p>
-      </div>
-
-      {/* User Details Section */}
-      <div className="bg-card shadow rounded-lg border border-border mb-6">
-        <div className="px-6 py-8">
-          <div className="flex items-center space-x-6">
-            {/* Avatar */}
-            <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center">
-              <span className="text-3xl font-bold text-primary">
-                {user?.username?.charAt(0).toUpperCase()}
-              </span>
-            </div>
-            
-            {/* User Info */}
-            <div className="flex-1">
-              <h2 className="text-2xl font-bold text-foreground mb-2">{user?.username}</h2>
-              <p className="text-muted-foreground mb-4">{user?.email}</p>
-              
-              {/* Connection Count */}
-              <button
-                onClick={handleConnectionsClick}
-                className="inline-flex items-center space-x-2 text-primary hover:text-primary/80 transition-colors"
-              >
-                <span className="text-lg font-semibold">{connections.length}</span>
-                <span className="text-sm">
-                  {connections.length === 1 ? 'Connection' : 'Connections'}
-                </span>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
-            </div>
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Hero Section */}
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-foreground/5 rounded-full mb-6">
+            <svg className="w-4 h-4 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            <span className="text-sm font-medium text-foreground">Personal Profile</span>
           </div>
-        </div>
-      </div>
-
-      {/* Profile Card */}
-      <div className="bg-card shadow rounded-lg border border-border">
-        <div className="px-6 py-4 border-b border-border">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-medium text-card-foreground">
-              Account Information
-            </h2>
-            {!isEditing && (
-              <button
-                onClick={() => setIsEditing(true)}
-                className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
-              >
-                Edit Profile
-              </button>
-            )}
-          </div>
+          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+            My <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Profile</span>
+          </h1>
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            Manage your account, track your progress, and customize your job search experience.
+          </p>
         </div>
 
-        <div className="px-6 py-4">
-          <ErrorMessage message={error} onClose={() => setError('')} />
+        {/* Error Message */}
+        <ErrorMessage message={error} onClose={() => setError('')} />
+
+        {/* Profile Header Card */}
+        <div className="bg-background/60 backdrop-blur-xl border border-border/50 rounded-2xl p-8 mb-8 overflow-hidden relative">
+          {/* Background Pattern */}
+          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-foreground/5 to-transparent rounded-full -translate-y-16 translate-x-16"></div>
           
-          {success && (
-            <div className="bg-green-50 border border-green-200 rounded-md p-4 mb-4">
-              <div className="flex items-center">
-                <svg
-                  className="w-5 h-5 text-green-400 mr-2"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
+          <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
+            <div className="relative">
+              <div className="w-24 h-24 bg-gradient-to-br from-foreground/10 to-foreground/20 rounded-3xl flex items-center justify-center shadow-lg">
+                <span className="text-4xl font-bold text-foreground">
+                  {user?.username?.charAt(0).toUpperCase()}
+                </span>
+              </div>
+              <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-green-500 rounded-full border-4 border-background flex items-center justify-center">
+                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <p className="text-sm text-green-700 ">{success}</p>
               </div>
             </div>
-          )}
+            <div className="flex-1 text-center md:text-left">
+              <h2 className="text-3xl font-bold text-foreground mb-2">
+                {user?.username}
+              </h2>
+              <p className="text-lg text-muted-foreground mb-3">
+                {user?.email}
+              </p>
+              <div className="flex items-center justify-center md:justify-start gap-2 px-3 py-1.5 bg-muted/30 rounded-full w-fit">
+                <svg className="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span className="text-sm font-medium text-muted-foreground">
+                  Member since {formatDate(user?.createdAt)}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
 
-          {isEditing ? (
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label htmlFor="username" className="block text-sm font-medium text-foreground">
-                    Username
-                  </label>
-                  <input
-                    type="text"
-                    id="username"
-                    name="username"
-                    value={formData.username}
-                    onChange={handleChange}
-                    className="mt-1 block w-full px-3 py-2 border border-input rounded-md shadow-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-ring"
-                  />
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="bg-gradient-to-br from-blue-50/50 to-blue-100/30 dark:from-blue-900/20 dark:to-blue-800/10 rounded-2xl p-6 border border-blue-200/30 dark:border-blue-800/30">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center">
+                <svg className="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                  {stats.totalApplications}
                 </div>
-
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-muted-foreground">
-                    Email Address
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="mt-1 block w-full px-3 py-2 border border-border rounded-md shadow-sm bg-card bg-card text-card-foreground focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  />
+                <div className="text-sm font-medium text-blue-600/70 dark:text-blue-400/70">
+                  Total Applications
                 </div>
               </div>
+            </div>
+          </div>
 
-              <div className="border-t border-border text-card-foreground pt-6">
-                <h3 className="text-lg font-medium bg-card text-card-foreground mb-4">
-                  Change Password
-                </h3>
-                
-                <div className="space-y-4">
+          <div className="bg-gradient-to-br from-green-50/50 to-green-100/30 dark:from-green-900/20 dark:to-green-800/10 rounded-2xl p-6 border border-green-200/30 dark:border-green-800/30">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-12 h-12 bg-green-500/10 rounded-xl flex items-center justify-center">
+                <svg className="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+                  {stats.activeApplications}
+                </div>
+                <div className="text-sm font-medium text-green-600/70 dark:text-green-400/70">
+                  Active Applications
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-gradient-to-br from-purple-50/50 to-purple-100/30 dark:from-purple-900/20 dark:to-purple-800/10 rounded-2xl p-6 border border-purple-200/30 dark:border-purple-800/30">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center">
+                <svg className="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                </svg>
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
+                  {stats.offersReceived}
+                </div>
+                <div className="text-sm font-medium text-purple-600/70 dark:text-purple-400/70">
+                  Offers Received
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Settings Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          {/* Account Settings */}
+          <div className="bg-background/60 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
+            <h3 className="text-xl font-bold text-foreground mb-6 flex items-center">
+              <div className="w-2 h-2 bg-foreground rounded-full mr-3"></div>
+              Account Settings
+            </h3>
+            <div className="space-y-4">
+              <div className="p-4 bg-muted/20 rounded-xl">
+                <div className="flex items-center justify-between">
                   <div>
-                    <label htmlFor="currentPassword" className="block text-sm font-medium text-muted-foreground">
-                      Current Password
-                    </label>
-                    <input
-                      type="password"
-                      id="currentPassword"
-                      name="currentPassword"
-                      value={formData.currentPassword}
-                      onChange={handleChange}
-                      className="mt-1 block w-full px-3 py-2 border border-border rounded-md shadow-sm bg-card bg-card text-card-foreground focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                      placeholder="Enter current password"
-                    />
+                    <h4 className="font-semibold text-foreground">Username</h4>
+                    <p className="text-sm text-muted-foreground">{user?.username}</p>
                   </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label htmlFor="newPassword" className="block text-sm font-medium text-muted-foreground">
-                        New Password
-                      </label>
-                      <input
-                        type="password"
-                        id="newPassword"
-                        name="newPassword"
-                        value={formData.newPassword}
-                        onChange={handleChange}
-                        className="mt-1 block w-full px-3 py-2 border border-border rounded-md shadow-sm bg-card bg-card text-card-foreground focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                        placeholder="Enter new password"
-                      />
-                    </div>
-
-                    <div>
-                      <label htmlFor="confirmPassword" className="block text-sm font-medium text-muted-foreground">
-                        Confirm New Password
-                      </label>
-                      <input
-                        type="password"
-                        id="confirmPassword"
-                        name="confirmPassword"
-                        value={formData.confirmPassword}
-                        onChange={handleChange}
-                        className="mt-1 block w-full px-3 py-2 border border-border rounded-md shadow-sm bg-card bg-card text-card-foreground focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                        placeholder="Confirm new password"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 pt-6 border-t border-border text-card-foreground">
-                <button
-                  type="button"
-                  onClick={handleDeleteAccount}
-                  className="w-full sm:w-auto px-4 py-2 bg-destructive text-destructive-foreground rounded-md hover:bg-destructive/90 transition-colors order-2 sm:order-1"
-                >
-                  Delete Account
-                </button>
-                <div className="flex flex-col sm:flex-row gap-3 order-1 sm:order-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsEditing(false);
-                      setFormData({
-                        username: user?.username || '',
-                        email: user?.email || '',
-                        currentPassword: '',
-                        newPassword: '',
-                        confirmPassword: ''
-                      });
-                      setError('');
-                      setSuccess('');
-                    }}
-                    className="w-full sm:w-auto px-4 py-2 border border-border rounded-md text-muted-foreground bg-background hover:bg-muted transition-colors"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="w-full sm:w-auto px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
-                  >
-                    {loading && <LoadingSpinner size="small" className="mr-2" />}
-                    Save Changes
+                  <button className="px-4 py-2 text-sm font-medium text-foreground bg-muted/40 hover:bg-muted/60 rounded-lg transition-colors">
+                    Edit
                   </button>
                 </div>
               </div>
-            </form>
-          ) : (
-            <div className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-muted-foreground">
-                    Username
-                  </label>
-                  <p className="mt-1 bg-card text-card-foreground ">{user?.username}</p>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-muted-foreground">
-                    Email Address
-                  </label>
-                  <p className="mt-1 bg-card text-card-foreground ">{user?.email}</p>
-                </div>
-              </div>
-
-              <div className="border-t border-border text-card-foreground pt-6">
-                <h3 className="text-lg font-medium bg-card text-card-foreground mb-4">
-                  Account Actions
-                </h3>
-                <div className="space-y-3">
-                  <button
-                    onClick={handleLogout}
-                    className="px-4 py-2 bg-destructive text-destructive-foreground rounded-md hover:bg-destructive/90 transition-colors"
-                  >
-                    Log Out
+              <div className="p-4 bg-muted/20 rounded-xl">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="font-semibold text-foreground">Email</h4>
+                    <p className="text-sm text-muted-foreground">{user?.email}</p>
+                  </div>
+                  <button className="px-4 py-2 text-sm font-medium text-foreground bg-muted/40 hover:bg-muted/60 rounded-lg transition-colors">
+                    Edit
                   </button>
                 </div>
               </div>
             </div>
-          )}
+          </div>
+
+          {/* Privacy Settings */}
+          <div className="bg-background/60 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
+            <h3 className="text-xl font-bold text-foreground mb-6 flex items-center">
+              <div className="w-2 h-2 bg-foreground rounded-full mr-3"></div>
+              Privacy Settings
+            </h3>
+            <div className="p-4 bg-muted/20 rounded-xl">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="font-semibold text-foreground">Profile Visibility</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Control who can see your profile
+                  </p>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className="text-sm text-muted-foreground">Public</span>
+                  <div className="w-12 h-6 bg-foreground rounded-full relative">
+                    <div className="w-5 h-5 bg-background rounded-full absolute top-0.5 right-0.5 transition-transform"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Danger Zone */}
+        <div className="bg-background/60 backdrop-blur-xl border border-red-200/50 dark:border-red-800/50 rounded-2xl p-6">
+          <h3 className="text-xl font-bold text-red-600 dark:text-red-400 mb-6 flex items-center">
+            <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+            </svg>
+            Danger Zone
+          </h3>
+          <div className="bg-red-50/50 dark:bg-red-900/20 border border-red-200/50 dark:border-red-800/50 rounded-xl p-6">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+              <div>
+                <h4 className="font-bold text-red-600 dark:text-red-400 mb-1">
+                  Delete Account
+                </h4>
+                <p className="text-sm text-red-600/70 dark:text-red-400/70">
+                  Permanently delete your account and all data
+                </p>
+              </div>
+              <button
+                onClick={() => setIsDeleteModalOpen(true)}
+                className="px-6 py-3 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-colors font-semibold flex items-center gap-2"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+                Delete Account
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Connections Modal */}
+      {/* Delete Confirmation Modal */}
       <Modal
-        isOpen={showConnectionsModal}
-        onClose={() => setShowConnectionsModal(false)}
-        title="My Connections"
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        title="Delete Account"
         size="medium"
       >
-        <div className="space-y-4">
-          {connections.length > 0 ? (
-            connections.map((connection, index) => (
-              <button
-                key={index}
-                onClick={() => navigate(`/user/${connection.user?._id}`)}
-                className="w-full flex items-center space-x-4 p-4 border border-border rounded-lg hover:bg-muted transition-colors text-left"
-              >
-                <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                  <span className="text-sm font-semibold text-primary">
-                    {(connection.user?.username || 'U').charAt(0).toUpperCase()}
-                  </span>
-                </div>
-                <div className="flex-1">
-                  <div className="font-medium text-foreground">
-                    {connection.user?.username || 'Unknown User'}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    {connection.user?.email || 'No email'}
-                  </div>
-                </div>
-                <div className="text-xs text-muted-foreground">
-                  Connected
-                </div>
-              </button>
-            ))
-          ) : (
-            <div className="text-center py-8">
-              <p className="text-muted-foreground">No connections yet</p>
-              <p className="text-sm text-muted-foreground mt-2">
-                Start connecting with other users to build your network
-              </p>
+        <div className="p-6">
+          <div className="text-center mb-6">
+            <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+              </svg>
             </div>
-          )}
+            <h3 className="text-lg font-semibold text-foreground mb-2">
+              Are you absolutely sure?
+            </h3>
+            <p className="text-muted-foreground">
+              This action cannot be undone. This will permanently delete your account and remove all your data from our servers.
+            </p>
+          </div>
+          
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-foreground mb-2">
+              Type <span className="font-bold">DELETE</span> to confirm:
+            </label>
+            <input
+              type="text"
+              value={deleteConfirmation}
+              onChange={(e) => setDeleteConfirmation(e.target.value)}
+              className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500"
+              placeholder="Type DELETE here"
+            />
+          </div>
+
+          <div className="flex justify-end space-x-3">
+            <button
+              onClick={() => {
+                setIsDeleteModalOpen(false);
+                setDeleteConfirmation('');
+              }}
+              className="px-4 py-2 text-foreground bg-muted/30 hover:bg-muted/50 rounded-lg transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleDeleteAccount}
+              disabled={deleteConfirmation !== 'DELETE' || deleting}
+              className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center space-x-2"
+            >
+              {deleting && <LoadingSpinner size="small" />}
+              <span>Delete Account</span>
+            </button>
+          </div>
         </div>
       </Modal>
 
+      {/* Toast for confirmations */}
+      <Toast
+        isOpen={showConfirmToast}
+        onClose={() => setShowConfirmToast(false)}
+        onConfirm={confirmAction}
+        title={confirmTitle}
+        message={confirmMessage}
+        confirmText="Delete Account"
+        isProcessing={deleting}
+      />
     </div>
   );
 };
