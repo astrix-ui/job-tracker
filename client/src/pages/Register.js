@@ -67,7 +67,7 @@ const Register = () => {
       <div className="max-w-md w-full">
         {/* Header Section */}
         <div className="text-center mb-8">
-          <div className="mx-auto w-16 h-16 bg-gradient-to-br from-foreground to-foreground/80 rounded-2xl flex items-center justify-center shadow-lg mb-6">
+          <div className="mx-auto w-16 h-16 bg-gradient-to-br from-foreground to-foreground/80 rounded-2xl flex items-center justify-center shadow-sm mb-6">
             <span className="text-background font-bold text-2xl">JT</span>
           </div>
           <h1 className="text-3xl font-bold text-foreground mb-2">
@@ -79,7 +79,7 @@ const Register = () => {
         </div>
 
         {/* Main Form Card */}
-        <div className="bg-background/80 backdrop-blur-xl border border-border/50 rounded-2xl shadow-2xl p-8">
+        <div className="bg-background/80 backdrop-blur-xl border border-border/50 rounded-2xl shadow-sm p-8">
           <ErrorMessage message={error} onClose={() => setError('')} />
           
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -152,7 +152,7 @@ const Register = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 px-4 bg-foreground text-background rounded-xl font-semibold hover:bg-foreground/90 hover:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-foreground/20 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 transition-all duration-200 shadow-lg"
+              className="w-full py-3 px-4 bg-foreground text-background rounded-xl font-semibold hover:bg-foreground/90 hover:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-foreground/20 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 transition-all duration-200 shadow-sm"
             >
               {loading ? (
                 <div className="flex items-center justify-center space-x-2">
