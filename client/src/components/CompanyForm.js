@@ -34,7 +34,7 @@ const CompanyForm = ({ company, onClose }) => {
       const nextActionDateTime = company.nextActionDate ? new Date(company.nextActionDate) : null;
       setFormData({
         companyName: company.companyName || '',
-        status: company.status || 'Applied',
+        status: (company.status && APPLICATION_STATUSES.includes(company.status)) ? company.status : 'Other',
         customStatus: (company.status && !APPLICATION_STATUSES.includes(company.status)) ? company.status : '',
         nextActionDate: nextActionDateTime ? 
           nextActionDateTime.toISOString().split('T')[0] : '',
