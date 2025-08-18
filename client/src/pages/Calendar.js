@@ -156,15 +156,18 @@ const Calendar = () => {
       style: {
         backgroundColor: event.style?.backgroundColor || '#3b82f6',
         borderRadius: '0.75rem',
-        opacity: 0.95,
+        opacity: 1,
         color: 'white',
-        border: '0px',
+        border: 'none',
         display: 'flex',
         alignItems: 'center',
-        padding: '4px 8px',
+        padding: '6px 12px',
         fontSize: '0.75rem',
-        fontWeight: '500',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+        fontWeight: '600',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+        cursor: 'pointer',
+        transition: 'all 0.2s ease',
+        minHeight: '28px'
       }
     };
   };
@@ -173,24 +176,41 @@ const Calendar = () => {
   const CustomEvent = ({ event }) => {
     return (
       <div 
-        className="rbc-event-custom" 
+        className="rbc-event-custom group" 
         data-status={event.status}
         style={{
           position: 'relative',
           height: '100%',
           width: '100%',
-          padding: '0.25rem 0.75rem',
+          padding: '6px 12px',
           display: 'flex',
           alignItems: 'center',
           backgroundColor: event.style?.backgroundColor || '#3b82f6',
           color: 'white',
-          borderRadius: '0.75rem',
+          borderRadius: '8px',
           fontSize: window.innerWidth < 640 ? '0.625rem' : '0.75rem',
-          fontWeight: '500',
-          minHeight: '1.75rem',
-          boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+          fontWeight: '600',
+          minHeight: '28px',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+          cursor: 'pointer',
+          transition: 'all 0.2s ease',
+          border: 'none'
         }}
       >
+        <div 
+          className="status-indicator"
+          style={{
+            position: 'absolute',
+            left: '4px',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            width: '4px',
+            height: '16px',
+            borderRadius: '2px',
+            backgroundColor: 'rgba(255,255,255,0.8)',
+            flexShrink: 0
+          }}
+        />
         <span 
           className="event-title"
           style={{
@@ -198,7 +218,8 @@ const Calendar = () => {
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             flex: 1,
-            lineHeight: '1.2'
+            lineHeight: '1.3',
+            marginLeft: '8px'
           }}
         >
           {event.title}
@@ -231,9 +252,10 @@ const Calendar = () => {
         style={{
           position: 'relative',
           height: '100%',
-          backgroundColor: hasEvent ? `${eventForDate?.style?.backgroundColor}10` : 'transparent',
-          border: hasEvent ? `1px solid ${eventForDate?.style?.backgroundColor}30` : 'none',
-          borderRadius: hasEvent ? '6px' : '0'
+          backgroundColor: hasEvent ? `${eventForDate?.style?.backgroundColor}08` : 'transparent',
+          border: hasEvent ? `2px solid ${eventForDate?.style?.backgroundColor}20` : 'none',
+          borderRadius: hasEvent ? '8px' : '0',
+          transition: 'all 0.2s ease'
         }}
       >
         {children}
@@ -241,13 +263,14 @@ const Calendar = () => {
           <div
             style={{
               position: 'absolute',
-              top: '4px',
-              right: '4px',
-              width: '6px',
-              height: '6px',
+              top: '6px',
+              right: '6px',
+              width: '8px',
+              height: '8px',
               borderRadius: '50%',
               backgroundColor: eventForDate?.style?.backgroundColor,
-              zIndex: 1
+              zIndex: 1,
+              boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
             }}
           />
         )}
@@ -273,16 +296,18 @@ const Calendar = () => {
       return eventDate.toDateString() === value.toDateString();
     });
 
+    const isToday = value.toDateString() === new Date().toDateString();
+
     return (
       <div 
-        className={`rbc-date-cell ${hasEvent ? 'has-event' : ''}`}
+        className={`rbc-date-cell ${hasEvent ? 'has-event' : ''} ${isToday ? 'is-today' : ''}`}
         style={{
           position: 'relative',
           height: '100%',
           width: '100%',
-          backgroundColor: hasEvent ? `${eventForDate?.style?.backgroundColor}15` : 'transparent',
-          border: hasEvent ? `1px solid ${eventForDate?.style?.backgroundColor}40` : 'none',
-          borderRadius: hasEvent ? '6px' : '0',
+          backgroundColor: hasEvent ? `${eventForDate?.style?.backgroundColor}08` : 'transparent',
+          border: hasEvent ? `2px solid ${eventForDate?.style?.backgroundColor}25` : 'none',
+          borderRadius: hasEvent ? '8px' : '0',
           transition: 'all 0.2s ease'
         }}
       >
@@ -291,14 +316,15 @@ const Calendar = () => {
           <div
             style={{
               position: 'absolute',
-              top: '4px',
-              right: '4px',
-              width: '8px',
-              height: '8px',
+              top: '6px',
+              right: '6px',
+              width: '10px',
+              height: '10px',
               borderRadius: '50%',
               backgroundColor: eventForDate?.style?.backgroundColor,
               zIndex: 10,
-              boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
+              boxShadow: '0 2px 4px rgba(0,0,0,0.25)',
+              border: '2px solid white'
             }}
             title={`${eventForDate?.resource?.companyName} - ${eventForDate?.resource?.actionTitle}`}
           />
@@ -402,15 +428,15 @@ const Calendar = () => {
         <div className="bg-background/80 backdrop-blur-xl border border-border/50 rounded-2xl shadow-sm overflow-hidden">
           {/* Legend */}
           <div className="p-6 border-b border-border/30">
-            <h3 className="text-sm font-semibold text-foreground mb-3">Status Legend</h3>
-            <div className="flex flex-wrap gap-4">
+            <h3 className="text-sm font-semibold text-foreground mb-4">Status Legend</h3>
+            <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-3 sm:gap-4">
               {Object.entries(CALENDAR_EVENT_COLORS).map(([status, color]) => (
-                <div key={status} className="flex items-center space-x-2">
+                <div key={status} className="flex items-center space-x-3 p-2 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors duration-200">
                   <div 
-                    className="w-3 h-3 rounded-full"
+                    className="w-4 h-4 rounded-full shadow-sm border-2 border-white"
                     style={{ backgroundColor: color }}
                   />
-                  <span className="text-sm text-foreground">{status}</span>
+                  <span className="text-sm font-medium text-foreground">{status}</span>
                 </div>
               ))}
             </div>
@@ -418,6 +444,126 @@ const Calendar = () => {
 
           {/* Calendar */}
           <div className="p-6">
+            <style jsx>{`
+              .rbc-calendar {
+                font-family: inherit;
+                border-radius: 12px;
+                overflow: hidden;
+                border: 1px solid hsl(var(--border) / 0.2);
+              }
+              .rbc-header {
+                background: hsl(var(--muted) / 0.3);
+                border-bottom: 1px solid hsl(var(--border) / 0.2);
+                padding: 12px 8px;
+                font-weight: 600;
+                font-size: 0.875rem;
+                color: hsl(var(--foreground));
+              }
+              .rbc-month-view, .rbc-time-view {
+                border: none;
+                background: hsl(var(--background));
+              }
+              .rbc-date-cell {
+                padding: 8px;
+                border-right: 1px solid hsl(var(--border) / 0.1);
+                border-bottom: 1px solid hsl(var(--border) / 0.1);
+                min-height: 80px;
+                transition: background-color 0.2s ease;
+              }
+              .rbc-date-cell:hover {
+                background: hsl(var(--muted) / 0.3);
+              }
+              .rbc-date-cell.rbc-off-range {
+                background: hsl(var(--muted) / 0.1);
+                color: hsl(var(--muted-foreground));
+              }
+              .rbc-date-cell.rbc-today {
+                background: hsl(var(--primary) / 0.1);
+                border: 2px solid hsl(var(--primary) / 0.3);
+                border-radius: 8px;
+              }
+              .rbc-month-row {
+                border: none;
+              }
+              .rbc-day-bg {
+                border-right: 1px solid hsl(var(--border) / 0.1);
+                border-bottom: 1px solid hsl(var(--border) / 0.1);
+              }
+              .rbc-day-bg.rbc-today {
+                background: hsl(var(--primary) / 0.05);
+              }
+              .rbc-event {
+                border: none !important;
+                border-radius: 8px !important;
+                padding: 4px 8px !important;
+                margin: 2px 4px !important;
+                font-weight: 500 !important;
+                font-size: 0.75rem !important;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+                transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+              }
+              .rbc-event:hover {
+                transform: translateY(-1px) !important;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.15) !important;
+              }
+              .rbc-event-label {
+                display: none;
+              }
+              .rbc-show-more {
+                background: hsl(var(--muted));
+                color: hsl(var(--foreground));
+                border-radius: 6px;
+                padding: 2px 6px;
+                font-size: 0.75rem;
+                font-weight: 500;
+                border: 1px solid hsl(var(--border) / 0.3);
+                margin: 2px 4px;
+              }
+              .rbc-toolbar {
+                display: none;
+              }
+              .rbc-time-header {
+                border-bottom: 1px solid hsl(var(--border) / 0.2);
+              }
+              .rbc-time-content {
+                border-top: none;
+              }
+              .rbc-time-slot {
+                border-top: 1px solid hsl(var(--border) / 0.1);
+              }
+              .rbc-timeslot-group {
+                border-bottom: 1px solid hsl(var(--border) / 0.2);
+              }
+              .rbc-time-gutter {
+                background: hsl(var(--muted) / 0.2);
+                border-right: 1px solid hsl(var(--border) / 0.2);
+              }
+              .rbc-time-gutter .rbc-timeslot-group {
+                border-bottom: 1px solid hsl(var(--border) / 0.1);
+              }
+              .rbc-current-time-indicator {
+                background-color: hsl(var(--primary));
+                height: 2px;
+                border-radius: 1px;
+              }
+              .rbc-agenda-view {
+                border: 1px solid hsl(var(--border) / 0.2);
+                border-radius: 8px;
+              }
+              .rbc-agenda-view table {
+                border: none;
+              }
+              .rbc-agenda-view .rbc-agenda-date-cell,
+              .rbc-agenda-view .rbc-agenda-time-cell,
+              .rbc-agenda-view .rbc-agenda-event-cell {
+                border-bottom: 1px solid hsl(var(--border) / 0.1);
+                padding: 12px;
+              }
+              .rbc-agenda-view .rbc-agenda-date-cell {
+                background: hsl(var(--muted) / 0.3);
+                font-weight: 600;
+              }
+            `}</style>
             <div style={{ 
               height: view === 'month' ? 'calc(100vh - 500px)' : 'calc(100vh - 450px)',
               minHeight: view === 'month' ? '500px' : '400px',
