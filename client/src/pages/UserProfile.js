@@ -220,54 +220,54 @@ const UserProfile = () => {
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-gradient-to-br from-blue-50/50 to-blue-100/30 dark:from-blue-900/20 dark:to-blue-800/10 rounded-2xl p-6 border border-blue-200/30 dark:border-blue-800/30">
+          <div className="bg-background/60 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
             <div className="flex items-center gap-4 mb-4">
-              <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center">
-                <svg className="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-12 h-12 bg-muted/20 rounded-xl flex items-center justify-center">
+                <svg className="w-6 h-6 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
               <div>
-                <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                <div className="text-2xl font-bold text-foreground">
                   {stats.active}
                 </div>
-                <div className="text-sm font-medium text-blue-600/70 dark:text-blue-400/70">
+                <div className="text-sm font-medium text-muted-foreground">
                   Active Applications
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-green-50/50 to-green-100/30 dark:from-green-900/20 dark:to-green-800/10 rounded-2xl p-6 border border-green-200/30 dark:border-green-800/30">
+          <div className="bg-background/60 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
             <div className="flex items-center gap-4 mb-4">
-              <div className="w-12 h-12 bg-green-500/10 rounded-xl flex items-center justify-center">
-                <svg className="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-12 h-12 bg-muted/20 rounded-xl flex items-center justify-center">
+                <svg className="w-6 h-6 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
                 </svg>
               </div>
               <div>
-                <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+                <div className="text-2xl font-bold text-foreground">
                   {stats.offered}
                 </div>
-                <div className="text-sm font-medium text-green-600/70 dark:text-green-400/70">
+                <div className="text-sm font-medium text-muted-foreground">
                   Offers Received
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-red-50/50 to-red-100/30 dark:from-red-900/20 dark:to-red-800/10 rounded-2xl p-6 border border-red-200/30 dark:border-red-800/30">
+          <div className="bg-background/60 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
             <div className="flex items-center gap-4 mb-4">
-              <div className="w-12 h-12 bg-red-500/10 rounded-xl flex items-center justify-center">
-                <svg className="w-6 h-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-12 h-12 bg-muted/20 rounded-xl flex items-center justify-center">
+                <svg className="w-6 h-6 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </div>
               <div>
-                <div className="text-2xl font-bold text-red-600 dark:text-red-400">
+                <div className="text-2xl font-bold text-foreground">
                   {stats.rejected}
                 </div>
-                <div className="text-sm font-medium text-red-600/70 dark:text-red-400/70">
+                <div className="text-sm font-medium text-muted-foreground">
                   Rejected
                 </div>
               </div>

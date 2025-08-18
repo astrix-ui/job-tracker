@@ -119,7 +119,7 @@ const ExploreUsers = () => {
             <span className="text-sm font-medium text-foreground">Discover Professionals</span>
           </div>
           <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-            Explore <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Talent</span>
+            Explore <span className="text-foreground">Talent</span>
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             Connect with ambitious professionals, share experiences, and grow your network in the job search community.

@@ -241,7 +241,7 @@ const getUserProfile = async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
     
-    // Check connection status
+    // Check connection status - allow viewing any user profile
     const connection = await Connection.findOne({
       $or: [
         { requester: currentUserId, recipient: userId },

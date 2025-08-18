@@ -100,7 +100,7 @@ const ConnectionsProgress = () => {
             <span className="text-sm font-medium text-foreground">Network Insights</span>
           </div>
           <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-            Connection <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Progress</span>
+            Connection <span className="text-foreground">Progress</span>
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             Stay updated with your network's job search journey and celebrate their achievements together.
@@ -135,7 +135,7 @@ const ConnectionsProgress = () => {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-8 justify-items-stretch max-w-7xl mx-auto">
             {connections.map((connection) => {
               const stats = getProgressStats(connection.companies);
               const recentActivity = getRecentActivity(connection.companies);
@@ -143,7 +143,7 @@ const ConnectionsProgress = () => {
               return (
                 <div
                   key={connection.userId}
-                  className="group bg-background/60 backdrop-blur-xl border border-border/50 rounded-2xl p-6 hover:shadow-lg transition-all duration-200 cursor-pointer overflow-hidden relative"
+                  className="group bg-background/60 backdrop-blur-xl border border-border/50 rounded-2xl p-8 hover:shadow-lg transition-all duration-200 cursor-pointer overflow-hidden relative w-full min-w-0"
                   onClick={() => navigate(`/user/${connection.userId}`)}
                 >
                   {/* Background Pattern */}
@@ -171,18 +171,18 @@ const ConnectionsProgress = () => {
                     </div>
 
                     {/* Progress Stats */}
-                    <div className="grid grid-cols-3 gap-3 mb-6">
-                      <div className="text-center p-3 bg-blue-50/50 dark:bg-blue-900/20 rounded-xl border border-blue-200/30 dark:border-blue-800/30">
-                        <div className="text-lg font-bold text-blue-600 dark:text-blue-400">{stats.active}</div>
-                        <div className="text-xs text-blue-600/70 dark:text-blue-400/70 font-medium">Active</div>
+                    <div className="grid grid-cols-3 gap-4 mb-6">
+                      <div className="text-center p-4 bg-muted/20 rounded-xl border border-border/30">
+                        <div className="text-lg font-bold text-foreground">{stats.active}</div>
+                        <div className="text-xs text-muted-foreground font-medium">Active</div>
                       </div>
-                      <div className="text-center p-3 bg-green-50/50 dark:bg-green-900/20 rounded-xl border border-green-200/30 dark:border-green-800/30">
-                        <div className="text-lg font-bold text-green-600 dark:text-green-400">{stats.offered}</div>
-                        <div className="text-xs text-green-600/70 dark:text-green-400/70 font-medium">Offers</div>
+                      <div className="text-center p-4 bg-muted/20 rounded-xl border border-border/30">
+                        <div className="text-lg font-bold text-foreground">{stats.offered}</div>
+                        <div className="text-xs text-muted-foreground font-medium">Offers</div>
                       </div>
-                      <div className="text-center p-3 bg-red-50/50 dark:bg-red-900/20 rounded-xl border border-red-200/30 dark:border-red-800/30">
-                        <div className="text-lg font-bold text-red-600 dark:text-red-400">{stats.rejected}</div>
-                        <div className="text-xs text-red-600/70 dark:text-red-400/70 font-medium">Rejected</div>
+                      <div className="text-center p-4 bg-muted/20 rounded-xl border border-border/30">
+                        <div className="text-lg font-bold text-foreground">{stats.rejected}</div>
+                        <div className="text-xs text-muted-foreground font-medium">Rejected</div>
                       </div>
                     </div>
 

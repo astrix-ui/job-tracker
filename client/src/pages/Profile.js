@@ -151,7 +151,7 @@ const Profile = () => {
             <span className="text-sm font-medium text-foreground">Personal Profile</span>
           </div>
           <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-            My <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Profile</span>
+            My <span className="text-foreground">Profile</span>
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             Manage your account, track your progress, and customize your job search experience.
@@ -200,54 +200,54 @@ const Profile = () => {
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-gradient-to-br from-blue-50/50 to-blue-100/30 dark:from-blue-900/20 dark:to-blue-800/10 rounded-2xl p-6 border border-blue-200/30 dark:border-blue-800/30">
+          <div className="bg-background/60 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
             <div className="flex items-center gap-4 mb-4">
-              <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center">
-                <svg className="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-12 h-12 bg-muted/20 rounded-xl flex items-center justify-center">
+                <svg className="w-6 h-6 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
               </div>
               <div>
-                <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                <div className="text-2xl font-bold text-foreground">
                   {stats.totalApplications}
                 </div>
-                <div className="text-sm font-medium text-blue-600/70 dark:text-blue-400/70">
+                <div className="text-sm font-medium text-muted-foreground">
                   Total Applications
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-green-50/50 to-green-100/30 dark:from-green-900/20 dark:to-green-800/10 rounded-2xl p-6 border border-green-200/30 dark:border-green-800/30">
+          <div className="bg-background/60 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
             <div className="flex items-center gap-4 mb-4">
-              <div className="w-12 h-12 bg-green-500/10 rounded-xl flex items-center justify-center">
-                <svg className="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-12 h-12 bg-muted/20 rounded-xl flex items-center justify-center">
+                <svg className="w-6 h-6 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
               <div>
-                <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+                <div className="text-2xl font-bold text-foreground">
                   {stats.activeApplications}
                 </div>
-                <div className="text-sm font-medium text-green-600/70 dark:text-green-400/70">
+                <div className="text-sm font-medium text-muted-foreground">
                   Active Applications
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-purple-50/50 to-purple-100/30 dark:from-purple-900/20 dark:to-purple-800/10 rounded-2xl p-6 border border-purple-200/30 dark:border-purple-800/30">
+          <div className="bg-background/60 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
             <div className="flex items-center gap-4 mb-4">
-              <div className="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center">
-                <svg className="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-12 h-12 bg-muted/20 rounded-xl flex items-center justify-center">
+                <svg className="w-6 h-6 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
                 </svg>
               </div>
               <div>
-                <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
+                <div className="text-2xl font-bold text-foreground">
                   {stats.offersReceived}
                 </div>
-                <div className="text-sm font-medium text-purple-600/70 dark:text-purple-400/70">
+                <div className="text-sm font-medium text-muted-foreground">
                   Offers Received
                 </div>
               </div>
@@ -307,8 +307,8 @@ const Profile = () => {
                 className="w-full p-4 bg-muted/20 rounded-xl hover:bg-muted/30 transition-colors text-left"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center">
-                    <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-10 h-10 bg-muted/20 rounded-lg flex items-center justify-center">
+                    <svg className="w-5 h-5 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                     </svg>
                   </div>
@@ -324,8 +324,8 @@ const Profile = () => {
                 className="w-full p-4 bg-muted/20 rounded-xl hover:bg-muted/30 transition-colors text-left"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-red-500/10 rounded-lg flex items-center justify-center">
-                    <svg className="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-10 h-10 bg-muted/20 rounded-lg flex items-center justify-center">
+                    <svg className="w-5 h-5 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                     </svg>
                   </div>
@@ -539,16 +539,18 @@ const Profile = () => {
         </div>
       </Modal>
 
-      {/* Toast for confirmations */}
-      <Toast
-        isOpen={showConfirmToast}
-        onClose={() => setShowConfirmToast(false)}
-        onConfirm={confirmAction}
-        title={confirmTitle}
-        message={confirmMessage}
-        confirmText="Delete Account"
-        isProcessing={deleting}
-      />
+      {/* Toast for confirmations - only show if we have content */}
+      {showConfirmToast && confirmTitle && confirmMessage && (
+        <Toast
+          isOpen={showConfirmToast}
+          onClose={() => setShowConfirmToast(false)}
+          onConfirm={confirmAction}
+          title={confirmTitle}
+          message={confirmMessage}
+          confirmText="Delete Account"
+          isProcessing={deleting}
+        />
+      )}
     </div>
   );
 };
