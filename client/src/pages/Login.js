@@ -5,134 +5,137 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage';
 
 const Login = () => {
- const [formData, setFormData] = useState({
- username: '',
- password: ''
- });
- const [loading, setLoading] = useState(false);
- const [error, setError] = useState('');
+  const [formData, setFormData] = useState({
+    username: '',
+    password: ''
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
- const { login, isAuthenticated } = useAuth();
- const navigate = useNavigate();
- const location = useLocation();
+  const { login, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
 
- // Redirect if already authenticated
- React.useEffect(() => {
- if (isAuthenticated) {
- const from = location.state?.from?.pathname || '/dashboard';
- navigate(from, { replace: true });
- }
- }, [isAuthenticated, navigate, location.state?.from?.pathname]);
+  // Redirect if already authenticated
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      const from = location.state?.from?.pathname || '/dashboard';
+      navigate(from, { replace: true });
+    }
+  }, [isAuthenticated, navigate, location.state?.from?.pathname]);
 
- const handleChange = (e) => {
- setFormData({
- ...formData,
- [e.target.name]: e.target.value
- });
- setError('');
- };
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+    setError('');
+  };
 
- const handleSubmit = async (e) => {
- e.preventDefault();
- setLoading(true);
- setError('');
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
 
- const result = await login(formData);
- 
- if (result.success) {
- const from = location.state?.from?.pathname || '/dashboard';
- navigate(from, { replace: true });
- } else {
- setError(result.error);
- }
- 
- setLoading(false);
- };
+    const result = await login(formData);
+    
+    if (result.success) {
+      const from = location.state?.from?.pathname || '/dashboard';
+      navigate(from, { replace: true });
+    } else {
+      setError(result.error);
+    }
+    
+    setLoading(false);
+  };
 
- return (
- <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-background">
- <div className="max-w-md w-full space-y-8">
- <div>
- <div className="mx-auto h-12 w-12 bg-primary rounded-lg flex items-center justify-center">
- <span className="text-primary-foreground font-bold text-xl">JT</span>
- </div>
- <h2 className="mt-6 text-center text-3xl font-extrabold text-foreground">
- Sign in to your account
- </h2>
- <p className="mt-2 text-center text-sm text-muted-foreground">
- Or{' '}
- <Link
- to="/register"
- className="font-medium text-primary hover:text-primary/80"
- >
- create a new account
- </Link>
- </p>
- </div>
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full">
+        {/* Header Section */}
+        <div className="text-center mb-8">
+          <div className="mx-auto w-16 h-16 bg-gradient-to-br from-foreground to-foreground/80 rounded-2xl flex items-center justify-center shadow-lg mb-6">
+            <span className="text-background font-bold text-2xl">JT</span>
+          </div>
+          <h1 className="text-3xl font-bold text-foreground mb-2">
+            Welcome back
+          </h1>
+          <p className="text-muted-foreground">
+            Sign in to continue your job search journey
+          </p>
+        </div>
 
- <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
- <div className="bg-card border border-input shadow-md rounded-lg p-6">
- <ErrorMessage message={error} onClose={() => setError('')} />
- 
- <div className="space-y-4">
- <div>
- <label htmlFor="username" className="block text-sm font-medium text-foreground">
- Username
- </label>
- <input
- id="username"
- name="username"
- type="text"
- required
- value={formData.username}
- onChange={handleChange}
- className="mt-1 block w-full px-3 py-2 border border-input rounded-md shadow-sm bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-ring"
- placeholder="Enter your username"
- />
- </div>
+        {/* Main Form Card */}
+        <div className="bg-background/80 backdrop-blur-xl border border-border/50 rounded-2xl shadow-2xl p-8">
+          <ErrorMessage message={error} onClose={() => setError('')} />
+          
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="username" className="block text-sm font-semibold text-foreground mb-2">
+                  Username
+                </label>
+                <input
+                  id="username"
+                  name="username"
+                  type="text"
+                  required
+                  value={formData.username}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-border/30 rounded-xl bg-background/50 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-foreground/20 focus:border-foreground/50 transition-all duration-200"
+                  placeholder="Enter your username"
+                />
+              </div>
 
- <div>
- <label htmlFor="password" className="block text-sm font-medium text-foreground">
- Password
- </label>
- <input
- id="password"
- name="password"
- type="password"
- required
- value={formData.password}
- onChange={handleChange}
- className="mt-1 block w-full px-3 py-2 border border-input rounded-md shadow-sm bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-ring"
- placeholder="Enter your password"
- />
- </div>
- </div>
+              <div>
+                <label htmlFor="password" className="block text-sm font-semibold text-foreground mb-2">
+                  Password
+                </label>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  required
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-border/30 rounded-xl bg-background/50 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-foreground/20 focus:border-foreground/50 transition-all duration-200"
+                  placeholder="Enter your password"
+                />
+              </div>
+            </div>
 
- <div className="mt-6">
- <button
- type="submit"
- disabled={loading}
- className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-primary-foreground bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
- >
- {loading ? (
- <LoadingSpinner size="small" />
- ) : (
- 'Sign in'
- )}
- </button>
- </div>
- </div>
- </form>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3 px-4 bg-foreground text-background rounded-xl font-semibold hover:bg-foreground/90 hover:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-foreground/20 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 transition-all duration-200 shadow-lg"
+            >
+              {loading ? (
+                <div className="flex items-center justify-center space-x-2">
+                  <LoadingSpinner size="small" />
+                  <span>Signing in...</span>
+                </div>
+              ) : (
+                'Sign In'
+              )}
+            </button>
+          </form>
+        </div>
 
- <div className="text-center">
- {/* <p className="text-sm text-muted-foreground">
- Demo credentials: username: <code className="bg-muted text-muted-foreground px-1 rounded">demo</code>, 
- password: <code className="bg-muted text-muted-foreground px-1 rounded">password</code>
- </p> */}
- </div>
- </div>
- </div>
- );
+        {/* Footer */}
+        <div className="text-center mt-8">
+          <p className="text-muted-foreground">
+            Don't have an account?{' '}
+            <Link
+              to="/register"
+              className="font-semibold text-foreground hover:text-foreground/80 transition-colors duration-200"
+            >
+              Create one here
+            </Link>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default Login;
