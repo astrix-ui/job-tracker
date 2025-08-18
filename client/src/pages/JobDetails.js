@@ -201,12 +201,18 @@ const JobDetails = () => {
                 </div>
 
                 <div>
-                  <h3 className="text-lg font-semibold text-foreground mb-4">Compensation</h3>
+                  <h3 className="text-lg font-semibold text-foreground mb-4">Compensation & Terms</h3>
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-muted-foreground mb-1">Salary Expectation</label>
                       <p className="text-foreground">
                         {company.salaryExpectation ? `₹${company.salaryExpectation.toLocaleString()}` : 'Not specified'}
+                      </p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-muted-foreground mb-1">Bond Period</label>
+                      <p className="text-foreground">
+                        {company.bondYears ? `${company.bondYears} year${company.bondYears !== 1 ? 's' : ''}` : 'No bond'}
                       </p>
                     </div>
                   </div>

@@ -13,17 +13,8 @@ const companySchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: [
-      'Applied',
-      'Interview Scheduled',
-      'Technical Round',
-      'HR Round',
-      'Final Round',
-      'Offer Received',
-      'Rejected',
-      'Withdrawn'
-    ],
-    default: 'Applied'
+    default: 'Applied',
+    trim: true
   },
   nextActionDate: {
     type: Date
@@ -61,6 +52,14 @@ const companySchema = new mongoose.Schema({
   contactPerson: {
     type: String,
     trim: true
+  },
+  location: {
+    type: String,
+    trim: true
+  },
+  bondYears: {
+    type: Number,
+    min: 0
   }
 }, {
   timestamps: true

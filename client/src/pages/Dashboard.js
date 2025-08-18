@@ -453,9 +453,9 @@ const Dashboard = () => {
                         </div>
                       </div>
                       <div>
-                        <span className="text-muted-foreground">Rounds:</span>
+                        <span className="text-muted-foreground">Total Rounds:</span>
                         <div className="font-medium text-foreground">
-                          {company.interviewRounds || 0} completed
+                          {company.interviewRounds || 0}
                         </div>
                       </div>
                       {company.location && (

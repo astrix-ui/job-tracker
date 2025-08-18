@@ -24,7 +24,8 @@ const CompanyForm = ({ company, onClose }) => {
     notes: '',
     salaryExpectation: '',
     internshipStipend: '',
-    applicationPlatform: ''
+    applicationPlatform: '',
+    bondYears: ''
   });
 
   useEffect(() => {
@@ -44,7 +45,8 @@ const CompanyForm = ({ company, onClose }) => {
         positionTitle: company.positionTitle || '',
         notes: company.notes || '',
         salaryExpectation: company.salaryExpectation || '',
-        applicationPlatform: company.applicationPlatform || company.contactPerson || ''
+        applicationPlatform: company.applicationPlatform || company.contactPerson || '',
+        bondYears: company.bondYears || ''
       });
     }
     // Auto-focus company name field
@@ -78,12 +80,20 @@ const CompanyForm = ({ company, onClose }) => {
           new Date(`${formData.nextActionDate}T${formData.nextActionTime}`).toISOString() :
           formData.nextActionDate ? 
           new Date(`${formData.nextActionDate}T09:00`).toISOString() : null,
-        salaryExpectation: formData.salaryExpectation ? Number(formData.salaryExpectation) : null
+        salaryExpectation: formData.salaryExpectation ? Number(formData.salaryExpectation) : null,
+        bondYears: formData.bondYears ? Number(formData.bondYears) : null
       };
 
-      // Remove customStatus from submit data
+      // Remove fields that shouldn't be sent to server
       delete submitData.customStatus;
       delete submitData.nextActionTime;
+
+      // Validate custom status
+      if (formData.status === 'Other' && !formData.customStatus.trim()) {
+        setError('Please enter a custom status');
+        setLoading(false);
+        return;
+      }
 
       let result;
       if (company) {
@@ -241,15 +251,28 @@ const CompanyForm = ({ company, onClose }) => {
                 placeholder="Salary Expectation (₹)"
               />
             </div>
-            <input
-              type="text"
-              id="applicationPlatform"
-              name="applicationPlatform"
-              value={formData.applicationPlatform}
-              onChange={handleChange}
-              className="w-full px-4 py-3 border border-border rounded-xl bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-foreground/20 focus:border-transparent transition-all"
-              placeholder="Application Platform (e.g., LinkedIn, Indeed)"
-            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <input
+                type="number"
+                id="bondYears"
+                name="bondYears"
+                min="0"
+                step="0.5"
+                value={formData.bondYears}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border border-border rounded-xl bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-foreground/20 focus:border-transparent transition-all"
+                placeholder="Bond Years (if any)"
+              />
+              <input
+                type="text"
+                id="applicationPlatform"
+                name="applicationPlatform"
+                value={formData.applicationPlatform}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border border-border rounded-xl bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-foreground/20 focus:border-transparent transition-all"
+                placeholder="Application Platform (e.g., LinkedIn, Indeed)"
+              />
+            </div>
             <textarea
               id="notes"
               name="notes"
