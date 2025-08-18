@@ -262,7 +262,7 @@ const NotificationPanel = ({ isOpen, onClose, isMobile = false }) => {
               <h4 className="font-bold text-foreground mb-2">All caught up!</h4>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 No upcoming actions in the next 3 days.<br />
-                <span className="text-xs">You're doing great! 🎉</span>
+                <span className="text-xs">You're doing great!</span>
               </p>
             </div>
           ) : (
