@@ -25,9 +25,16 @@ const Login = () => {
   }, [isAuthenticated, navigate, location.state?.from?.pathname]);
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
+    
+    // Convert username to lowercase and remove any non-lowercase letters
+    const processedValue = name === 'username' 
+      ? value.toLowerCase().replace(/[^a-z0-9_]/g, '') 
+      : value;
+    
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [name]: processedValue
     });
     setError('');
   };
