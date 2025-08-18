@@ -147,7 +147,7 @@ const NotificationPanel = ({ isOpen, onClose, isMobile = false }) => {
 
   const panelClasses = isMobile 
     ? "w-full h-screen bg-card border border-border rounded-lg shadow-lg overflow-hidden"
-    : "absolute top-full right-0 mt-3 w-80 sm:w-96 md:w-80 bg-background/95 backdrop-blur-xl border border-border/30 rounded-2xl shadow-2xl z-50 max-h-96 overflow-hidden transition-all duration-300";
+    : "absolute top-full right-0 mt-3 w-96 sm:w-[420px] md:w-96 bg-background/95 backdrop-blur-xl border border-border/30 rounded-2xl shadow-2xl z-50 max-h-[500px] overflow-hidden transition-all duration-300";
 
   return (
     <div 
@@ -185,7 +185,7 @@ const NotificationPanel = ({ isOpen, onClose, isMobile = false }) => {
       )}
 
       {/* Content */}
-      <div className={isMobile ? "flex-1 overflow-y-auto" : "max-h-80 overflow-y-auto custom-scrollbar"}>
+      <div className={isMobile ? "flex-1 overflow-y-auto" : "max-h-96 overflow-y-auto custom-scrollbar"}>
         {/* Follow Requests Section */}
         {followRequests.length > 0 && (
           <div className="p-4 border-b border-border">
@@ -247,8 +247,8 @@ const NotificationPanel = ({ isOpen, onClose, isMobile = false }) => {
         )}
 
         {/* Upcoming Actions Section */}
-        <div className="p-5">
-          <h4 className="text-sm font-semibold text-foreground mb-4 flex items-center">
+        <div className="p-6">
+          <h4 className="text-sm font-semibold text-foreground mb-5 flex items-center">
             <div className="w-2 h-2 bg-foreground rounded-full mr-2"></div>
             Upcoming Actions
           </h4>
@@ -266,7 +266,7 @@ const NotificationPanel = ({ isOpen, onClose, isMobile = false }) => {
               </p>
             </div>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-4">
               {upcomingActions.map((company) => {
                 const isUrgent = company.daysUntil <= 1;
                 const isToday = company.daysUntil === 0;
@@ -274,31 +274,31 @@ const NotificationPanel = ({ isOpen, onClose, isMobile = false }) => {
                 return (
                   <div
                     key={company._id}
-                    className={`group p-4 rounded-xl border transition-all duration-300 hover:shadow-lg hover:scale-[1.02] cursor-pointer relative overflow-hidden ${
+                    className={`group p-4 rounded-xl border transition-all duration-200 hover:shadow-md cursor-pointer relative overflow-hidden ${
                       isUrgent 
-                        ? 'bg-gradient-to-r from-red-50 to-red-100/50 border-red-200 hover:from-red-100 hover:to-red-200/50 dark:from-red-900/20 dark:to-red-800/10 dark:border-red-800/50 dark:hover:from-red-900/30 dark:hover:to-red-800/20' 
-                        : 'bg-gradient-to-r from-background to-muted/30 border-border/30 hover:from-muted/20 hover:to-muted/50'
+                        ? 'bg-gradient-to-r from-red-50 to-red-100/50 border-red-200 hover:from-red-100/80 hover:to-red-200/30 dark:from-red-900/20 dark:to-red-800/10 dark:border-red-800/50 dark:hover:from-red-900/25 dark:hover:to-red-800/15' 
+                        : 'bg-gradient-to-r from-background to-muted/30 border-border/30 hover:from-muted/30 hover:to-muted/40'
                     }`}
                     onClick={() => navigate(`/job/${company._id}`)}
                   >
                     {/* Subtle background pattern */}
-                    <div className="absolute top-0 right-0 w-16 h-16 bg-foreground/5 rounded-full -translate-y-8 translate-x-8 group-hover:scale-110 transition-transform duration-300"></div>
+                    <div className="absolute top-0 right-0 w-12 h-12 bg-foreground/3 rounded-full -translate-y-6 translate-x-6 group-hover:scale-105 transition-transform duration-200"></div>
                     
                     <div className="relative z-10">
-                      <div className="flex items-start justify-between mb-3">
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center space-x-2 mb-1">
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex-1 min-w-0 pr-3">
+                          <div className="flex items-center space-x-2 mb-2">
                             <h4 className="text-sm font-bold text-foreground truncate">
                               {company.companyName}
                             </h4>
                             <div className="w-1 h-1 bg-muted-foreground rounded-full"></div>
                           </div>
-                          <p className="text-xs text-muted-foreground mb-2">
+                          <p className="text-xs text-muted-foreground mb-3 leading-relaxed">
                             {getActionTitle(company.status)}
                             {company.positionTitle && ` • ${company.positionTitle}`}
                           </p>
                         </div>
-                        <div className={`px-3 py-1.5 rounded-full text-xs font-bold shadow-sm ${
+                        <div className={`px-3 py-2 rounded-full text-xs font-bold shadow-sm flex-shrink-0 ${
                           isToday 
                             ? 'bg-red-500 text-white shadow-red-200' 
                             : isUrgent 

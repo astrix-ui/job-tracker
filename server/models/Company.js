@@ -60,6 +60,10 @@ const companySchema = new mongoose.Schema({
   bondYears: {
     type: Number,
     min: 0
+  },
+  isPrivate: {
+    type: Boolean,
+    default: false
   }
 }, {
   timestamps: true

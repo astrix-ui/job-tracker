@@ -253,8 +253,11 @@ const getConnectionProgress = async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
     
-    // Get user's companies
-    const companies = await Company.find({ userId })
+    // Get user's companies (excluding private ones)
+    const companies = await Company.find({ 
+      userId,
+      isPrivate: { $ne: true }
+    })
       .select('companyName status positionTitle positionType applicationDate nextActionDate interviewRounds salaryExpectation contactPerson')
       .sort({ createdAt: -1 });
     

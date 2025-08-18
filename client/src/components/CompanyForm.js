@@ -25,7 +25,8 @@ const CompanyForm = ({ company, onClose }) => {
     salaryExpectation: '',
     internshipStipend: '',
     applicationPlatform: '',
-    bondYears: ''
+    bondYears: '',
+    isPrivate: false
   });
 
   useEffect(() => {
@@ -46,7 +47,8 @@ const CompanyForm = ({ company, onClose }) => {
         notes: company.notes || '',
         salaryExpectation: company.salaryExpectation || '',
         applicationPlatform: company.applicationPlatform || company.contactPerson || '',
-        bondYears: company.bondYears || ''
+        bondYears: company.bondYears || '',
+        isPrivate: company.isPrivate || false
       });
     }
     // Auto-focus company name field
@@ -58,10 +60,10 @@ const CompanyForm = ({ company, onClose }) => {
   }, [company]);
 
   const handleChange = (e) => {
-    const { name, value, type } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'number' ? (value === '' ? '' : Number(value)) : value
+      [name]: type === 'checkbox' ? checked : type === 'number' ? (value === '' ? '' : Number(value)) : value
     }));
     setError('');
   };
@@ -284,6 +286,52 @@ const CompanyForm = ({ company, onClose }) => {
             />
           </div>
         </details>
+
+        {/* Privacy Toggle */}
+        <div className="pt-4 border-t border-border/30">
+          <label className="flex items-center space-x-3 cursor-pointer group">
+            <div className="relative">
+              <input
+                type="checkbox"
+                name="isPrivate"
+                checked={formData.isPrivate}
+                onChange={handleChange}
+                className="sr-only"
+              />
+              <div className={`w-11 h-6 rounded-full transition-all duration-200 ${
+                formData.isPrivate 
+                  ? 'bg-foreground shadow-inner' 
+                  : 'bg-muted border border-border group-hover:bg-muted/80'
+              }`}>
+                <div className={`w-4 h-4 bg-background rounded-full shadow-sm transition-all duration-200 transform ${
+                  formData.isPrivate ? 'translate-x-6' : 'translate-x-1'
+                } mt-1`}></div>
+              </div>
+            </div>
+            <div className="flex-1">
+              <span className="text-sm font-medium text-foreground">
+                Private Application
+              </span>
+              <p className="text-xs text-muted-foreground mt-1">
+                {formData.isPrivate 
+                  ? 'This application is private and won\'t be visible to your connections'
+                  : 'This application will be visible to users who follow you'
+                }
+              </p>
+            </div>
+            <div className="flex-shrink-0">
+              {formData.isPrivate ? (
+                <svg className="w-5 h-5 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              ) : (
+                <svg className="w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+              )}
+            </div>
+          </label>
+        </div>
       </div>
 
       {/* Form Actions */}

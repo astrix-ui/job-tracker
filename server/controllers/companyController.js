@@ -282,7 +282,8 @@ const importExcelData = async (req, res) => {
           salaryExpectation: headerMap.salaryExpectation ? parseFloat(row[headerMap.salaryExpectation]) || null : null,
           contactPerson: headerMap.contactPerson ? (row[headerMap.contactPerson] || 'N/A').toString().trim() : 'N/A',
           notes: headerMap.notes ? (row[headerMap.notes] || '').toString().trim() : '',
-          applicationPlatform: headerMap.applicationPlatform ? (row[headerMap.applicationPlatform] || 'N/A').toString().trim() : 'N/A'
+          applicationPlatform: headerMap.applicationPlatform ? (row[headerMap.applicationPlatform] || 'N/A').toString().trim() : 'N/A',
+          isPrivate: false // Default to public for imported applications
         };
 
         validCompanies.push(companyData);
