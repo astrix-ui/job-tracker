@@ -25,9 +25,10 @@ const Register = () => {
   }, [isAuthenticated, navigate]);
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [name]: name === 'username' ? value.toLowerCase() : value
     });
     setError('');
   };
@@ -73,8 +74,17 @@ const Register = () => {
           <h1 className="text-3xl font-bold text-foreground mb-2">
             Join Job Tracker
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground mb-4">
             Create your account and start tracking your career journey
+          </p>
+          <p className="text-muted-foreground">
+            Already have an account?{' '}
+            <Link
+              to="/login"
+              className="font-semibold text-foreground hover:text-foreground/80 transition-colors duration-200"
+            >
+              Sign in here
+            </Link>
           </p>
         </div>
 
@@ -183,18 +193,6 @@ const Register = () => {
           </div>
         </div>
 
-        {/* Footer */}
-        <div className="text-center mt-8">
-          <p className="text-muted-foreground">
-            Already have an account?{' '}
-            <Link
-              to="/login"
-              className="font-semibold text-foreground hover:text-foreground/80 transition-colors duration-200"
-            >
-              Sign in here
-            </Link>
-          </p>
-        </div>
       </div>
     </div>
   );
