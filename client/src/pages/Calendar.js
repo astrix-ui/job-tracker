@@ -572,6 +572,25 @@ const Calendar = () => {
                 background: hsl(var(--background) / 0.8);
                 margin: 0 2px;
                 border-radius: 8px 8px 0 0;
+                padding: 12px 8px;
+                font-weight: 600;
+                font-size: 0.875rem;
+                color: hsl(var(--foreground));
+                text-align: center;
+              }
+              .rbc-time-header .rbc-header {
+                border: none;
+                padding: 8px 4px;
+                margin: 0 1px;
+                border-radius: 6px;
+                background: hsl(var(--background));
+                font-weight: 600;
+                font-size: 0.875rem;
+                color: hsl(var(--foreground));
+                min-height: 40px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
               }
               .rbc-time-content {
                 border-top: none;
@@ -582,19 +601,41 @@ const Calendar = () => {
               .rbc-time-slot {
                 border-top: 1px solid hsl(var(--border) / 0.1);
                 color: hsl(var(--foreground));
+                min-height: 40px;
+                padding: 4px 8px;
               }
               .rbc-timeslot-group {
                 border-bottom: 1px solid hsl(var(--border) / 0.2);
                 background: hsl(var(--background));
+                min-height: 60px;
               }
               .rbc-time-gutter {
                 background: hsl(var(--background) / 0.8);
                 border-right: 1px solid hsl(var(--border) / 0.3);
                 color: hsl(var(--muted-foreground));
                 font-weight: 500;
+                width: 80px;
+                min-width: 80px;
               }
               .rbc-time-gutter .rbc-timeslot-group {
                 border-bottom: 1px solid hsl(var(--border) / 0.15);
+                min-height: 60px;
+              }
+              .rbc-time-gutter .rbc-time-slot {
+                padding: 8px 12px;
+                text-align: right;
+                font-size: 0.75rem;
+                color: hsl(var(--muted-foreground));
+              }
+              .rbc-day-slot {
+                min-height: 600px;
+              }
+              .rbc-time-column {
+                min-width: 150px;
+                border-right: 1px solid hsl(var(--border) / 0.2);
+              }
+              .rbc-day-slot .rbc-time-slot {
+                border-right: 1px solid hsl(var(--border) / 0.1);
               }
               .rbc-current-time-indicator {
                 background-color: hsl(var(--foreground));

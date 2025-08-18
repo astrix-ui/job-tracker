@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCompany } from '../context/CompanyContext';
+import { useToast } from '../context/ToastContext';
 import { connectionAPI } from '../utils/api';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage';
@@ -72,6 +73,7 @@ const ConnectionWidget = ({ connection, username, userInitial, userId, navigate 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { companies, loading, error, deleteCompany, clearError } = useCompany();
+  const { showSuccess, showError, showConfirmToast } = useToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCompany, setEditingCompany] = useState(null);
   const [filters, setFilters] = useState({
@@ -167,9 +169,32 @@ const Dashboard = () => {
   };
 
   const handleDeleteCompany = async (id, companyName) => {
-    if (window.confirm(`Are you sure you want to delete ${companyName}?`)) {
-      await deleteCompany(id);
-    }
+    const handleConfirm = async () => {
+      try {
+        const result = await deleteCompany(id);
+        if (result.success) {
+          showSuccess(`${companyName} deleted successfully`);
+        } else {
+          showError(result.error || 'Failed to delete application');
+        }
+      } catch (error) {
+        showError('Failed to delete application');
+      }
+    };
+
+    const handleCancel = () => {
+      // Just close the toast, no action needed
+    };
+
+    showConfirmToast(
+      `Delete ${companyName}? This action cannot be undone.`,
+      handleConfirm,
+      handleCancel,
+      {
+        confirmText: 'Delete',
+        cancelText: 'Cancel'
+      }
+    );
   };
 
   const handleCloseModal = () => {
