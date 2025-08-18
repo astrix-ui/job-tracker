@@ -132,7 +132,7 @@ const Navbar = () => {
                 
                 {/* Dropdown Menu */}
                 {isUsersDropdownOpen && (
-                  <div className="absolute top-full left-0 mt-2 w-48 bg-background/98 backdrop-blur-xl border border-border/50 rounded-xl shadow-lg z-50 py-2">
+                  <div className="absolute top-full left-0 mt-2 w-48 bg-background border border-border/50 rounded-xl shadow-lg z-50 py-2">
                     {usersDropdownLinks.map(link => (
                       <Link
                         key={link.path}
@@ -254,7 +254,7 @@ const Navbar = () => {
             />
             
             {/* Slide-in Drawer */}
-            <div className={`fixed top-0 right-0 h-full w-80 max-w-sm bg-background/98 backdrop-blur-xl border-l border-border/30 shadow-2xl transform transition-all duration-300 ease-out ${
+            <div className={`fixed top-0 right-0 h-full w-80 max-w-sm bg-background border-l border-border/30 shadow-2xl transform transition-all duration-300 ease-out ${
               isMenuOpen ? 'translate-x-0' : 'translate-x-full'
             }`}>
               {/* Drawer Header */}
@@ -287,13 +287,9 @@ const Navbar = () => {
                           to={link.path}
                           onClick={() => setIsMenuOpen(false)}
                           className={`flex items-center px-5 py-4 rounded-2xl text-base font-medium transition-all duration-200 ${
-                            link.path === '/profile' 
-                              ? (isActive(link.path)
-                                  ? 'bg-blue-500 text-white shadow-lg'
-                                  : 'text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 dark:hover:text-blue-400 dark:text-blue-400 border border-blue-200 dark:border-blue-800')
-                              : (isActive(link.path)
-                                  ? 'bg-foreground text-background shadow-lg'
-                                  : 'text-muted-foreground hover:text-foreground hover:bg-muted/60')
+                            isActive(link.path)
+                              ? 'bg-foreground text-background shadow-lg'
+                              : 'text-muted-foreground hover:text-foreground hover:bg-muted/60'
                           }`}
                         >
                           {link.label}
