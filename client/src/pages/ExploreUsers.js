@@ -137,12 +137,6 @@ const ExploreUsers = () => {
                 <h2 className="text-2xl font-bold text-foreground mb-2">Popular Professionals</h2>
                 <p className="text-muted-foreground">Most connected members in our community</p>
               </div>
-              <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-muted/30 rounded-full">
-                <svg className="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                </svg>
-                <span className="text-sm font-medium text-muted-foreground">Top 6</span>
-              </div>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
