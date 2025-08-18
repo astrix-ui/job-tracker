@@ -26,6 +26,11 @@ const Profile = () => {
 
   useEffect(() => {
     fetchUserStats();
+    
+    // Set up interval to refresh stats every 30 seconds
+    const interval = setInterval(fetchUserStats, 30000);
+    
+    return () => clearInterval(interval);
   }, []);
 
   const fetchUserStats = async () => {
@@ -194,7 +199,10 @@ const Profile = () => {
                     <h4 className="font-semibold text-foreground">Username</h4>
                     <p className="text-sm text-muted-foreground">{user?.username}</p>
                   </div>
-                  <button className="px-4 py-2 text-sm font-medium text-foreground bg-muted/40 hover:bg-muted/60 rounded-lg transition-colors">
+                  <button 
+                    onClick={() => alert('Edit functionality coming soon!')}
+                    className="px-4 py-2 text-sm font-medium text-foreground bg-muted/40 hover:bg-muted/60 rounded-lg transition-colors"
+                  >
                     Edit
                   </button>
                 </div>
@@ -205,7 +213,10 @@ const Profile = () => {
                     <h4 className="font-semibold text-foreground">Email</h4>
                     <p className="text-sm text-muted-foreground">{user?.email}</p>
                   </div>
-                  <button className="px-4 py-2 text-sm font-medium text-foreground bg-muted/40 hover:bg-muted/60 rounded-lg transition-colors">
+                  <button 
+                    onClick={() => alert('Edit functionality coming soon!')}
+                    className="px-4 py-2 text-sm font-medium text-foreground bg-muted/40 hover:bg-muted/60 rounded-lg transition-colors"
+                  >
                     Edit
                   </button>
                 </div>
@@ -213,27 +224,29 @@ const Profile = () => {
             </div>
           </div>
 
-          {/* Privacy Settings */}
+          {/* Quick Actions */}
           <div className="bg-background/60 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
             <h3 className="text-xl font-bold text-foreground mb-6 flex items-center">
               <div className="w-2 h-2 bg-foreground rounded-full mr-3"></div>
-              Privacy Settings
+              Quick Actions
             </h3>
-            <div className="p-4 bg-muted/20 rounded-xl">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h4 className="font-semibold text-foreground">Profile Visibility</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Control who can see your profile
-                  </p>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <span className="text-sm text-muted-foreground">Public</span>
-                  <div className="w-12 h-6 bg-foreground rounded-full relative">
-                    <div className="w-5 h-5 bg-background rounded-full absolute top-0.5 right-0.5 transition-transform"></div>
+            <div className="space-y-4">
+              <button 
+                onClick={() => window.location.reload()}
+                className="w-full p-4 bg-muted/20 rounded-xl hover:bg-muted/30 transition-colors text-left"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center">
+                    <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-foreground">Refresh Data</h4>
+                    <p className="text-sm text-muted-foreground">Update your statistics</p>
                   </div>
                 </div>
-              </div>
+              </button>
             </div>
           </div>
         </div>
