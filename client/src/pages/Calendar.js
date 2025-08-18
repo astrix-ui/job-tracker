@@ -639,16 +639,36 @@ const Calendar = () => {
                 flex: 1;
               }
               @media (max-width: 640px) {
-                .rbc-time-column {
-                  min-width: calc(100vw - 80px) !important;
-                  flex: 1 !important;
-                }
                 .rbc-time-view {
                   width: 100% !important;
+                  display: flex !important;
+                  flex-direction: column !important;
+                }
+                .rbc-time-header {
+                  width: 100% !important;
+                  display: flex !important;
                 }
                 .rbc-time-header .rbc-header {
                   flex: 1 !important;
-                  min-width: calc(100vw - 80px) !important;
+                  min-width: 0 !important;
+                  text-align: center !important;
+                  padding: 6px 1px !important;
+                  margin: 0 !important;
+                  font-size: 10px !important;
+                }
+                .rbc-time-content {
+                  width: 100% !important;
+                  display: flex !important;
+                  flex: 1 !important;
+                }
+                .rbc-time-column {
+                  flex: 1 !important;
+                  min-width: 0 !important;
+                }
+                .rbc-time-gutter {
+                  width: 35px !important;
+                  min-width: 35px !important;
+                  max-width: 35px !important;
                 }
               }
               .rbc-day-slot .rbc-time-slot {
@@ -701,6 +721,13 @@ const Calendar = () => {
               .rbc-date-cell.rbc-today > span {
                 color: hsl(var(--foreground)) !important;
                 font-weight: 700 !important;
+              }
+              /* Calendar modal positioning */
+              .calendar-modal {
+                padding-top: calc(6rem + 20px) !important;
+              }
+              .calendar-modal .inline-block {
+                margin-top: 20px !important;
               }
             `}</style>
             <div style={{ 
@@ -776,6 +803,7 @@ const Calendar = () => {
           onClose={() => setSelectedEvent(null)}
           title="Event Details"
           size="medium"
+          className="calendar-modal"
         >
           <div className="space-y-6">
             <div>
@@ -844,6 +872,7 @@ const Calendar = () => {
         onClose={handleCloseModal}
         title="Edit Application"
         size="large"
+        className="calendar-modal"
       >
         <CompanyForm
           company={editingCompany}

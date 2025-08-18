@@ -488,31 +488,61 @@
 
 /* Mobile specific time column adjustments */
 @media (max-width: 640px) {
-  .rbc-time-column {
-    min-width: calc(100vw - 80px) !important;
-    flex: 1 !important;
-  }
-  
   .rbc-time-view {
     width: 100% !important;
-    overflow-x: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
   }
   
   .rbc-time-header {
     width: 100% !important;
+    display: flex !important;
+    flex-shrink: 0 !important;
   }
   
   .rbc-time-header .rbc-header {
     flex: 1 !important;
-    min-width: calc(100vw - 80px) !important;
+    min-width: 0 !important;
+    width: auto !important;
+    text-align: center !important;
+    padding: 8px 2px !important;
+    margin: 0 !important;
+    font-size: 11px !important;
   }
   
   .rbc-time-content {
     width: 100% !important;
+    display: flex !important;
+    flex: 1 !important;
+  }
+  
+  .rbc-time-gutter {
+    width: 35px !important;
+    min-width: 35px !important;
+    max-width: 35px !important;
+    flex-shrink: 0 !important;
+  }
+  
+  .rbc-time-column {
+    flex: 1 !important;
+    min-width: 0 !important;
+    width: auto !important;
   }
   
   .rbc-day-slot {
     width: 100% !important;
+    flex: 1 !important;
+  }
+  
+  /* Week view specific adjustments */
+  .rbc-time-view.rbc-week-view .rbc-time-column {
+    min-width: calc((100vw - 35px - 32px) / 7) !important;
+  }
+  
+  /* Day view specific adjustments */
+  .rbc-time-view.rbc-day-view .rbc-time-column {
+    width: calc(100vw - 35px - 32px) !important;
+    flex: 1 !important;
   }
 }
 

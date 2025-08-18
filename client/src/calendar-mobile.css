@@ -11,15 +11,35 @@
   
   /* Time column adjustments for mobile */
   .rbc-time-column {
-    min-width: calc(100vw - 60px) !important;
+    min-width: auto !important;
+    width: 100% !important;
     flex: 1 !important;
   }
   
   /* Header adjustments for mobile */
   .rbc-time-header .rbc-header {
-    min-width: calc(100vw - 60px) !important;
+    min-width: auto !important;
+    width: 100% !important;
     flex: 1 !important;
     text-align: center !important;
+    padding: 8px 2px !important;
+    margin: 0 !important;
+  }
+  
+  /* Time view layout fixes */
+  .rbc-time-view .rbc-time-header {
+    display: flex !important;
+    width: 100% !important;
+  }
+  
+  .rbc-time-view .rbc-time-content {
+    display: flex !important;
+    width: 100% !important;
+  }
+  
+  /* Day slot alignment */
+  .rbc-day-slot .rbc-events-container {
+    width: 100% !important;
   }
 
   /* Month view adjustments */
@@ -53,7 +73,11 @@
   .rbc-time-view {
     border: none;
     width: 100% !important;
-    overflow-x: auto !important;
+    overflow-x: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
   .rbc-time-header {
@@ -70,13 +94,25 @@
 
   .rbc-time-content {
     border-top: none;
+    display: flex !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
   .rbc-time-gutter {
     font-size: 10px;
-    width: 40px !important;
-    min-width: 40px !important;
+    width: 35px !important;
+    min-width: 35px !important;
+    max-width: 35px !important;
     flex-shrink: 0 !important;
+    padding: 0 2px !important;
+  }
+  
+  .rbc-time-gutter .rbc-time-slot {
+    padding: 4px 2px !important;
+    font-size: 9px !important;
+    text-align: center !important;
   }
 
   .rbc-timeslot-group {
@@ -102,6 +138,17 @@
   .rbc-time-slot {
     border-top: 1px solid var(--border);
     width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  
+  /* Ensure proper column distribution */
+  .rbc-time-view .rbc-time-column {
+    border-right: 1px solid var(--border) !important;
+    box-sizing: border-box !important;
+  }
+  
+  .rbc-time-view .rbc-time-column:last-child {
+    border-right: none !important;
   }
 
   /* Event styling */
@@ -112,6 +159,9 @@
     font-size: 10px !important;
     line-height: 1.2 !important;
     min-height: 16px !important;
+    width: calc(100% - 4px) !important;
+    box-sizing: border-box !important;
+    margin: 1px 2px !important;
   }
 
   .rbc-event-content {
