@@ -59,7 +59,7 @@ const UserProfile = () => {
   };
 
   const formatDate = (dateString) => {
-    if (!dateString) return 'Unknown';
+    if (!dateString) return null; // Return null instead of 'Unknown'
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
@@ -191,7 +191,7 @@ const UserProfile = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
                 <span className="text-sm font-medium text-muted-foreground">
-                  Member since {formatDate(user.createdAt)}
+                  {formatDate(user.createdAt) ? `Member since ${formatDate(user.createdAt)}` : 'Member'}
                 </span>
               </div>
             </div>
@@ -299,7 +299,9 @@ const UserProfile = () => {
                     </div>
                   </div>
                   <div className="text-xs text-muted-foreground space-y-1">
-                    <div>{formatDate(company.updatedAt || company.createdAt)}</div>
+                    {formatDate(company.updatedAt || company.createdAt) && (
+                      <div>{formatDate(company.updatedAt || company.createdAt)}</div>
+                    )}
                     {company.salaryExpectation && (
                       <div className="font-medium text-foreground">
                         ${company.salaryExpectation.toLocaleString()}
