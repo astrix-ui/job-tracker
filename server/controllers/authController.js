@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const Company = require('../models/Company');
 
 const register = async (req, res) => {
   try {
@@ -165,6 +166,35 @@ const updateProfile = async (req, res) => {
   }
 };
 
+const getUserStats = async (req, res) => {
+  try {
+    const userId = req.session.userId;
+
+    // Get all companies for the user
+    const companies = await Company.find({ userId });
+
+    // Calculate stats
+    const totalApplications = companies.length;
+    const activeApplications = companies.filter(c => 
+      !['Rejected', 'Offered', 'Withdrawn'].includes(c.status)
+    ).length;
+    const offersReceived = companies.filter(c => c.status === 'Offered').length;
+
+    res.json({
+      success: true,
+      stats: {
+        totalApplications,
+        activeApplications,
+        offersReceived
+      }
+    });
+
+  } catch (error) {
+    console.error('Get user stats error:', error);
+    res.status(500).json({ error: 'Server error while fetching user stats' });
+  }
+};
+
 const deleteAccount = async (req, res) => {
   try {
     const userId = req.session.userId;
@@ -203,5 +233,6 @@ module.exports = {
   logout,
   getCurrentUser,
   updateProfile,
+  getUserStats,
   deleteAccount
 };

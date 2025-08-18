@@ -23,6 +23,15 @@ const Profile = () => {
   const [confirmAction, setConfirmAction] = useState(null);
   const [confirmTitle, setConfirmTitle] = useState('');
   const [confirmMessage, setConfirmMessage] = useState('');
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editForm, setEditForm] = useState({
+    username: '',
+    email: '',
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
+  const [editLoading, setEditLoading] = useState(false);
 
   useEffect(() => {
     fetchUserStats();
@@ -32,6 +41,18 @@ const Profile = () => {
     
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      setEditForm({
+        username: user.username || '',
+        email: user.email || '',
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+      });
+    }
+  }, [user]);
 
   const fetchUserStats = async () => {
     try {
@@ -49,6 +70,56 @@ const Profile = () => {
       month: 'long',
       day: 'numeric'
     });
+  };
+
+  const handleEditProfile = async () => {
+    try {
+      setEditLoading(true);
+      
+      // Validate passwords if changing
+      if (editForm.newPassword) {
+        if (editForm.newPassword !== editForm.confirmPassword) {
+          showError('New passwords do not match');
+          return;
+        }
+        if (editForm.newPassword.length < 6) {
+          showError('New password must be at least 6 characters long');
+          return;
+        }
+        if (!editForm.currentPassword) {
+          showError('Current password is required to change password');
+          return;
+        }
+      }
+
+      const updateData = {
+        username: editForm.username,
+        email: editForm.email
+      };
+
+      if (editForm.newPassword) {
+        updateData.currentPassword = editForm.currentPassword;
+        updateData.newPassword = editForm.newPassword;
+      }
+
+      const response = await authAPI.updateProfile(updateData);
+      showSuccess('Profile updated successfully');
+      
+      // Update user context with new data
+      // Note: You might need to refresh the user data in your auth context
+      setIsEditModalOpen(false);
+      setEditForm(prev => ({
+        ...prev,
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+      }));
+      
+    } catch (error) {
+      showError(error.response?.data?.error || 'Failed to update profile');
+    } finally {
+      setEditLoading(false);
+    }
   };
 
   const handleDeleteAccount = async () => {
@@ -200,7 +271,7 @@ const Profile = () => {
                     <p className="text-sm text-muted-foreground">{user?.username}</p>
                   </div>
                   <button 
-                    onClick={() => alert('Edit functionality coming soon!')}
+                    onClick={() => setIsEditModalOpen(true)}
                     className="px-4 py-2 text-sm font-medium text-foreground bg-muted/40 hover:bg-muted/60 rounded-lg transition-colors"
                   >
                     Edit
@@ -214,7 +285,7 @@ const Profile = () => {
                     <p className="text-sm text-muted-foreground">{user?.email}</p>
                   </div>
                   <button 
-                    onClick={() => alert('Edit functionality coming soon!')}
+                    onClick={() => setIsEditModalOpen(true)}
                     className="px-4 py-2 text-sm font-medium text-foreground bg-muted/40 hover:bg-muted/60 rounded-lg transition-colors"
                   >
                     Edit
@@ -244,6 +315,23 @@ const Profile = () => {
                   <div>
                     <h4 className="font-semibold text-foreground">Refresh Data</h4>
                     <p className="text-sm text-muted-foreground">Update your statistics</p>
+                  </div>
+                </div>
+              </button>
+              
+              <button 
+                onClick={logout}
+                className="w-full p-4 bg-muted/20 rounded-xl hover:bg-muted/30 transition-colors text-left"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-red-500/10 rounded-lg flex items-center justify-center">
+                    <svg className="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-foreground">Logout</h4>
+                    <p className="text-sm text-muted-foreground">Sign out of your account</p>
                   </div>
                 </div>
               </button>
@@ -282,6 +370,117 @@ const Profile = () => {
           </div>
         </div>
       </div>
+
+      {/* Edit Profile Modal */}
+      <Modal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        title="Edit Profile"
+        size="medium"
+      >
+        <div className="p-6">
+          <div className="space-y-4">
+            {/* Username Field */}
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">
+                Username
+              </label>
+              <input
+                type="text"
+                value={editForm.username}
+                onChange={(e) => setEditForm(prev => ({ ...prev, username: e.target.value }))}
+                className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                placeholder="Enter username"
+              />
+            </div>
+
+            {/* Email Field */}
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">
+                Email
+              </label>
+              <input
+                type="email"
+                value={editForm.email}
+                onChange={(e) => setEditForm(prev => ({ ...prev, email: e.target.value }))}
+                className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                placeholder="Enter email"
+              />
+            </div>
+
+            {/* Password Change Section */}
+            <div className="border-t border-border pt-4">
+              <h4 className="text-sm font-medium text-foreground mb-3">Change Password (Optional)</h4>
+              
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    Current Password
+                  </label>
+                  <input
+                    type="password"
+                    value={editForm.currentPassword}
+                    onChange={(e) => setEditForm(prev => ({ ...prev, currentPassword: e.target.value }))}
+                    className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                    placeholder="Enter current password"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    New Password
+                  </label>
+                  <input
+                    type="password"
+                    value={editForm.newPassword}
+                    onChange={(e) => setEditForm(prev => ({ ...prev, newPassword: e.target.value }))}
+                    className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                    placeholder="Enter new password (min 6 characters)"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    Confirm New Password
+                  </label>
+                  <input
+                    type="password"
+                    value={editForm.confirmPassword}
+                    onChange={(e) => setEditForm(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                    className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                    placeholder="Confirm new password"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-end space-x-3 mt-6">
+            <button
+              onClick={() => {
+                setIsEditModalOpen(false);
+                setEditForm(prev => ({
+                  ...prev,
+                  currentPassword: '',
+                  newPassword: '',
+                  confirmPassword: ''
+                }));
+              }}
+              className="px-4 py-2 text-foreground bg-muted/30 hover:bg-muted/50 rounded-lg transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleEditProfile}
+              disabled={editLoading || !editForm.username || !editForm.email}
+              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center space-x-2"
+            >
+              {editLoading && <LoadingSpinner size="small" />}
+              <span>Save Changes</span>
+            </button>
+          </div>
+        </div>
+      </Modal>
 
       {/* Delete Confirmation Modal */}
       <Modal

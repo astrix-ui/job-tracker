@@ -7,6 +7,7 @@ const {
   getPendingRequests,
   respondToRequest,
   getMutualConnections,
+  getUserProfile,
   getConnectionProgress
 } = require('../controllers/connectionController');
 
@@ -27,6 +28,9 @@ router.post('/respond', respondToRequest);
 
 // GET /api/connections - Get mutual connections
 router.get('/', getMutualConnections);
+
+// GET /api/connections/profile/:userId - Get user profile
+router.get('/profile/:userId', getUserProfile);
 
 // GET /api/connections/progress/:userId - Get connection's job progress
 router.get('/progress/:userId', getConnectionProgress);

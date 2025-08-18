@@ -229,6 +229,41 @@ const getMutualConnections = async (req, res) => {
   }
 };
 
+// Get user profile (for viewing other users)
+const getUserProfile = async (req, res) => {
+  try {
+    const currentUserId = req.session.userId;
+    const { userId } = req.params;
+    
+    // Get user info
+    const user = await User.findById(userId).select('username email createdAt');
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    // Check connection status
+    const connection = await Connection.findOne({
+      $or: [
+        { requester: currentUserId, recipient: userId },
+        { requester: userId, recipient: currentUserId }
+      ]
+    });
+    
+    let connectionStatus = 'none';
+    if (connection) {
+      connectionStatus = connection.status;
+    }
+    
+    res.json({
+      user,
+      connectionStatus
+    });
+  } catch (error) {
+    console.error('Get user profile error:', error);
+    res.status(500).json({ error: 'Server error while fetching user profile' });
+  }
+};
+
 // Get connection's job progress
 const getConnectionProgress = async (req, res) => {
   try {
@@ -288,5 +323,6 @@ module.exports = {
   getPendingRequests,
   respondToRequest,
   getMutualConnections,
+  getUserProfile,
   getConnectionProgress
 };

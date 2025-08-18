@@ -16,6 +16,7 @@ export const authAPI = {
  logout: () => api.post('/auth/logout'),
  getCurrentUser: () => api.get('/auth/user'),
  updateProfile: (profileData) => api.put('/auth/profile', profileData),
+ getUserStats: () => api.get('/auth/stats'),
  deleteAccount: () => api.delete('/auth/account'),
 };
 
@@ -40,6 +41,7 @@ export const connectionAPI = {
  getPendingRequests: () => api.get('/connections/requests'),
  respondToRequest: (connectionId, action) => api.post('/connections/respond', { connectionId, action }),
  getMutualConnections: (queryParams = '') => api.get(`/connections${queryParams}`),
+ getUserProfile: (userId) => api.get(`/connections/profile/${userId}`),
  getConnectionProgress: (userId) => api.get(`/connections/progress/${userId}`),
 };
 
