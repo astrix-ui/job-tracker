@@ -332,17 +332,17 @@ const Profile = () => {
               
               <button 
                 onClick={logout}
-                className="w-full p-4 bg-muted/20 rounded-xl hover:bg-muted/30 transition-colors text-left"
+                className="w-full p-4 bg-red-50/50 dark:bg-red-900/20 border border-red-200/50 dark:border-red-800/50 rounded-xl hover:bg-red-100/50 dark:hover:bg-red-900/30 transition-all duration-200 text-left shadow-sm hover:shadow-md"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-muted/20 rounded-lg flex items-center justify-center">
-                    <svg className="w-5 h-5 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-10 h-10 bg-red-500/10 rounded-lg flex items-center justify-center">
+                    <svg className="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                     </svg>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-foreground">Logout</h4>
-                    <p className="text-sm text-muted-foreground">Sign out of your account</p>
+                    <h4 className="font-semibold text-red-600 dark:text-red-400">Logout</h4>
+                    <p className="text-sm text-red-600/70 dark:text-red-400/70">Sign out of your account</p>
                   </div>
                 </div>
               </button>
@@ -383,7 +383,7 @@ const Profile = () => {
       </div>
 
       {/* Edit Profile Modal */}
-      <div className="mt-5">
+      <div className="mt-8">
         <Modal
           isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
@@ -496,7 +496,7 @@ const Profile = () => {
       </div>
 
       {/* Delete Confirmation Modal */}
-      <div className="mt-5">
+      <div className="mt-8">
         <Modal
           isOpen={isDeleteModalOpen}
           onClose={() => setIsDeleteModalOpen(false)}

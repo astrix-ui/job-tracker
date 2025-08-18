@@ -270,7 +270,10 @@ const getConnectionProgress = async (req, res) => {
     const currentUserId = req.session.userId;
     const { userId } = req.params;
     
-    // Verify mutual connection exists
+    // Allow viewing any user's progress (remove connection requirement)
+    // This enables viewing profiles of users you don't follow
+    
+    // Optional: Check if connection exists for additional data
     const connection = await Connection.findOne({
       $or: [
         { requester: currentUserId, recipient: userId, status: 'accepted' },
@@ -278,9 +281,7 @@ const getConnectionProgress = async (req, res) => {
       ]
     });
     
-    if (!connection) {
-      return res.status(403).json({ error: 'Not connected to this user' });
-    }
+    // Continue regardless of connection status
     
     // Get user info
     const user = await User.findById(userId).select('username email');
