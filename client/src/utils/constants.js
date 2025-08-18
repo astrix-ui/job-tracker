@@ -6,7 +6,8 @@ export const APPLICATION_STATUSES = [
  'Final Round',
  'Offer Received',
  'Rejected',
- 'Withdrawn'
+ 'Withdrawn',
+ 'Other'
 ];
 
 export const POSITION_TYPES = [
@@ -24,7 +25,8 @@ export const STATUS_COLORS = {
  'Final Round': 'bg-orange-50 text-orange-600 border border-orange-200',
  'Offer Received': 'bg-emerald-50 text-emerald-600 border border-emerald-200',
  'Rejected': 'bg-red-50 text-red-600 border border-red-200',
- 'Withdrawn': 'bg-slate-50 text-slate-600 border border-slate-200'
+ 'Withdrawn': 'bg-slate-50 text-slate-600 border border-slate-200',
+ 'Other': 'bg-gray-50 text-gray-600 border border-gray-200'
 };
 
 export const CALENDAR_EVENT_COLORS = {
@@ -35,5 +37,6 @@ export const CALENDAR_EVENT_COLORS = {
  'Final Round': '#f97316',
  'Offer Received': '#10b981',
  'Rejected': '#ef4444',
- 'Withdrawn': '#6b7280'
+ 'Withdrawn': '#6b7280',
+ 'Other': '#6b7280'
 };

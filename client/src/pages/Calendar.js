@@ -102,10 +102,15 @@ const Calendar = () => {
         return null;
       }
       
-      // Create all-day events for next action dates
+      // Use the actual time if available, otherwise make it all-day
       const eventStart = new Date(startDate);
-      const eventEnd = new Date(startDate);
-      eventEnd.setHours(23, 59, 59, 999); // Make it an all-day event
+      const eventEnd = new Date(endDate);
+      
+      // Check if it's a specific time or all-day event
+      const isAllDay = eventStart.getHours() === 0 && eventStart.getMinutes() === 0;
+      if (isAllDay) {
+        eventEnd.setHours(23, 59, 59, 999); // Make it an all-day event
+      }
       
       const status = event.resource?.status || 'Applied';
       const backgroundColor = CALENDAR_EVENT_COLORS[status] || '#3b82f6';
@@ -115,7 +120,7 @@ const Calendar = () => {
         title: event.title || `${event.resource?.companyName || 'Unknown Company'}`,
         start: eventStart,
         end: eventEnd,
-        allDay: true,
+        allDay: isAllDay,
         resource: {
           ...event.resource,
           originalEvent: event
@@ -152,22 +157,23 @@ const Calendar = () => {
   };
 
   const eventStyleGetter = (event) => {
+    const baseColor = event.style?.backgroundColor || 'hsl(var(--foreground))';
     return {
       style: {
-        backgroundColor: event.style?.backgroundColor || '#3b82f6',
-        borderRadius: '0.75rem',
+        backgroundColor: baseColor,
+        borderRadius: '10px',
         opacity: 1,
         color: 'white',
         border: 'none',
         display: 'flex',
         alignItems: 'center',
-        padding: '6px 12px',
+        padding: '8px 12px',
         fontSize: '0.75rem',
         fontWeight: '600',
         boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
         cursor: 'pointer',
         transition: 'all 0.2s ease',
-        minHeight: '28px'
+        minHeight: '32px'
       }
     };
   };
@@ -182,15 +188,15 @@ const Calendar = () => {
           position: 'relative',
           height: '100%',
           width: '100%',
-          padding: '6px 12px',
+          padding: '8px 12px',
           display: 'flex',
           alignItems: 'center',
-          backgroundColor: event.style?.backgroundColor || '#3b82f6',
+          backgroundColor: event.style?.backgroundColor || 'hsl(var(--foreground))',
           color: 'white',
-          borderRadius: '8px',
+          borderRadius: '10px',
           fontSize: window.innerWidth < 640 ? '0.625rem' : '0.75rem',
           fontWeight: '600',
-          minHeight: '28px',
+          minHeight: '32px',
           boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
           cursor: 'pointer',
           transition: 'all 0.2s ease',
@@ -201,13 +207,13 @@ const Calendar = () => {
           className="status-indicator"
           style={{
             position: 'absolute',
-            left: '4px',
+            left: '6px',
             top: '50%',
             transform: 'translateY(-50%)',
-            width: '4px',
-            height: '16px',
+            width: '3px',
+            height: '18px',
             borderRadius: '2px',
-            backgroundColor: 'rgba(255,255,255,0.8)',
+            backgroundColor: 'rgba(255,255,255,0.9)',
             flexShrink: 0
           }}
         />
@@ -219,7 +225,7 @@ const Calendar = () => {
             textOverflow: 'ellipsis',
             flex: 1,
             lineHeight: '1.3',
-            marginLeft: '8px'
+            marginLeft: '12px'
           }}
         >
           {event.title}
@@ -443,112 +449,165 @@ const Calendar = () => {
           </div>
 
           {/* Calendar */}
-          <div className="p-6">
+          <div className="p-8">
             <style jsx>{`
               .rbc-calendar {
                 font-family: inherit;
-                border-radius: 12px;
+                border-radius: 16px;
                 overflow: hidden;
-                border: 1px solid hsl(var(--border) / 0.2);
+                border: 1px solid hsl(var(--border) / 0.3);
+                background: hsl(var(--background));
               }
               .rbc-header {
-                background: hsl(var(--muted) / 0.3);
-                border-bottom: 1px solid hsl(var(--border) / 0.2);
-                padding: 12px 8px;
+                background: hsl(var(--background) / 0.8);
+                border-bottom: 1px solid hsl(var(--border) / 0.3);
+                padding: 16px 12px;
                 font-weight: 600;
                 font-size: 0.875rem;
                 color: hsl(var(--foreground));
+                text-align: center;
+                margin: 0 2px;
+                border-radius: 8px 8px 0 0;
+              }
+              .rbc-header + .rbc-header {
+                border-left: 1px solid hsl(var(--border) / 0.2);
               }
               .rbc-month-view, .rbc-time-view {
                 border: none;
                 background: hsl(var(--background));
-              }
-              .rbc-date-cell {
-                padding: 8px;
-                border-right: 1px solid hsl(var(--border) / 0.1);
-                border-bottom: 1px solid hsl(var(--border) / 0.1);
-                min-height: 80px;
-                transition: background-color 0.2s ease;
-              }
-              .rbc-date-cell:hover {
-                background: hsl(var(--muted) / 0.3);
-              }
-              .rbc-date-cell.rbc-off-range {
-                background: hsl(var(--muted) / 0.1);
-                color: hsl(var(--muted-foreground));
-              }
-              .rbc-date-cell.rbc-today {
-                background: hsl(var(--primary) / 0.1);
-                border: 2px solid hsl(var(--primary) / 0.3);
-                border-radius: 8px;
+                margin: 4px;
+                border-radius: 12px;
+                overflow: hidden;
               }
               .rbc-month-row {
                 border: none;
+                margin: 2px 0;
+              }
+              .rbc-date-cell {
+                padding: 12px;
+                border-right: 1px solid hsl(var(--border) / 0.15);
+                border-bottom: 1px solid hsl(var(--border) / 0.15);
+                min-height: 90px;
+                transition: all 0.2s ease;
+                margin: 1px;
+                border-radius: 6px;
+                background: hsl(var(--background));
+                color: hsl(var(--foreground));
+              }
+              .rbc-date-cell:hover {
+                background: hsl(var(--muted) / 0.4);
+                transform: translateY(-1px);
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+              }
+              .rbc-date-cell.rbc-off-range {
+                background: hsl(var(--muted) / 0.2);
+                color: hsl(var(--muted-foreground));
+                opacity: 0.6;
+              }
+              .rbc-date-cell.rbc-today {
+                background: hsl(var(--foreground) / 0.05);
+                border: 2px solid hsl(var(--foreground) / 0.2);
+                border-radius: 8px;
+                font-weight: 600;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+              }
+              .rbc-date-cell.rbc-selected {
+                background: hsl(var(--foreground) / 0.1);
+                border: 2px solid hsl(var(--foreground) / 0.3);
               }
               .rbc-day-bg {
-                border-right: 1px solid hsl(var(--border) / 0.1);
-                border-bottom: 1px solid hsl(var(--border) / 0.1);
+                border-right: 1px solid hsl(var(--border) / 0.15);
+                border-bottom: 1px solid hsl(var(--border) / 0.15);
+                margin: 1px;
+                border-radius: 6px;
+                background: hsl(var(--background));
               }
               .rbc-day-bg.rbc-today {
-                background: hsl(var(--primary) / 0.05);
+                background: hsl(var(--foreground) / 0.03);
+                border: 1px solid hsl(var(--foreground) / 0.1);
+              }
+              .rbc-day-bg.rbc-off-range-bg {
+                background: hsl(var(--muted) / 0.1);
               }
               .rbc-event {
                 border: none !important;
-                border-radius: 8px !important;
-                padding: 4px 8px !important;
-                margin: 2px 4px !important;
-                font-weight: 500 !important;
+                border-radius: 10px !important;
+                padding: 6px 10px !important;
+                margin: 3px 6px !important;
+                font-weight: 600 !important;
                 font-size: 0.75rem !important;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
-                transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
+                transition: all 0.2s ease !important;
+                cursor: pointer !important;
               }
               .rbc-event:hover {
-                transform: translateY(-1px) !important;
-                box-shadow: 0 4px 8px rgba(0,0,0,0.15) !important;
+                transform: translateY(-2px) !important;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.2) !important;
+                scale: 1.02 !important;
               }
               .rbc-event-label {
                 display: none;
               }
               .rbc-show-more {
-                background: hsl(var(--muted));
+                background: hsl(var(--muted) / 0.8);
                 color: hsl(var(--foreground));
-                border-radius: 6px;
-                padding: 2px 6px;
+                border-radius: 8px;
+                padding: 4px 8px;
                 font-size: 0.75rem;
-                font-weight: 500;
+                font-weight: 600;
                 border: 1px solid hsl(var(--border) / 0.3);
-                margin: 2px 4px;
+                margin: 3px 6px;
+                transition: all 0.2s ease;
+              }
+              .rbc-show-more:hover {
+                background: hsl(var(--muted));
+                transform: translateY(-1px);
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
               }
               .rbc-toolbar {
                 display: none;
               }
               .rbc-time-header {
-                border-bottom: 1px solid hsl(var(--border) / 0.2);
+                border-bottom: 1px solid hsl(var(--border) / 0.3);
+                background: hsl(var(--background) / 0.8);
+                margin: 0 2px;
+                border-radius: 8px 8px 0 0;
               }
               .rbc-time-content {
                 border-top: none;
+                margin: 0 4px;
+                border-radius: 0 0 12px 12px;
+                overflow: hidden;
               }
               .rbc-time-slot {
                 border-top: 1px solid hsl(var(--border) / 0.1);
+                color: hsl(var(--foreground));
               }
               .rbc-timeslot-group {
                 border-bottom: 1px solid hsl(var(--border) / 0.2);
+                background: hsl(var(--background));
               }
               .rbc-time-gutter {
-                background: hsl(var(--muted) / 0.2);
-                border-right: 1px solid hsl(var(--border) / 0.2);
+                background: hsl(var(--background) / 0.8);
+                border-right: 1px solid hsl(var(--border) / 0.3);
+                color: hsl(var(--muted-foreground));
+                font-weight: 500;
               }
               .rbc-time-gutter .rbc-timeslot-group {
-                border-bottom: 1px solid hsl(var(--border) / 0.1);
+                border-bottom: 1px solid hsl(var(--border) / 0.15);
               }
               .rbc-current-time-indicator {
-                background-color: hsl(var(--primary));
-                height: 2px;
-                border-radius: 1px;
+                background-color: hsl(var(--foreground));
+                height: 3px;
+                border-radius: 2px;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.2);
               }
               .rbc-agenda-view {
-                border: 1px solid hsl(var(--border) / 0.2);
-                border-radius: 8px;
+                border: 1px solid hsl(var(--border) / 0.3);
+                border-radius: 12px;
+                margin: 4px;
+                overflow: hidden;
+                background: hsl(var(--background));
               }
               .rbc-agenda-view table {
                 border: none;
@@ -556,12 +615,34 @@ const Calendar = () => {
               .rbc-agenda-view .rbc-agenda-date-cell,
               .rbc-agenda-view .rbc-agenda-time-cell,
               .rbc-agenda-view .rbc-agenda-event-cell {
-                border-bottom: 1px solid hsl(var(--border) / 0.1);
-                padding: 12px;
+                border-bottom: 1px solid hsl(var(--border) / 0.15);
+                padding: 16px;
+                color: hsl(var(--foreground));
               }
               .rbc-agenda-view .rbc-agenda-date-cell {
-                background: hsl(var(--muted) / 0.3);
+                background: hsl(var(--background) / 0.8);
                 font-weight: 600;
+              }
+              .rbc-agenda-view .rbc-agenda-time-cell {
+                color: hsl(var(--muted-foreground));
+                font-weight: 500;
+              }
+              /* Date number styling */
+              .rbc-date-cell > a,
+              .rbc-date-cell > span {
+                color: hsl(var(--foreground)) !important;
+                font-weight: 600 !important;
+                font-size: 0.875rem !important;
+              }
+              .rbc-date-cell.rbc-off-range > a,
+              .rbc-date-cell.rbc-off-range > span {
+                color: hsl(var(--muted-foreground)) !important;
+                opacity: 0.6 !important;
+              }
+              .rbc-date-cell.rbc-today > a,
+              .rbc-date-cell.rbc-today > span {
+                color: hsl(var(--foreground)) !important;
+                font-weight: 700 !important;
               }
             `}</style>
             <div style={{ 

@@ -394,7 +394,11 @@ const Dashboard = () => {
               {/* Simple Applications List */}
               <div className="space-y-4 mb-6">
                 {paginatedCompanies.map((company) => (
-                  <div key={company._id} className="bg-card border border-border rounded-lg p-6 hover:bg-muted/30 transition-colors">
+                  <div 
+                    key={company._id} 
+                    className="bg-card border border-border rounded-lg p-6 hover:bg-muted/30 transition-colors cursor-pointer"
+                    onClick={() => navigate(`/job/${company._id}`)}
+                  >
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
@@ -405,6 +409,7 @@ const Dashboard = () => {
                         </div>
                         <p className="text-muted-foreground mb-2">
                           {company.positionTitle || 'Position not specified'} • {company.positionType}
+                          {company.location && ` • ${company.location}`}
                         </p>
                         {company.salaryExpectation && (
                           <p className="text-sm text-muted-foreground">
@@ -414,13 +419,19 @@ const Dashboard = () => {
                       </div>
                       <div className="flex gap-2">
                         <button
-                          onClick={() => handleEditCompany(company)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEditCompany(company);
+                          }}
                           className="px-3 py-1.5 text-sm text-foreground bg-foreground/10 hover:bg-foreground/20 rounded-lg transition-colors"
                         >
                           Edit
                         </button>
                         <button
-                          onClick={() => handleDeleteCompany(company._id, company.companyName)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteCompany(company._id, company.companyName);
+                          }}
                           className="px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/40 rounded-lg transition-colors"
                         >
                           Delete
@@ -447,6 +458,14 @@ const Dashboard = () => {
                           {company.interviewRounds || 0} completed
                         </div>
                       </div>
+                      {company.location && (
+                        <div className="md:col-span-3">
+                          <span className="text-muted-foreground">Location:</span>
+                          <div className="font-medium text-foreground">
+                            {company.location}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}

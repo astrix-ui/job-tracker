@@ -15,6 +15,7 @@ import ExploreUsers from './pages/ExploreUsers';
 import ConnectionsProgress from './pages/ConnectionsProgress';
 import UserProfile from './pages/UserProfile';
 import Notifications from './pages/Notifications';
+import JobDetails from './pages/JobDetails';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -83,6 +84,14 @@ function App() {
    element={
      <ProtectedRoute>
        <Notifications />
+     </ProtectedRoute>
+   }
+ />
+ <Route
+   path="/job/:id"
+   element={
+     <ProtectedRoute>
+       <JobDetails />
      </ProtectedRoute>
    }
  />
