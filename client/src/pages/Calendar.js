@@ -601,13 +601,15 @@ const Calendar = () => {
               .rbc-time-slot {
                 border-top: 1px solid hsl(var(--border) / 0.1);
                 color: hsl(var(--foreground));
-                min-height: 40px;
+                min-height: 30px;
+                height: auto;
                 padding: 4px 8px;
               }
               .rbc-timeslot-group {
                 border-bottom: 1px solid hsl(var(--border) / 0.2);
                 background: hsl(var(--background));
                 min-height: 60px;
+                height: auto;
               }
               .rbc-time-gutter {
                 background: hsl(var(--background) / 0.8);
@@ -628,11 +630,12 @@ const Calendar = () => {
                 color: hsl(var(--muted-foreground));
               }
               .rbc-day-slot {
-                min-height: 600px;
+                min-height: 700px;
               }
               .rbc-time-column {
                 min-width: 150px;
                 border-right: 1px solid hsl(var(--border) / 0.2);
+                min-height: 700px;
               }
               .rbc-day-slot .rbc-time-slot {
                 border-right: 1px solid hsl(var(--border) / 0.1);
@@ -687,9 +690,9 @@ const Calendar = () => {
               }
             `}</style>
             <div style={{ 
-              height: view === 'month' ? 'calc(100vh - 500px)' : 'calc(100vh - 450px)',
-              minHeight: view === 'month' ? '500px' : '400px',
-              maxHeight: view === 'month' ? '700px' : '600px'
+              height: view === 'month' ? 'calc(100vh - 500px)' : 'calc(100vh - 350px)',
+              minHeight: view === 'month' ? '500px' : '700px',
+              maxHeight: view === 'month' ? '800px' : '900px'
             }}>
               <BigCalendar
                 localizer={localizer}

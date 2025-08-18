@@ -417,6 +417,179 @@
   background-color: hsl(var(--accent));
 }
 
+/* Week and Day View Styles */
+.rbc-time-view {
+  border: none !important;
+  background-color: hsl(var(--card)) !important;
+  min-height: 700px !important;
+}
+
+.rbc-time-header {
+  background-color: hsl(var(--muted)) !important;
+  border-bottom: 1px solid hsl(var(--border)) !important;
+  padding: 1rem 0.5rem !important;
+  font-weight: 600 !important;
+  color: hsl(var(--foreground)) !important;
+}
+
+.rbc-time-header .rbc-header {
+  background-color: transparent !important;
+  border: none !important;
+  margin: 0 !important;
+  padding: 0.5rem !important;
+  font-size: 0.875rem !important;
+  font-weight: 600 !important;
+  color: hsl(var(--foreground)) !important;
+}
+
+.rbc-time-content {
+  border-top: none !important;
+  min-height: 600px !important;
+  background-color: hsl(var(--card)) !important;
+}
+
+.rbc-time-gutter {
+  background-color: hsl(var(--muted) / 0.5) !important;
+  border-right: 1px solid hsl(var(--border)) !important;
+  color: hsl(var(--muted-foreground)) !important;
+  font-weight: 500 !important;
+  width: 80px !important;
+  min-width: 80px !important;
+}
+
+.rbc-time-gutter .rbc-timeslot-group {
+  border-bottom: 1px solid hsl(var(--border) / 0.3) !important;
+  min-height: 60px !important;
+  background-color: transparent !important;
+}
+
+.rbc-time-gutter .rbc-time-slot {
+  padding: 8px 12px !important;
+  text-align: right !important;
+  font-size: 0.75rem !important;
+  color: hsl(var(--muted-foreground)) !important;
+  border-top: 1px solid hsl(var(--border) / 0.2) !important;
+}
+
+.rbc-day-slot {
+  min-height: 600px !important;
+  background-color: hsl(var(--card)) !important;
+}
+
+.rbc-time-column {
+  min-width: 150px !important;
+  border-right: 1px solid hsl(var(--border) / 0.3) !important;
+  background-color: hsl(var(--card)) !important;
+}
+
+.rbc-timeslot-group {
+  min-height: 60px !important;
+  border-bottom: 1px solid hsl(var(--border) / 0.2) !important;
+  background-color: hsl(var(--card)) !important;
+}
+
+.rbc-time-slot {
+  border-top: 1px solid hsl(var(--border) / 0.1) !important;
+  color: hsl(var(--foreground)) !important;
+  min-height: 30px !important;
+  padding: 4px 8px !important;
+  background-color: transparent !important;
+}
+
+.rbc-day-slot .rbc-time-slot {
+  border-right: 1px solid hsl(var(--border) / 0.1) !important;
+}
+
+.rbc-current-time-indicator {
+  background-color: hsl(var(--primary)) !important;
+  height: 3px !important;
+  border-radius: 2px !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2) !important;
+  z-index: 10 !important;
+}
+
+/* Time view event styling */
+.rbc-time-view .rbc-event {
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 4px 8px !important;
+  margin: 2px !important;
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
+  min-height: 24px !important;
+  display: flex !important;
+  align-items: center !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.rbc-time-view .rbc-event:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2) !important;
+  z-index: 20 !important;
+}
+
+.rbc-time-view .rbc-event-custom {
+  width: 100% !important;
+  height: 100% !important;
+  padding: 4px 8px !important;
+  border-radius: 8px !important;
+  min-height: 24px !important;
+}
+
+.rbc-time-view .rbc-event-custom .status-indicator {
+  width: 3px !important;
+  height: 16px !important;
+  left: 4px !important;
+}
+
+.rbc-time-view .rbc-event-custom .event-title {
+  margin-left: 10px !important;
+  font-size: 0.75rem !important;
+  line-height: 1.2 !important;
+}
+
+/* Agenda view styling */
+.rbc-agenda-view {
+  border: 1px solid hsl(var(--border)) !important;
+  border-radius: 12px !important;
+  margin: 4px !important;
+  overflow: hidden !important;
+  background-color: hsl(var(--card)) !important;
+  min-height: 400px !important;
+}
+
+.rbc-agenda-view table {
+  border: none !important;
+  width: 100% !important;
+}
+
+.rbc-agenda-view .rbc-agenda-date-cell,
+.rbc-agenda-view .rbc-agenda-time-cell,
+.rbc-agenda-view .rbc-agenda-event-cell {
+  border-bottom: 1px solid hsl(var(--border) / 0.3) !important;
+  padding: 16px !important;
+  color: hsl(var(--foreground)) !important;
+  background-color: hsl(var(--card)) !important;
+}
+
+.rbc-agenda-view .rbc-agenda-date-cell {
+  background-color: hsl(var(--muted) / 0.5) !important;
+  font-weight: 600 !important;
+  color: hsl(var(--foreground)) !important;
+}
+
+.rbc-agenda-view .rbc-agenda-time-cell {
+  color: hsl(var(--muted-foreground)) !important;
+  font-weight: 500 !important;
+  width: 120px !important;
+}
+
+.rbc-agenda-view .rbc-agenda-event-cell {
+  font-weight: 500 !important;
+}
+
 /* Auto-scrolling animation for tech stack */
 @keyframes scroll-slow {
   0% {

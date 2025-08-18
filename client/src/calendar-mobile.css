@@ -57,7 +57,19 @@
   }
 
   .rbc-timeslot-group {
-    min-height: 40px;
+    min-height: 50px;
+  }
+  
+  .rbc-time-view {
+    min-height: 500px !important;
+  }
+  
+  .rbc-day-slot {
+    min-height: 450px !important;
+  }
+  
+  .rbc-time-content {
+    min-height: 400px !important;
   }
 
   .rbc-time-slot {
