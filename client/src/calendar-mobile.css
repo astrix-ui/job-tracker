@@ -5,6 +5,21 @@
   /* Calendar container */
   .rbc-calendar {
     font-size: 12px;
+    width: 100% !important;
+    overflow-x: auto !important;
+  }
+  
+  /* Time column adjustments for mobile */
+  .rbc-time-column {
+    min-width: calc(100vw - 60px) !important;
+    flex: 1 !important;
+  }
+  
+  /* Header adjustments for mobile */
+  .rbc-time-header .rbc-header {
+    min-width: calc(100vw - 60px) !important;
+    flex: 1 !important;
+    text-align: center !important;
   }
 
   /* Month view adjustments */
@@ -37,14 +52,20 @@
   /* Week and day view adjustments */
   .rbc-time-view {
     border: none;
+    width: 100% !important;
+    overflow-x: auto !important;
   }
 
   .rbc-time-header {
     border-bottom: 1px solid var(--border);
+    width: 100% !important;
+    display: flex !important;
   }
 
   .rbc-time-header-content {
     border-left: 1px solid var(--border);
+    flex: 1 !important;
+    width: 100% !important;
   }
 
   .rbc-time-content {
@@ -53,7 +74,9 @@
 
   .rbc-time-gutter {
     font-size: 10px;
-    width: 50px;
+    width: 40px !important;
+    min-width: 40px !important;
+    flex-shrink: 0 !important;
   }
 
   .rbc-timeslot-group {
@@ -66,16 +89,19 @@
   
   .rbc-day-slot {
     min-height: 450px !important;
+    width: 100% !important;
   }
   
   .rbc-time-content {
     min-height: 400px !important;
     overflow-y: auto !important;
     max-height: 600px !important;
+    width: 100% !important;
   }
 
   .rbc-time-slot {
     border-top: 1px solid var(--border);
+    width: 100% !important;
   }
 
   /* Event styling */

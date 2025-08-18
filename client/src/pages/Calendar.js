@@ -636,6 +636,20 @@ const Calendar = () => {
                 min-width: 150px;
                 border-right: 1px solid hsl(var(--border) / 0.2);
                 min-height: 700px;
+                flex: 1;
+              }
+              @media (max-width: 640px) {
+                .rbc-time-column {
+                  min-width: calc(100vw - 80px) !important;
+                  flex: 1 !important;
+                }
+                .rbc-time-view {
+                  width: 100% !important;
+                }
+                .rbc-time-header .rbc-header {
+                  flex: 1 !important;
+                  min-width: calc(100vw - 80px) !important;
+                }
               }
               .rbc-day-slot .rbc-time-slot {
                 border-right: 1px solid hsl(var(--border) / 0.1);

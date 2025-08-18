@@ -483,6 +483,37 @@
   min-width: 150px !important;
   border-right: 1px solid hsl(var(--border) / 0.3) !important;
   background-color: hsl(var(--card)) !important;
+  flex: 1 !important;
+}
+
+/* Mobile specific time column adjustments */
+@media (max-width: 640px) {
+  .rbc-time-column {
+    min-width: calc(100vw - 80px) !important;
+    flex: 1 !important;
+  }
+  
+  .rbc-time-view {
+    width: 100% !important;
+    overflow-x: auto !important;
+  }
+  
+  .rbc-time-header {
+    width: 100% !important;
+  }
+  
+  .rbc-time-header .rbc-header {
+    flex: 1 !important;
+    min-width: calc(100vw - 80px) !important;
+  }
+  
+  .rbc-time-content {
+    width: 100% !important;
+  }
+  
+  .rbc-day-slot {
+    width: 100% !important;
+  }
 }
 
 .rbc-timeslot-group {
