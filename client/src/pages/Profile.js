@@ -32,9 +32,11 @@ const Profile = () => {
     confirmPassword: ''
   });
   const [editLoading, setEditLoading] = useState(false);
+  const [fullUser, setFullUser] = useState(null);
 
   useEffect(() => {
     fetchUserStats();
+    fetchFullUserData();
     
     // Set up interval to refresh stats every 30 seconds
     const interval = setInterval(fetchUserStats, 30000);
@@ -60,6 +62,15 @@ const Profile = () => {
       setStats(response.data.stats);
     } catch (error) {
       console.error('Failed to fetch user stats:', error);
+    }
+  };
+
+  const fetchFullUserData = async () => {
+    try {
+      const response = await authAPI.getCurrentUser();
+      setFullUser(response.data.user);
+    } catch (error) {
+      console.error('Failed to fetch full user data:', error);
     }
   };
 
@@ -191,7 +202,7 @@ const Profile = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
                 <span className="text-sm font-medium text-muted-foreground">
-                  Member since {formatDate(user?.createdAt)}
+                  Member since {formatDate(fullUser?.createdAt || user?.createdAt)}
                 </span>
               </div>
             </div>
@@ -372,12 +383,13 @@ const Profile = () => {
       </div>
 
       {/* Edit Profile Modal */}
-      <Modal
-        isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
-        title="Edit Profile"
-        size="medium"
-      >
+      <div className="mt-5">
+        <Modal
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          title="Edit Profile"
+          size="medium"
+        >
         <div className="p-6">
           <div className="space-y-4">
             {/* Username Field */}
@@ -481,14 +493,16 @@ const Profile = () => {
           </div>
         </div>
       </Modal>
+      </div>
 
       {/* Delete Confirmation Modal */}
-      <Modal
-        isOpen={isDeleteModalOpen}
-        onClose={() => setIsDeleteModalOpen(false)}
-        title="Delete Account"
-        size="medium"
-      >
+      <div className="mt-5">
+        <Modal
+          isOpen={isDeleteModalOpen}
+          onClose={() => setIsDeleteModalOpen(false)}
+          title="Delete Account"
+          size="medium"
+        >
         <div className="p-6">
           <div className="text-center mb-6">
             <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -538,6 +552,7 @@ const Profile = () => {
           </div>
         </div>
       </Modal>
+      </div>
 
       {/* Toast for confirmations - only show if we have content */}
       {showConfirmToast && confirmTitle && confirmMessage && (
