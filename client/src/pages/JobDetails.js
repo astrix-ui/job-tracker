@@ -104,34 +104,18 @@ const JobDetails = () => {
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center space-x-4">
-            <button
-              onClick={() => navigate('/dashboard')}
-              className="flex items-center justify-center w-10 h-10 bg-background/50 border border-border/30 text-foreground rounded-xl hover:bg-background hover:border-border/50 transition-all duration-200"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-            <div>
-              <h1 className="text-3xl font-bold text-foreground">{company.companyName}</h1>
-              <p className="text-muted-foreground">Job Application Details</p>
-            </div>
-          </div>
-          <div className="flex items-center space-x-3">
-            <button
-              onClick={() => setIsEditModalOpen(true)}
-              className="px-4 py-2 bg-foreground text-background rounded-xl hover:bg-foreground/90 transition-colors"
-            >
-              Edit
-            </button>
-            <button
-              onClick={() => setIsDeleteModalOpen(true)}
-              className="px-4 py-2 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-colors"
-            >
-              Delete
-            </button>
+        <div className="flex items-center mb-8">
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="flex items-center justify-center w-10 h-10 bg-background/50 border border-border/30 text-foreground rounded-xl hover:bg-background hover:border-border/50 transition-all duration-200 mr-4"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <div>
+            <h1 className="text-3xl font-bold text-foreground">Application Details</h1>
+            <p className="text-muted-foreground">View and manage your job application</p>
           </div>
         </div>
 
@@ -149,8 +133,8 @@ const JobDetails = () => {
                       </span>
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold text-foreground">{company.companyName}</h2>
-                      <p className="text-muted-foreground">
+                      <h2 className="text-4xl font-bold text-foreground mb-2">{company.companyName}</h2>
+                      <p className="text-lg text-muted-foreground">
                         {company.positionTitle || 'Position not specified'} • {company.positionType}
                       </p>
                     </div>
@@ -241,7 +225,7 @@ const JobDetails = () => {
                       <div>
                         <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Salary Expectation</label>
                         <p className="text-foreground font-medium">
-                          {company.salaryExpectation ? `₹${company.salaryExpectation.toLocaleString()}` : 'Not specified'}
+                          {company.salaryExpectation ? `₹${company.salaryExpectation.toLocaleString('en-IN')}` : 'Not specified'}
                         </p>
                       </div>
                       <div>
@@ -323,6 +307,7 @@ const JobDetails = () => {
         onClose={() => setIsDeleteModalOpen(false)}
         title="Delete Application"
         size="medium"
+        className="job-details-delete-modal"
       >
         <div className="space-y-4">
           <p className="text-foreground">
