@@ -64,7 +64,28 @@ const companySchema = new mongoose.Schema({
   isPrivate: {
     type: Boolean,
     default: false
-  }
+  },
+  pastActionNotifications: [{
+    actionDate: {
+      type: Date,
+      required: true
+    },
+    notificationCreated: {
+      type: Date,
+      default: Date.now
+    },
+    isCompleted: {
+      type: Boolean,
+      default: false
+    },
+    completionResponse: {
+      type: String,
+      trim: true
+    },
+    respondedAt: {
+      type: Date
+    }
+  }]
 }, {
   timestamps: true
 });

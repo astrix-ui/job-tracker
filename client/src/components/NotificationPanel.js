@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCompany } from '../context/CompanyContext';
-import { connectionAPI } from '../utils/api';
+import { connectionAPI, companyAPI } from '../utils/api';
 import { useToast } from '../context/ToastContext';
 import StatusBadge from './StatusBadge';
 import { formatDate } from '../utils/helpers';
-import { UserPlus, Check, X } from 'lucide-react';
+import { UserPlus, Check, X, Clock, MessageSquare } from 'lucide-react';
 
 const NotificationPanel = ({ isOpen, onClose, isMobile = false }) => {
   const { companies } = useCompany();
@@ -14,6 +14,8 @@ const NotificationPanel = ({ isOpen, onClose, isMobile = false }) => {
   const panelRef = useRef(null);
   const [followRequests, setFollowRequests] = useState([]);
   const [requestsLoading, setRequestsLoading] = useState(false);
+  const [pastActionNotifications, setPastActionNotifications] = useState([]);
+  const [notificationsLoading, setNotificationsLoading] = useState(false);
 
   // Calculate upcoming next action dates within 3 days
   const upcomingActions = useMemo(() => {
@@ -71,6 +73,20 @@ const NotificationPanel = ({ isOpen, onClose, isMobile = false }) => {
     }
   };
 
+  // Fetch past action notifications
+  const fetchPastActionNotifications = async () => {
+    try {
+      setNotificationsLoading(true);
+      const response = await companyAPI.getPastActionNotifications();
+      setPastActionNotifications(response.data.notifications || []);
+    } catch (error) {
+      console.error('Error fetching past action notifications:', error);
+      setPastActionNotifications([]);
+    } finally {
+      setNotificationsLoading(false);
+    }
+  };
+
   // Handle follow request response
   const handleRequestResponse = async (connectionId, action, event) => {
     if (event) {
@@ -94,10 +110,33 @@ const NotificationPanel = ({ isOpen, onClose, isMobile = false }) => {
     }
   };
 
-  // Fetch requests when panel opens
+  // Handle past action notification response
+  const handlePastActionResponse = async (companyId, notificationId, isCompleted, completionResponse = '') => {
+    try {
+      await companyAPI.respondToPastActionNotification({
+        companyId,
+        notificationId,
+        isCompleted,
+        completionResponse
+      });
+      
+      showToast('Response recorded successfully!', 'success');
+      
+      // Remove the notification from the list
+      setPastActionNotifications(prev => 
+        prev.filter(notification => notification.notificationId !== notificationId)
+      );
+    } catch (error) {
+      console.error('Error responding to past action notification:', error);
+      showToast('Failed to record response', 'error');
+    }
+  };
+
+  // Fetch requests and notifications when panel opens
   useEffect(() => {
     if (isOpen) {
       fetchFollowRequests();
+      fetchPastActionNotifications();
     }
   }, [isOpen]);
 
@@ -171,6 +210,11 @@ const NotificationPanel = ({ isOpen, onClose, isMobile = false }) => {
               <span className="px-2 py-1 text-xs font-medium bg-foreground/10 text-foreground rounded-full">
                 {upcomingActions.length} upcoming
               </span>
+              {pastActionNotifications.length > 0 && (
+                <span className="px-2 py-1 text-xs font-medium bg-orange-100 text-orange-700 rounded-full dark:bg-orange-900/40 dark:text-orange-300">
+                  {pastActionNotifications.length} past
+                </span>
+              )}
               <button
                 onClick={onClose}
                 className="text-muted-foreground hover:text-foreground transition-colors p-1 rounded-lg hover:bg-foreground/10"
@@ -239,6 +283,83 @@ const NotificationPanel = ({ isOpen, onClose, isMobile = false }) => {
                         <X className="w-4 h-4" />
                       </button>
                     </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Past Action Notifications Section */}
+        {pastActionNotifications.length > 0 && (
+          <div className="p-4 border-b border-border">
+            <h4 className="text-sm font-semibold text-foreground mb-3 flex items-center">
+              <Clock className="w-4 h-4 mr-2" />
+              Past Actions ({pastActionNotifications.length})
+            </h4>
+            <div className="space-y-3">
+              {pastActionNotifications.map((notification) => (
+                <div
+                  key={notification.notificationId}
+                  className="p-3 bg-orange-50 rounded-lg border border-orange-200 dark:bg-orange-900/20 dark:border-orange-800/50"
+                >
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1 min-w-0 pr-3">
+                      <h5 className="text-sm font-medium text-foreground mb-1">
+                        {notification.companyName}
+                      </h5>
+                      {notification.positionTitle && (
+                        <p className="text-xs text-muted-foreground mb-1">
+                          {notification.positionTitle}
+                        </p>
+                      )}
+                      <p className="text-xs text-orange-700 dark:text-orange-300">
+                        Action was due: {formatDate(notification.actionDate)}
+                      </p>
+                    </div>
+                    <StatusBadge status={notification.status} className="flex-shrink-0" />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <p className="text-sm text-foreground font-medium">
+                      Did you complete this action?
+                    </p>
+                    <div className="flex space-x-2">
+                      <button
+                        onClick={() => handlePastActionResponse(
+                          notification.companyId, 
+                          notification.notificationId, 
+                          true, 
+                          'Action completed successfully'
+                        )}
+                        className="flex-1 px-3 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors text-sm font-medium dark:bg-green-900/40 dark:text-green-300 dark:hover:bg-green-900/60"
+                      >
+                        <Check className="w-4 h-4 inline mr-1" />
+                        Yes, completed
+                      </button>
+                      <button
+                        onClick={() => {
+                          const response = prompt('What happened? (optional)');
+                          handlePastActionResponse(
+                            notification.companyId, 
+                            notification.notificationId, 
+                            false, 
+                            response || 'Action not completed'
+                          );
+                        }}
+                        className="flex-1 px-3 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-sm font-medium dark:bg-red-900/40 dark:text-red-300 dark:hover:bg-red-900/60"
+                      >
+                        <X className="w-4 h-4 inline mr-1" />
+                        No, missed it
+                      </button>
+                    </div>
+                    <button
+                      onClick={() => navigate(`/job/${notification.companyId}`)}
+                      className="w-full px-3 py-2 bg-muted/50 text-foreground rounded-lg hover:bg-muted/70 transition-colors text-sm font-medium flex items-center justify-center"
+                    >
+                      <MessageSquare className="w-4 h-4 mr-1" />
+                      View Details
+                    </button>
                   </div>
                 </div>
               ))}
@@ -325,11 +446,13 @@ const NotificationPanel = ({ isOpen, onClose, isMobile = false }) => {
       </div>
 
       {/* Footer */}
-      {(followRequests.length > 0 || upcomingActions.length > 0) && (
+      {(followRequests.length > 0 || upcomingActions.length > 0 || pastActionNotifications.length > 0) && (
         <div className="p-3 border-t border-border bg-muted/50">
           <p className="text-xs text-muted-foreground text-center">
             {followRequests.length > 0 && `${followRequests.length} follow request${followRequests.length !== 1 ? 's' : ''}`}
-            {followRequests.length > 0 && upcomingActions.length > 0 && ' • '}
+            {followRequests.length > 0 && (upcomingActions.length > 0 || pastActionNotifications.length > 0) && ' • '}
+            {pastActionNotifications.length > 0 && `${pastActionNotifications.length} past action${pastActionNotifications.length !== 1 ? 's' : ''}`}
+            {pastActionNotifications.length > 0 && upcomingActions.length > 0 && ' • '}
             {upcomingActions.length > 0 && `${upcomingActions.length} upcoming action${upcomingActions.length !== 1 ? 's' : ''}`}
           </p>
         </div>

@@ -27,6 +27,8 @@ export const companyAPI = {
  createCompany: (companyData) => api.post('/companies', companyData),
  updateCompany: (id, companyData) => api.put(`/companies/${id}`, companyData),
  deleteCompany: (id) => api.delete(`/companies/${id}`),
+ getPastActionNotifications: () => api.get('/companies/notifications/past-actions'),
+ respondToPastActionNotification: (responseData) => api.post('/companies/notifications/respond', responseData),
 };
 
 // Calendar API endpoints

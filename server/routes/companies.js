@@ -7,7 +7,9 @@ const {
   getCompanyById,
   createCompany,
   updateCompany,
-  deleteCompany
+  deleteCompany,
+  getPastActionNotifications,
+  respondToPastActionNotification
 } = require('../controllers/companyController');
 
 // All routes require authentication
@@ -27,5 +29,11 @@ router.put('/:id', updateCompany);
 
 // DELETE /api/companies/:id
 router.delete('/:id', deleteCompany);
+
+// GET /api/companies/notifications/past-actions
+router.get('/notifications/past-actions', getPastActionNotifications);
+
+// POST /api/companies/notifications/respond
+router.post('/notifications/respond', respondToPastActionNotification);
 
 module.exports = router;

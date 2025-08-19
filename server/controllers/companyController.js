@@ -344,11 +344,104 @@ const importExcelData = async (req, res) => {
   }
 };
 
+// Get past action notifications for all companies
+const getPastActionNotifications = async (req, res) => {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const companies = await Company.find({ 
+      userId: req.session.userId,
+      nextActionDate: { $lt: today }
+    });
+    
+    const notifications = [];
+    
+    for (const company of companies) {
+      // Check if we already have a notification for this past action date
+      const existingNotification = company.pastActionNotifications.find(
+        notification => notification.actionDate.getTime() === company.nextActionDate.getTime()
+      );
+      
+      if (!existingNotification) {
+        // Create a new notification entry
+        company.pastActionNotifications.push({
+          actionDate: company.nextActionDate,
+          notificationCreated: new Date(),
+          isCompleted: false
+        });
+        await company.save();
+        
+        notifications.push({
+          companyId: company._id,
+          companyName: company.companyName,
+          positionTitle: company.positionTitle,
+          status: company.status,
+          actionDate: company.nextActionDate,
+          notificationId: company.pastActionNotifications[company.pastActionNotifications.length - 1]._id
+        });
+      } else if (!existingNotification.isCompleted) {
+        // Include existing unresponded notifications
+        notifications.push({
+          companyId: company._id,
+          companyName: company.companyName,
+          positionTitle: company.positionTitle,
+          status: company.status,
+          actionDate: existingNotification.actionDate,
+          notificationId: existingNotification._id
+        });
+      }
+    }
+    
+    res.json({ notifications });
+  } catch (error) {
+    console.error('Get past action notifications error:', error);
+    res.status(500).json({ error: 'Server error while fetching notifications' });
+  }
+};
+
+// Respond to a past action notification
+const respondToPastActionNotification = async (req, res) => {
+  try {
+    const { companyId, notificationId, isCompleted, completionResponse } = req.body;
+    
+    const company = await Company.findOne({
+      _id: companyId,
+      userId: req.session.userId
+    });
+    
+    if (!company) {
+      return res.status(404).json({ error: 'Company not found' });
+    }
+    
+    const notification = company.pastActionNotifications.id(notificationId);
+    if (!notification) {
+      return res.status(404).json({ error: 'Notification not found' });
+    }
+    
+    notification.isCompleted = isCompleted;
+    notification.completionResponse = completionResponse || '';
+    notification.respondedAt = new Date();
+    
+    await company.save();
+    
+    res.json({ 
+      success: true, 
+      message: 'Response recorded successfully' 
+    });
+  } catch (error) {
+    console.error('Respond to past action notification error:', error);
+    res.status(500).json({ error: 'Server error while recording response' });
+  }
+};
+
 module.exports = {
   getAllCompanies,
   getCompanyById,
   createCompany,
   updateCompany,
   deleteCompany,
-  importExcelData
+  importExcelData,
+  getPastActionNotifications,
+  respondToPastActionNotification
 };
