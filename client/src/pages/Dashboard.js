@@ -624,7 +624,14 @@ const Dashboard = () => {
                 {upcomingEvents.length > 0 ? (
                   <div className="space-y-3">
                     {upcomingEvents.slice(0, 3).map((event, index) => {
-                      const daysUntil = Math.ceil((new Date(event.nextActionDate) - new Date()) / (1000 * 60 * 60 * 24));
+                      const now = new Date();
+                      const eventDate = new Date(event.nextActionDate);
+                      
+                      // Reset time to start of day for accurate day comparison
+                      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                      const eventDay = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
+                      
+                      const daysUntil = Math.floor((eventDay - today) / (1000 * 60 * 60 * 24));
                       const isUrgent = daysUntil <= 2;
                       
                       return (
