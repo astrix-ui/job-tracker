@@ -19,11 +19,13 @@ const StatusBadge = ({ status, className = '' }) => {
      'Other': 'Other'
    };
    
-   return statusMap[status] || 'Applied';
+   // Return the mapped status if it exists, otherwise return the original status (for custom statuses)
+   return statusMap[status] || status;
  };
 
  const normalizedStatus = normalizeStatus(status);
- const colorClass = STATUS_COLORS[normalizedStatus] || STATUS_COLORS['Applied'];
+ // Use 'Other' styling for custom statuses that don't have predefined colors
+ const colorClass = STATUS_COLORS[normalizedStatus] || STATUS_COLORS['Other'];
 
  return (
  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${colorClass} ${className}`}>
