@@ -15,6 +15,12 @@ const {
 // All routes require authentication
 router.use(requireAuth);
 
+// GET /api/companies/notifications/past-actions (must come before /:id routes)
+router.get('/notifications/past-actions', getPastActionNotifications);
+
+// POST /api/companies/notifications/respond (must come before /:id routes)
+router.post('/notifications/respond', respondToPastActionNotification);
+
 // GET /api/companies
 router.get('/', getAllCompanies);
 
@@ -29,11 +35,5 @@ router.put('/:id', updateCompany);
 
 // DELETE /api/companies/:id
 router.delete('/:id', deleteCompany);
-
-// GET /api/companies/notifications/past-actions
-router.get('/notifications/past-actions', getPastActionNotifications);
-
-// POST /api/companies/notifications/respond
-router.post('/notifications/respond', respondToPastActionNotification);
 
 module.exports = router;

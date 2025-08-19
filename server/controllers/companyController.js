@@ -350,10 +350,15 @@ const getPastActionNotifications = async (req, res) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     
+    console.log('Getting past action notifications for user:', req.session.userId);
+    console.log('Today (start of day):', today);
+    
     const companies = await Company.find({ 
       userId: req.session.userId,
       nextActionDate: { $lt: today }
     });
+    
+    console.log('Found', companies.length, 'companies with past action dates');
     
     const notifications = [];
     
@@ -393,6 +398,7 @@ const getPastActionNotifications = async (req, res) => {
       }
     }
     
+    console.log('Returning', notifications.length, 'notifications');
     res.json({ notifications });
   } catch (error) {
     console.error('Get past action notifications error:', error);

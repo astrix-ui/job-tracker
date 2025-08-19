@@ -77,10 +77,13 @@ const NotificationPanel = ({ isOpen, onClose, isMobile = false }) => {
   const fetchPastActionNotifications = async () => {
     try {
       setNotificationsLoading(true);
+      console.log('Fetching past action notifications...');
       const response = await companyAPI.getPastActionNotifications();
+      console.log('Past action notifications response:', response.data);
       setPastActionNotifications(response.data.notifications || []);
     } catch (error) {
       console.error('Error fetching past action notifications:', error);
+      console.error('Error details:', error.response?.data || error.message);
       setPastActionNotifications([]);
     } finally {
       setNotificationsLoading(false);
