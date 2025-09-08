@@ -611,7 +611,7 @@ const Dashboard = () => {
             </div>
 
             {/* Upcoming Events - Enhanced Card */}
-            <div className="col-span-12 md:col-span-4 bg-gradient-to-br from-muted/30 to-muted/20 rounded-[20px] p-6 relative overflow-hidden">
+            <div className="col-span-12 md:col-span-4 bg-muted/30 rounded-[20px] p-6 relative overflow-hidden">
               {/* Background Pattern */}
               <div className="absolute top-0 right-0 w-20 h-20 bg-foreground/5 rounded-full -translate-y-10 translate-x-10"></div>
               <div className="absolute bottom-0 left-0 w-16 h-16 bg-foreground/5 rounded-full translate-y-8 -translate-x-8"></div>

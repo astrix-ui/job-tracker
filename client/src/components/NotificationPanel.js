@@ -201,7 +201,7 @@ const NotificationPanel = ({ isOpen, onClose, isMobile = false }) => {
     >
       {/* Header */}
       {!isMobile && (
-        <div className="p-5 border-b border-border/20 bg-gradient-to-r from-background/50 to-muted/20 rounded-t-2xl">
+        <div className="p-5 border-b border-border/20 bg-background/50 rounded-t-2xl">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-gradient-to-br from-foreground/10 to-foreground/20 rounded-lg flex items-center justify-center">

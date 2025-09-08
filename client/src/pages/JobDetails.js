@@ -75,7 +75,7 @@ const JobDetails = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <LoadingSpinner size="large" />
           <p className="mt-4 text-muted-foreground">Loading job details...</p>
@@ -86,7 +86,7 @@ const JobDetails = () => {
 
   if (error || !company) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <ErrorMessage message={error || 'Job application not found'} />
           <Link
@@ -101,7 +101,7 @@ const JobDetails = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-background py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="flex items-center mb-8">
@@ -254,7 +254,7 @@ const JobDetails = () => {
                 )}
 
                 {/* Quick Actions */}
-                <div className="bg-gradient-to-br from-muted/30 to-muted/20 rounded-xl p-6 border border-border/30">
+                <div className="bg-muted/30 rounded-xl p-6 border border-border/30">
                   <h4 className="text-md font-semibold text-foreground mb-4 flex items-center">
                     <svg className="w-4 h-4 mr-2 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
