@@ -3,6 +3,8 @@ import { useCompany } from '../context/CompanyContext';
 import { useToast } from '../context/ToastContext';
 import LoadingSpinner from './LoadingSpinner';
 import ErrorMessage from './ErrorMessage';
+import CustomCalendar from './CustomCalendar';
+import CustomTimePicker from './CustomTimePicker';
 import { APPLICATION_STATUSES, POSITION_TYPES } from '../utils/constants';
 
 const CompanyForm = ({ company, onClose }) => {
@@ -16,9 +18,9 @@ const CompanyForm = ({ company, onClose }) => {
     status: 'Applied',
     customStatus: '',
     nextActionDate: '',
-    nextActionTime: '',
+    nextActionTime: '12:00', // Default to 12:00 PM
     location: '',
-    interviewRounds: 0,
+    interviewRounds: '',
     positionType: 'Full-time',
     positionTitle: '',
     notes: '',
@@ -41,7 +43,7 @@ const CompanyForm = ({ company, onClose }) => {
         nextActionTime: nextActionDateTime ? 
           nextActionDateTime.toTimeString().slice(0, 5) : '',
         location: company.location || '',
-        interviewRounds: company.interviewRounds || 0,
+        interviewRounds: company.interviewRounds || '',
         positionType: company.positionType || 'Full-time',
         positionTitle: company.positionTitle || '',
         notes: company.notes || '',
@@ -61,10 +63,20 @@ const CompanyForm = ({ company, onClose }) => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : type === 'number' ? (value === '' ? '' : Number(value)) : value
-    }));
+    
+    // Set default time to 12:00 PM when date is selected and no time is set
+    if (name === 'nextActionDate' && value && !formData.nextActionTime) {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value,
+        nextActionTime: '12:00' // Default to 12:00 PM
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: type === 'checkbox' ? checked : type === 'number' ? (value === '' ? '' : Number(value)) : value
+      }));
+    }
     setError('');
   };
 
@@ -163,65 +175,164 @@ const CompanyForm = ({ company, onClose }) => {
           />
         </div>
 
-        {/* Status & Type Row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <select
-              id="status"
-              name="status"
-              value={formData.status}
-              onChange={handleChange}
-              className="w-full px-4 py-3 border border-border rounded-xl bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/20 focus:border-transparent transition-all"
-            >
-              {APPLICATION_STATUSES.map(status => (
-                <option key={status} value={status}>{status}</option>
-              ))}
-            </select>
-            {formData.status === 'Other' && (
-              <input
-                type="text"
-                id="customStatus"
-                name="customStatus"
-                value={formData.customStatus}
+        {/* Enhanced Status & Type Row */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+              Application Status
+            </label>
+            <div className="relative group">
+              <select
+                id="status"
+                name="status"
+                value={formData.status}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-border rounded-xl bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-foreground/20 focus:border-transparent transition-all mt-2"
-                placeholder="Enter custom status"
-                required={formData.status === 'Other'}
-              />
+                className="w-full px-4 py-3 pr-10 border border-border rounded-xl bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all hover:border-foreground/40 appearance-none cursor-pointer shadow-sm group-hover:shadow-md"
+              >
+                {APPLICATION_STATUSES.map(status => (
+                  <option key={status} value={status}>{status}</option>
+                ))}
+              </select>
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <svg className="w-4 h-4 text-muted-foreground transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </div>
+            {formData.status === 'Other' && (
+              <div className="mt-2 animate-in slide-in-from-top-2 duration-200">
+                <input
+                  type="text"
+                  id="customStatus"
+                  name="customStatus"
+                  value={formData.customStatus}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-border rounded-xl bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all hover:border-foreground/40 shadow-sm"
+                  placeholder="Enter custom status"
+                  required={formData.status === 'Other'}
+                />
+              </div>
             )}
           </div>
-          <select
-            id="positionType"
-            name="positionType"
-            value={formData.positionType}
-            onChange={handleChange}
-            className="w-full px-4 py-3 border border-border rounded-xl bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/20 focus:border-transparent transition-all"
-          >
-            {POSITION_TYPES.map(type => (
-              <option key={type} value={type}>{type}</option>
-            ))}
-          </select>
+          <div className="space-y-2">
+            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+              Position Type
+            </label>
+            <div className="relative group">
+              <select
+                id="positionType"
+                name="positionType"
+                value={formData.positionType}
+                onChange={handleChange}
+                className="w-full px-4 py-3 pr-10 border border-border rounded-xl bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all hover:border-foreground/40 appearance-none cursor-pointer shadow-sm group-hover:shadow-md"
+              >
+                {POSITION_TYPES.map(type => (
+                  <option key={type} value={type}>{type}</option>
+                ))}
+              </select>
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <svg className="w-4 h-4 text-muted-foreground transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Next Action Date & Time Row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <input
-            type="date"
-            id="nextActionDate"
-            name="nextActionDate"
-            value={formData.nextActionDate}
-            onChange={handleChange}
-            className="w-full px-4 py-3 border border-border rounded-xl bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/20 focus:border-transparent transition-all"
-          />
-          <input
-            type="time"
-            id="nextActionTime"
-            name="nextActionTime"
-            value={formData.nextActionTime}
-            onChange={handleChange}
-            className="w-full px-4 py-3 border border-border rounded-xl bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/20 focus:border-transparent transition-all"
-            disabled={!formData.nextActionDate}
-          />
+        <div className="space-y-3">
+          <label className="block text-sm font-medium text-foreground">
+            Next Action Date & Time
+          </label>
+          
+          {/* Quick Date Selection Buttons */}
+          <div className="space-y-2">
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Quick Date Selection</p>
+            <div className="flex flex-wrap gap-2">
+              {[
+                { label: 'Today', days: 0 },
+                { label: 'Tomorrow', days: 1 },
+                { label: 'Next Week', days: 7 },
+                { label: 'In 2 Weeks', days: 14 }
+              ].map(({ label, days }) => {
+                const targetDate = new Date();
+                targetDate.setDate(targetDate.getDate() + days);
+                const isSelected = formData.nextActionDate === targetDate.toISOString().split('T')[0];
+                
+                return (
+                  <button
+                    key={label}
+                    type="button"
+                    onClick={() => {
+                      const dateString = targetDate.toISOString().split('T')[0];
+                      setFormData(prev => ({
+                        ...prev,
+                        nextActionDate: dateString,
+                        nextActionTime: prev.nextActionTime || '12:00'
+                      }));
+                    }}
+                    className={`inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-xl transition-all duration-200 border ${
+                      isSelected
+                        ? 'bg-blue-50 text-blue-700 border-blue-200 shadow-sm'
+                        : 'bg-background text-muted-foreground border-border/50 hover:bg-muted/50 hover:text-foreground hover:border-border hover:shadow-sm'
+                    }`}
+                  >
+                    <span>{label}</span>
+                    <span className="text-xs opacity-70">
+                      {targetDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Enhanced Date Picker with Custom Calendar */}
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                Date
+              </label>
+              <CustomCalendar
+                value={formData.nextActionDate}
+                onChange={(dateString) => {
+                  setFormData(prev => ({
+                    ...prev,
+                    nextActionDate: dateString,
+                    nextActionTime: prev.nextActionTime || '12:00'
+                  }));
+                }}
+                minDate={new Date().toISOString().split('T')[0]}
+              />
+            </div>
+            
+            {/* Enhanced Time Picker with Custom Component */}
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                Time
+              </label>
+              <CustomTimePicker
+                value={formData.nextActionTime}
+                onChange={(timeString) => {
+                  setFormData(prev => ({
+                    ...prev,
+                    nextActionTime: timeString
+                  }));
+                }}
+                disabled={!formData.nextActionDate}
+              />
+            </div>
+          </div>
+          
+          
+          {formData.nextActionDate && (
+            <p className="text-xs text-muted-foreground flex items-center gap-1">
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              This will appear on your calendar for tracking follow-ups
+            </p>
+          )}
         </div>
 
         {/* Optional Fields - Collapsible */}
@@ -275,15 +386,30 @@ const CompanyForm = ({ company, onClose }) => {
                 placeholder="Application Platform (e.g., LinkedIn, Indeed)"
               />
             </div>
-            <textarea
-              id="notes"
-              name="notes"
-              rows={3}
-              value={formData.notes}
-              onChange={handleChange}
-              className="w-full px-4 py-3 border border-border rounded-xl bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-foreground/20 focus:border-transparent transition-all resize-none"
-              placeholder="Additional notes..."
-            />
+            <div className="space-y-2">
+              <textarea
+                id="notes"
+                name="notes"
+                rows={3}
+                value={formData.notes}
+                onChange={(e) => {
+                  handleChange(e);
+                  // Auto-resize textarea
+                  e.target.style.height = 'auto';
+                  e.target.style.height = Math.min(e.target.scrollHeight, 200) + 'px';
+                }}
+                className="w-full px-4 py-3 border border-border rounded-xl bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-foreground/20 focus:border-transparent transition-all resize-none min-h-[80px] max-h-[200px]"
+                placeholder="Additional notes... (up to 1000 words)"
+                maxLength={7000}
+                style={{ height: 'auto', minHeight: '80px' }}
+              />
+              <div className="flex justify-between items-center text-xs text-muted-foreground">
+                <span>Additional notes and details about the application</span>
+                <span className={`${formData.notes.length > 6500 ? 'text-orange-500' : ''} ${formData.notes.length >= 7000 ? 'text-red-500' : ''}`}>
+                  {formData.notes.length}/7000 characters
+                </span>
+              </div>
+            </div>
           </div>
         </details>
 

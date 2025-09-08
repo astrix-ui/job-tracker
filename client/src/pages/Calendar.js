@@ -871,7 +871,7 @@ const Calendar = () => {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         title="Edit Application"
-        size="large"
+        size="xlarge"
         className="calendar-modal"
       >
         <CompanyForm

@@ -370,7 +370,7 @@ const Dashboard = () => {
           {filteredAndSortedCompanies.length === 0 ? (
             <div className="bg-muted/30 rounded-[20px] p-16 text-center">
               <div className="text-6xl mb-4">
-                {companies.length === 0 ? '📝' : '🔍'}
+                {companies.length === 0 ? '' : ''}
               </div>
               <h3 className="text-xl font-semibold text-foreground mb-3">
                 {companies.length === 0 ? 'No applications yet' : 'No applications found'}
@@ -729,7 +729,7 @@ const Dashboard = () => {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         title={editingCompany ? 'Edit Application' : 'Add New Application'}
-        size="large"
+        size="xlarge"
         className="dashboard-modal"
       >
         <CompanyForm

@@ -39,7 +39,7 @@ const companySchema = new mongoose.Schema({
   },
   notes: {
     type: String,
-    maxlength: 1000
+    maxlength: 7000
   },
   salaryExpectation: {
     type: Number,
