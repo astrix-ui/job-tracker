@@ -28,6 +28,11 @@ export const formatCurrency = (amount) => {
   }).format(amount);
 };
 
+export const formatIndianNumber = (amount) => {
+  if (!amount) return '';
+  return new Intl.NumberFormat('en-IN').format(amount);
+};
+
 export const getStatusColor = (status) => {
   const colors = {
     'Applied': 'blue',

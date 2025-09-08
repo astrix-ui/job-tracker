@@ -304,7 +304,7 @@ const UserProfile = () => {
                     )}
                     {company.salaryExpectation && (
                       <div className="font-medium text-foreground">
-                        ${company.salaryExpectation.toLocaleString()}
+                        ₹{company.salaryExpectation.toLocaleString('en-IN')}
                       </div>
                     )}
                     {company.positionType && (
