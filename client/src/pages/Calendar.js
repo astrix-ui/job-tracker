@@ -348,7 +348,7 @@ const Calendar = () => {
           <div className="flex items-center justify-center sm:justify-start space-x-3">
             <button
               onClick={() => onNavigate('PREV')}
-              className="flex items-center justify-center w-10 h-10 bg-background/50 border border-border/30 text-foreground rounded-xl hover:bg-background hover:border-border/50 transition-all duration-200"
+              className="flex items-center justify-center w-10 h-10 bg-background border border-border text-foreground rounded-xl hover:bg-background hover:border-border/50 transition-all duration-200"
               aria-label="Previous"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -363,7 +363,7 @@ const Calendar = () => {
             </button>
             <button
               onClick={() => onNavigate('NEXT')}
-              className="flex items-center justify-center w-10 h-10 bg-background/50 border border-border/30 text-foreground rounded-xl hover:bg-background hover:border-border/50 transition-all duration-200"
+              className="flex items-center justify-center w-10 h-10 bg-background border border-border text-foreground rounded-xl hover:bg-background hover:border-border/50 transition-all duration-200"
               aria-label="Next"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -380,7 +380,7 @@ const Calendar = () => {
         
         {/* View Toggle Buttons */}
         <div className="flex justify-center sm:justify-end">
-          <div className="inline-flex rounded-xl border border-border/30 bg-background/50 p-1">
+          <div className="inline-flex rounded-xl border border-border bg-background p-1">
             {['month', 'week', 'day'].map(viewName => (
               <button
                 key={viewName}
@@ -431,7 +431,7 @@ const Calendar = () => {
         <ErrorMessage message={error} onClose={() => setError('')} />
 
         {/* Main Calendar Card */}
-        <div className="bg-background/80 backdrop-blur-xl border border-border/50 rounded-2xl shadow-sm overflow-hidden">
+        <div className="bg-card backdrop-blur-xl border border-border rounded-2xl shadow-sm overflow-hidden">
           {/* Legend */}
           <div className="p-6 border-b border-border/30">
             <h3 className="text-sm font-semibold text-foreground mb-4">Status Legend</h3>
@@ -784,7 +784,7 @@ const Calendar = () => {
         {/* Empty State */}
         {events.length === 0 && !loading && (
           <div className="text-center py-12 mt-8">
-            <div className="bg-background/80 backdrop-blur-xl border border-border/50 rounded-2xl shadow-sm p-8">
+            <div className="bg-card backdrop-blur-xl border border-border rounded-2xl shadow-sm p-8">
               <h3 className="text-lg font-semibold text-foreground mb-2">
                 No upcoming events
               </h3>
@@ -851,7 +851,7 @@ const Calendar = () => {
             <div className="flex flex-col sm:flex-row sm:justify-end space-y-2 sm:space-y-0 sm:space-x-3 pt-4 border-t border-border/30">
               <button
                 onClick={() => setSelectedEvent(null)}
-                className="w-full sm:w-auto px-4 py-2 border border-border/30 rounded-xl text-muted-foreground bg-background/50 hover:bg-background hover:border-border/50 transition-all duration-200"
+                className="w-full sm:w-auto px-4 py-2 border border-border rounded-xl text-muted-foreground bg-background hover:bg-background hover:border-border/50 transition-all duration-200"
               >
                 Close
               </button>

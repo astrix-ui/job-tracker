@@ -113,7 +113,7 @@ const ConnectionsProgress = () => {
         {/* Connections Grid */}
         {connections.length === 0 ? (
           <div className="text-center py-16">
-            <div className="bg-background/60 backdrop-blur-xl border border-border/50 rounded-2xl p-12 max-w-md mx-auto">
+            <div className="bg-card backdrop-blur-xl border border-border rounded-2xl p-12 max-w-md mx-auto">
               <div className="w-20 h-20 bg-muted/30 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <svg className="w-10 h-10 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -143,7 +143,7 @@ const ConnectionsProgress = () => {
               return (
                 <div
                   key={connection.userId}
-                  className="group bg-background/60 backdrop-blur-xl border border-border/50 rounded-2xl p-8 hover:shadow-lg transition-all duration-200 cursor-pointer overflow-hidden relative w-full min-w-0"
+                  className="group bg-card backdrop-blur-xl border border-border rounded-2xl p-8 hover:shadow-lg transition-all duration-200 cursor-pointer overflow-hidden relative w-full min-w-0"
                   onClick={() => navigate(`/user/${connection.userId}`)}
                 >
                   {/* Background Pattern */}
@@ -172,15 +172,15 @@ const ConnectionsProgress = () => {
 
                     {/* Progress Stats */}
                     <div className="grid grid-cols-3 gap-4 mb-6">
-                      <div className="text-center p-4 bg-muted/20 rounded-xl border border-border/30">
+                      <div className="text-center p-4 bg-muted/20 rounded-xl border border-border">
                         <div className="text-lg font-bold text-foreground">{stats.active}</div>
                         <div className="text-xs text-muted-foreground font-medium">Active</div>
                       </div>
-                      <div className="text-center p-4 bg-muted/20 rounded-xl border border-border/30">
+                      <div className="text-center p-4 bg-muted/20 rounded-xl border border-border">
                         <div className="text-lg font-bold text-foreground">{stats.offered}</div>
                         <div className="text-xs text-muted-foreground font-medium">Offers</div>
                       </div>
-                      <div className="text-center p-4 bg-muted/20 rounded-xl border border-border/30">
+                      <div className="text-center p-4 bg-muted/20 rounded-xl border border-border">
                         <div className="text-lg font-bold text-foreground">{stats.rejected}</div>
                         <div className="text-xs text-muted-foreground font-medium">Rejected</div>
                       </div>

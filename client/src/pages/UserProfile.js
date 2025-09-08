@@ -166,7 +166,7 @@ const UserProfile = () => {
         <ErrorMessage message={error} onClose={() => setError('')} />
 
         {/* Profile Header Card */}
-        <div className="bg-background/60 backdrop-blur-xl border border-border/50 rounded-2xl p-8 mb-8 overflow-hidden relative">
+        <div className="bg-card backdrop-blur-xl border border-border rounded-2xl p-8 mb-8 overflow-hidden relative">
           {/* Background Pattern */}
           <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-foreground/5 to-transparent rounded-full -translate-y-16 translate-x-16"></div>
           

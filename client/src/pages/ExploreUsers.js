@@ -143,7 +143,7 @@ const ExploreUsers = () => {
               {popularUsers.map((user, index) => (
                 <div
                   key={user._id}
-                  className="group relative bg-background/60 backdrop-blur-xl border border-border/50 rounded-2xl p-6 hover:shadow-lg transition-all duration-200 overflow-hidden"
+                  className="group relative bg-card backdrop-blur-xl border border-border rounded-2xl p-6 hover:shadow-lg transition-all duration-200 overflow-hidden"
                 >
                   {/* Background Pattern */}
                   <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-foreground/3 to-transparent rounded-full -translate-y-8 translate-x-8 group-hover:scale-110 transition-transform duration-200"></div>
@@ -212,7 +212,7 @@ const ExploreUsers = () => {
         )}
 
         {/* Search Section */}
-        <div className="bg-background/60 backdrop-blur-xl border border-border/50 rounded-2xl p-8 mb-12">
+        <div className="bg-card backdrop-blur-xl border border-border rounded-2xl p-8 mb-12">
           <div className="max-w-2xl mx-auto text-center">
             <h3 className="text-xl font-bold text-foreground mb-4">Find Specific People</h3>
             <p className="text-muted-foreground mb-6">Search for professionals by name or email address</p>
@@ -240,7 +240,7 @@ const ExploreUsers = () => {
             
             {filteredUsers.length === 0 ? (
               <div className="text-center py-12">
-                <div className="bg-background/60 backdrop-blur-xl border border-border/50 rounded-2xl p-8">
+                <div className="bg-card backdrop-blur-xl border border-border rounded-2xl p-8">
                   <div className="w-16 h-16 bg-muted/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
                     <svg className="w-8 h-8 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -255,7 +255,7 @@ const ExploreUsers = () => {
                 {filteredUsers.map((user) => (
                   <div
                     key={user._id}
-                    className="bg-background/60 backdrop-blur-xl border border-border/50 rounded-2xl p-6 hover:shadow-md transition-all duration-200"
+                    className="bg-card backdrop-blur-xl border border-border rounded-2xl p-6 hover:shadow-md transition-all duration-200"
                   >
                     <div className="flex items-center gap-4 mb-4">
                       <div className="w-12 h-12 bg-gradient-to-br from-foreground/10 to-foreground/20 rounded-xl flex items-center justify-center">
@@ -301,7 +301,7 @@ const ExploreUsers = () => {
         {/* Empty State for No Users */}
         {!searchTerm && users.length === 0 && (
           <div className="text-center py-16">
-            <div className="bg-background/60 backdrop-blur-xl border border-border/50 rounded-2xl p-12">
+            <div className="bg-card backdrop-blur-xl border border-border rounded-2xl p-12">
               <div className="w-20 h-20 bg-muted/30 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <svg className="w-10 h-10 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />

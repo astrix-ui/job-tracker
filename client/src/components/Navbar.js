@@ -29,6 +29,9 @@ const Navbar = () => {
     return companies.filter(company => {
       if (!company.nextActionDate) return false;
       
+      // Exclude rejected jobs from notification count
+      if (company.status === 'Rejected') return false;
+      
       const actionDate = new Date(company.nextActionDate);
       actionDate.setHours(0, 0, 0, 0);
       

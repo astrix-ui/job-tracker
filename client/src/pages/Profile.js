@@ -173,7 +173,7 @@ const Profile = () => {
         <ErrorMessage message={error} onClose={() => setError('')} />
 
         {/* Profile Header Card */}
-        <div className="bg-background/60 backdrop-blur-xl border border-border/50 rounded-2xl p-8 mb-8 overflow-hidden relative">
+        <div className="bg-card backdrop-blur-xl border border-border rounded-2xl p-8 mb-8 overflow-hidden relative">
           {/* Background Pattern */}
           <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-foreground/5 to-transparent rounded-full -translate-y-16 translate-x-16"></div>
           
@@ -211,7 +211,7 @@ const Profile = () => {
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-background/60 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
+          <div className="bg-card backdrop-blur-xl border border-border rounded-2xl p-6">
             <div className="flex items-center gap-4 mb-4">
               <div className="w-12 h-12 bg-muted/20 rounded-xl flex items-center justify-center">
                 <svg className="w-6 h-6 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -229,7 +229,7 @@ const Profile = () => {
             </div>
           </div>
 
-          <div className="bg-background/60 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
+          <div className="bg-card backdrop-blur-xl border border-border rounded-2xl p-6">
             <div className="flex items-center gap-4 mb-4">
               <div className="w-12 h-12 bg-muted/20 rounded-xl flex items-center justify-center">
                 <svg className="w-6 h-6 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -247,7 +247,7 @@ const Profile = () => {
             </div>
           </div>
 
-          <div className="bg-background/60 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
+          <div className="bg-card backdrop-blur-xl border border-border rounded-2xl p-6">
             <div className="flex items-center gap-4 mb-4">
               <div className="w-12 h-12 bg-muted/20 rounded-xl flex items-center justify-center">
                 <svg className="w-6 h-6 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -269,7 +269,7 @@ const Profile = () => {
         {/* Settings Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           {/* Account Settings */}
-          <div className="bg-background/60 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
+          <div className="bg-card backdrop-blur-xl border border-border rounded-2xl p-6">
             <h3 className="text-xl font-bold text-foreground mb-6 flex items-center">
               <div className="w-2 h-2 bg-foreground rounded-full mr-3"></div>
               Account Settings
@@ -307,7 +307,7 @@ const Profile = () => {
           </div>
 
           {/* Quick Actions */}
-          <div className="bg-background/60 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
+          <div className="bg-card backdrop-blur-xl border border-border rounded-2xl p-6">
             <h3 className="text-xl font-bold text-foreground mb-6 flex items-center">
               <div className="w-2 h-2 bg-foreground rounded-full mr-3"></div>
               Quick Actions
@@ -351,7 +351,7 @@ const Profile = () => {
         </div>
 
         {/* Danger Zone */}
-        <div className="bg-background/60 backdrop-blur-xl border border-red-200/50 dark:border-red-800/50 rounded-2xl p-6">
+        <div className="bg-card backdrop-blur-xl border border-red-200/50 dark:border-red-800/50 rounded-2xl p-6">
           <h3 className="text-xl font-bold text-red-600 dark:text-red-400 mb-6 flex items-center">
             <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
