@@ -31,6 +31,9 @@ const NotificationPanel = ({ isOpen, onClose, isMobile = false }) => {
       .filter(company => {
         if (!company.nextActionDate) return false;
         
+        // Exclude rejected jobs from notifications
+        if (company.status === 'Rejected') return false;
+        
         const actionDate = new Date(company.nextActionDate);
         actionDate.setHours(0, 0, 0, 0);
         

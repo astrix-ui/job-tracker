@@ -355,7 +355,8 @@ const getPastActionNotifications = async (req, res) => {
     
     const companies = await Company.find({ 
       userId: req.session.userId,
-      nextActionDate: { $lt: today }
+      nextActionDate: { $lt: today },
+      status: { $ne: 'Rejected' } // Exclude rejected jobs from notifications
     });
     
     console.log('Found', companies.length, 'companies with past action dates');
