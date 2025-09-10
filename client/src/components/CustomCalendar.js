@@ -33,6 +33,7 @@ const CustomCalendar = ({ value, onChange, minDate }) => {
   };
 
   const handleDateSelect = (day) => {
+    // Create date in local timezone to avoid timezone offset issues
     const newDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
     
     // Check if date is before minDate
@@ -41,7 +42,11 @@ const CustomCalendar = ({ value, onChange, minDate }) => {
     }
     
     setSelectedDate(newDate);
-    const dateString = newDate.toISOString().split('T')[0];
+    // Format date manually to avoid timezone issues
+    const year = newDate.getFullYear();
+    const month = String(newDate.getMonth() + 1).padStart(2, '0');
+    const dayStr = String(newDate.getDate()).padStart(2, '0');
+    const dateString = `${year}-${month}-${dayStr}`;
     onChange(dateString);
     setIsOpen(false);
   };
@@ -191,7 +196,11 @@ const CustomCalendar = ({ value, onChange, minDate }) => {
                 const today = new Date();
                 setCurrentDate(today);
                 setSelectedDate(today);
-                const dateString = today.toISOString().split('T')[0];
+                // Format date manually to avoid timezone issues
+                const year = today.getFullYear();
+                const month = String(today.getMonth() + 1).padStart(2, '0');
+                const day = String(today.getDate()).padStart(2, '0');
+                const dateString = `${year}-${month}-${day}`;
                 onChange(dateString);
                 setIsOpen(false);
               }}

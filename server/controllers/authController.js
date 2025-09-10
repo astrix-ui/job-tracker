@@ -178,7 +178,7 @@ const getUserStats = async (req, res) => {
     const activeApplications = companies.filter(c => 
       !['Rejected', 'Offered', 'Withdrawn'].includes(c.status)
     ).length;
-    const offersReceived = companies.filter(c => c.status === 'Offered').length;
+    const offersReceived = companies.filter(c => c.status === 'Offer Received').length;
 
     res.json({
       success: true,

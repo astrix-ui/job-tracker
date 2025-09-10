@@ -637,6 +637,25 @@ const Calendar = () => {
                 border-right: 1px solid hsl(var(--border) / 0.2);
                 min-height: 700px;
                 flex: 1;
+                width: 100% !important;
+              }
+              .rbc-time-view.rbc-day-view .rbc-time-column {
+                width: 100% !important;
+                flex: 1 !important;
+                min-width: 0 !important;
+              }
+              .rbc-time-view.rbc-day-view .rbc-time-content {
+                width: 100% !important;
+                display: flex !important;
+              }
+              .rbc-time-view.rbc-day-view .rbc-time-header {
+                width: 100% !important;
+                display: flex !important;
+              }
+              .rbc-time-view.rbc-day-view .rbc-time-header .rbc-header {
+                flex: 1 !important;
+                width: 100% !important;
+                min-width: 0 !important;
               }
               @media (max-width: 640px) {
                 .rbc-time-view {
@@ -854,6 +873,17 @@ const Calendar = () => {
                 className="w-full sm:w-auto px-4 py-2 border border-border rounded-xl text-muted-foreground bg-background hover:bg-background hover:border-border/50 transition-all duration-200"
               >
                 Close
+              </button>
+              <button
+                onClick={() => {
+                  const company = getCompanyById(selectedEvent.resource.companyId);
+                  if (company) {
+                    window.location.href = `/dashboard?company=${company._id}`;
+                  }
+                }}
+                className="w-full sm:w-auto px-4 py-2 border border-foreground/20 text-foreground bg-background rounded-xl hover:bg-foreground/5 transition-all duration-200"
+              >
+                View Application
               </button>
               <button
                 onClick={handleEditEvent}

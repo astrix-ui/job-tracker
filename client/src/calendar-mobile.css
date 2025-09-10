@@ -15,6 +15,13 @@
     width: 100% !important;
     flex: 1 !important;
   }
+
+  /* Day view full width fix */
+  .rbc-time-view.rbc-day-view .rbc-time-column {
+    width: 100% !important;
+    flex: 1 !important;
+    min-width: 0 !important;
+  }
   
   /* Header adjustments for mobile */
   .rbc-time-header .rbc-header {
@@ -365,5 +372,42 @@
   
   .rbc-month-view .rbc-date-cell.has-event {
     border-width: 1px;
+  }
+}
+
+/* Desktop day view full width */
+@media (min-width: 641px) {
+  .rbc-time-view.rbc-day-view {
+    width: 100% !important;
+  }
+  
+  .rbc-time-view.rbc-day-view .rbc-time-column {
+    width: 100% !important;
+    flex: 1 !important;
+    min-width: 0 !important;
+    max-width: none !important;
+  }
+
+  .rbc-time-view.rbc-day-view .rbc-time-content {
+    width: 100% !important;
+    display: flex !important;
+    flex: 1 !important;
+  }
+
+  .rbc-time-view.rbc-day-view .rbc-time-header {
+    width: 100% !important;
+    display: flex !important;
+  }
+
+  .rbc-time-view.rbc-day-view .rbc-time-header .rbc-header {
+    flex: 1 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+  }
+
+  .rbc-time-view.rbc-day-view .rbc-day-slot {
+    width: 100% !important;
+    flex: 1 !important;
   }
 }

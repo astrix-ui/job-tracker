@@ -5,6 +5,7 @@ import LoadingSpinner from './LoadingSpinner';
 import ErrorMessage from './ErrorMessage';
 import CustomCalendar from './CustomCalendar';
 import CustomTimePicker from './CustomTimePicker';
+import CelebrationAnimation from './CelebrationAnimation';
 import { APPLICATION_STATUSES, POSITION_TYPES } from '../utils/constants';
 
 const CompanyForm = ({ company, onClose }) => {
@@ -13,6 +14,7 @@ const CompanyForm = ({ company, onClose }) => {
   const companyNameRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showCelebration, setShowCelebration] = useState(false);
   const [formData, setFormData] = useState({
     companyName: '',
     status: 'Applied',
@@ -117,8 +119,18 @@ const CompanyForm = ({ company, onClose }) => {
       }
 
       if (result.success) {
-        showSuccess(company ? 'Application updated successfully!' : 'Application added successfully!');
-        onClose();
+        // Trigger calendar widget update
+        window.dispatchEvent(new CustomEvent('calendarUpdate'));
+        
+        // Check if status is "Offer Received" to show celebration
+        const finalStatus = formData.status === 'Other' ? formData.customStatus : formData.status;
+        if (finalStatus === 'Offer Received') {
+          // Show celebration first, then close panel
+          setShowCelebration(true);
+        } else {
+          showSuccess(company ? 'Application updated successfully!' : 'Application added successfully!');
+          onClose();
+        }
       } else {
         setError(result.error);
         showError(result.error || 'Failed to save application');
@@ -474,6 +486,19 @@ const CompanyForm = ({ company, onClose }) => {
           {company ? 'Update' : 'Add Application'}
         </button>
       </div>
+
+      {/* Celebration Animation */}
+      <CelebrationAnimation 
+        isVisible={showCelebration} 
+        onComplete={() => {
+          setShowCelebration(false);
+          showSuccess(company ? 'Application updated successfully!' : 'Application added successfully!');
+          // Trigger another calendar update after celebration
+          window.dispatchEvent(new CustomEvent('calendarUpdate'));
+          onClose();
+        }}
+        companyName={formData.companyName}
+      />
     </form>
   );
 };

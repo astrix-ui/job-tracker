@@ -8,6 +8,7 @@ import ErrorMessage from '../components/ErrorMessage';
 import StatusBadge from '../components/StatusBadge';
 import Modal from '../components/Modal';
 import CompanyForm from '../components/CompanyForm';
+import CalendarWidget from '../components/CalendarWidget';
 import { formatDate, formatCurrency, sortCompanies, filterCompanies } from '../utils/helpers';
 import { APPLICATION_STATUSES, POSITION_TYPES } from '../utils/constants';
 
@@ -248,7 +249,7 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="py-12 px-4">
+      <section className="pt-12 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
             <div>
@@ -269,7 +270,7 @@ const Dashboard = () => {
           <ErrorMessage message={error} onClose={clearError} />
 
           {/* Modular Grid Layout */}
-          <div className="grid grid-cols-12 gap-4 mb-8">
+          <div className="grid grid-cols-12 gap-4 mb-4">
             {/* Total Applications - Large Card */}
             <div className="col-span-12 md:col-span-4 bg-muted/30 rounded-[20px] p-6 flex flex-col justify-center">
               <div className="text-5xl font-bold text-foreground mb-2">{stats.total}</div>
@@ -315,6 +316,15 @@ const Dashboard = () => {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Calendar Widget - Dashboard Tile Style */}
+      <section className="mx-auto px-2 sm:px-4 md:px-6 lg:px-8" style={{ maxWidth: '84rem' }}>
+        <div className="grid grid-cols-12 gap-2 sm:gap-4">
+          <div className="col-span-12 bg-muted/30 rounded-lg sm:rounded-[20px] p-3 sm:p-6">
+            <CalendarWidget />
           </div>
         </div>
       </section>
@@ -496,40 +506,48 @@ const Dashboard = () => {
                 ))}
               </div>
 
-              {/* Pagination */}
+              {/* Pagination - Ultra-thin responsive */}
               {totalPages > 1 && (
-                <div className="bg-muted/20 rounded-[16px] p-6">
-                  <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <div className="text-sm text-muted-foreground">
+                <div className="bg-muted/20 rounded-[16px] p-3 sm:p-6">
+                  <div className="flex flex-col gap-3 sm:gap-4">
+                    {/* Results info - hidden on ultra-thin displays */}
+                    <div className="hidden sm:block text-sm text-muted-foreground text-center sm:text-left">
                       Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, filteredAndSortedCompanies.length)} of {filteredAndSortedCompanies.length} results
                     </div>
-                    <div className="flex items-center space-x-2">
+                    
+                    {/* Pagination controls */}
+                    <div className="flex items-center justify-center gap-1 sm:gap-2">
+                      {/* Previous button */}
                       <button
                         onClick={() => handlePageChange(currentPage - 1)}
                         disabled={currentPage === 1}
-                        className="px-4 py-2 bg-muted/40 rounded-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-muted/60 transition-colors"
+                        className="px-2 sm:px-4 py-2 bg-muted/40 rounded-lg text-xs sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-muted/60 transition-colors"
                       >
-                        ← Previous
+                        <span className="hidden sm:inline">← Previous</span>
+                        <span className="sm:hidden">←</span>
                       </button>
                       
-                      <div className="flex space-x-1">
-                        {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
+                      {/* Page numbers - responsive count */}
+                      <div className="flex gap-1">
+                        {Array.from({ length: Math.min(totalPages, window.innerWidth < 400 ? 3 : 5) }, (_, i) => {
                           let page;
-                          if (totalPages <= 5) {
+                          const maxPages = window.innerWidth < 400 ? 3 : 5;
+                          
+                          if (totalPages <= maxPages) {
                             page = i + 1;
-                          } else if (currentPage <= 3) {
+                          } else if (currentPage <= Math.floor(maxPages / 2) + 1) {
                             page = i + 1;
-                          } else if (currentPage >= totalPages - 2) {
-                            page = totalPages - 4 + i;
+                          } else if (currentPage >= totalPages - Math.floor(maxPages / 2)) {
+                            page = totalPages - maxPages + 1 + i;
                           } else {
-                            page = currentPage - 2 + i;
+                            page = currentPage - Math.floor(maxPages / 2) + i;
                           }
                           
                           return (
                             <button
                               key={page}
                               onClick={() => handlePageChange(page)}
-                              className={`w-10 h-10 rounded-lg text-sm transition-colors ${
+                              className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg text-xs sm:text-sm transition-colors ${
                                 currentPage === page 
                                   ? 'bg-foreground text-background' 
                                   : 'bg-muted/40 hover:bg-muted/60'
@@ -541,13 +559,20 @@ const Dashboard = () => {
                         })}
                       </div>
                       
+                      {/* Next button */}
                       <button
                         onClick={() => handlePageChange(currentPage + 1)}
                         disabled={currentPage === totalPages}
-                        className="px-4 py-2 bg-muted/40 rounded-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-muted/60 transition-colors"
+                        className="px-2 sm:px-4 py-2 bg-muted/40 rounded-lg text-xs sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-muted/60 transition-colors"
                       >
-                        Next →
+                        <span className="hidden sm:inline">Next →</span>
+                        <span className="sm:hidden">→</span>
                       </button>
+                    </div>
+                    
+                    {/* Compact results info for ultra-thin displays */}
+                    <div className="sm:hidden text-xs text-muted-foreground text-center">
+                      Page {currentPage} of {totalPages}
                     </div>
                   </div>
                 </div>
@@ -723,6 +748,7 @@ const Dashboard = () => {
           </div>
         </div>
       </section>
+
 
       {/* Company Form Modal */}
       <Modal
