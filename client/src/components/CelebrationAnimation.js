@@ -66,7 +66,7 @@ const CelebrationAnimation = ({ isVisible, onComplete, companyName }) => {
 
         {/* Company message */}
         <div className="text-center mb-12">
-          <p className="text-lg md:text-xl text-gray-300 mb-4">  
+          <p className="text-lg md:text-xl text-gray-300 mb-4">
             You received an offer from
           </p>
           <p className="text-xl md:text-3xl lg:text-4xl font-semibold text-emerald-400">
